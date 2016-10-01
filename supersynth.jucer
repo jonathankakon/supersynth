@@ -3,7 +3,7 @@
 <JUCERPROJECT id="pZVG3V" name="supersynth" projectType="audioplug" version="1.0.0"
               bundleIdentifier="com.yourcompany.supersynth" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
-              buildAAX="1" pluginName="supersynth" pluginDesc="supersynth"
+              buildAAX="0" pluginName="supersynth" pluginDesc="supersynth"
               pluginManufacturer="yourcompany" pluginManufacturerCode="Manu"
               pluginCode="Pzvg" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
@@ -46,7 +46,8 @@
         <MODULEPATH id="juce_osc" path="SDK/JuceModules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 targetFolder="Builds/VisualStudio2015" vst3Folder="SDK/VST" aaxFolder="SDK/AAX">
+    <VS2015 targetFolder="Builds/VisualStudio2015" vst3Folder=".\SDK\VST"
+            aaxFolder=".\SDK\AAX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
                        isDebug="1" optimisation="1" targetName="supersynth"/>

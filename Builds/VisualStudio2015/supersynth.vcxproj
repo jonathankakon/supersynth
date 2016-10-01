@@ -55,8 +55,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\SDK\VST;..\..\JuceLibraryCode;..\..\SDK\AAX;..\..\SDK\AAX\Interfaces;..\..\SDK\AAX\Interfaces\ACF;..\..\SDK\JuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JucePlugin_AAXLibs_path=&quot;..\\..\\SDK\\AAX\\Libs&quot;;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\SDK\VST;..\..\JuceLibraryCode;..\..\SDK\JuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -86,12 +86,7 @@
       <OutputFile>$(IntDir)\supersynth.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin\Contents&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32&quot;
-copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32\$(TargetName).aaxplugin&quot;
-SDK/AAX\Utilities\CreatePackage.bat &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32&quot; &quot;SDK/AAX\Utilities\PlugIn.ico&quot;</Command>
+      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -104,8 +99,8 @@ SDK/AAX\Utilities\CreatePackage.bat &quot;$(OutDir)\$(TargetName).aaxplugin\Cont
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\SDK\VST;..\..\JuceLibraryCode;..\..\SDK\AAX;..\..\SDK\AAX\Interfaces;..\..\SDK\AAX\Interfaces\ACF;..\..\SDK\JuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;JucePlugin_AAXLibs_path=&quot;..\\..\\SDK\\AAX\\Libs&quot;;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\SDK\VST;..\..\JuceLibraryCode;..\..\SDK\JuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -136,12 +131,7 @@ SDK/AAX\Utilities\CreatePackage.bat &quot;$(OutDir)\$(TargetName).aaxplugin\Cont
       <OutputFile>$(IntDir)\supersynth.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin\Contents&quot;
-mkdir &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32&quot;
-copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32\$(TargetName).aaxplugin&quot;
-SDK/AAX\Utilities\CreatePackage.bat &quot;$(OutDir)\$(TargetName).aaxplugin\Contents\Win32&quot; &quot;SDK/AAX\Utilities\PlugIn.ico&quot;</Command>
+      <Command>copy /Y &quot;$(OutDir)\$(TargetFileName)&quot; &quot;$(OutDir)\$(TargetName).vst3&quot;</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -2000,7 +1990,6 @@ SDK/AAX\Utilities\CreatePackage.bat &quot;$(OutDir)\$(TargetName).aaxplugin\Cont
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_formats.cpp"/>
-    <ClCompile Include="..\..\JuceLibraryCode\juce_audio_plugin_client_AAX.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_plugin_client_utils.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_plugin_client_VST2.cpp"/>
     <ClCompile Include="..\..\JuceLibraryCode\juce_audio_plugin_client_VST3.cpp"/>
