@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="pZVG3V" name="supersynth" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.yourcompany.supersynth" includeBinaryInAppConfig="1"
+              buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
+              buildAAX="1" pluginName="supersynth" pluginDesc="supersynth"
+              pluginManufacturer="yourcompany" pluginManufacturerCode="Manu"
+              pluginCode="Pzvg" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
+              pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.supersynth"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4">
+  <MAINGROUP id="vIa7b1" name="supersynth">
+    <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
+      <FILE id="PyQjh6" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="Hxri6B" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="SDK/VST" aaxFolder="SDK/AAX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="supersynth"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="supersynth"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_events" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_graphics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_data_structures" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_gui_basics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_gui_extra" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_cryptography" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_video" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_opengl" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_basics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_devices" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_formats" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_processors" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_utils" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_box2d" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_osc" path="SDK/JuceModules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+    <VS2015 targetFolder="Builds/VisualStudio2015" vst3Folder="SDK/VST" aaxFolder="SDK/AAX">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="supersynth"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="supersynth"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_events" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_graphics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_data_structures" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_gui_basics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_gui_extra" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_cryptography" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_video" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_opengl" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_basics" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_devices" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_formats" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_processors" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_audio_utils" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_box2d" path="SDK/JuceModules"/>
+        <MODULEPATH id="juce_osc" path="SDK/JuceModules"/>
+      </MODULEPATHS>
+    </VS2015>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_box2d" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+</JUCERPROJECT>
