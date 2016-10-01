@@ -34,3 +34,9 @@
 /SDK/AAX/docs.html
 /SDK/AAX/ReadMe.txt
 /SDK/VST/index.html
+/Builds/VisualStudio2015/*.sdf
+/Builds/VisualStudio2015/Debug
+/Builds/VisualStudio2015/obj
+/Builds/VisualStudio2015/DTAR_08E86330_4835_4B5C_9E5A_61F37AE1A077_DTAR
+/Builds/VisualStudio2015/*.user
+/Builds/VisualStudio2015/supersynth.VC.opendb
