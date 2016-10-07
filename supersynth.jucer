@@ -15,8 +15,16 @@
         <FILE id="Hxri6B" name="PluginEditor.cpp" compile="1" resource="0"
               file="Source/PluginEditor.cpp"/>
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+        <FILE id="BW6vBG" name="WaveGeneratorProcessorEditor.cpp" compile="1"
+              resource="0" file="Source/WaveGeneratorProcessorEditor.cpp"/>
+        <FILE id="jI1gRs" name="WaveGeneratorProcessorEditor.h" compile="0"
+              resource="0" file="Source/WaveGeneratorProcessorEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="PWD6oj" name="WaveGeneratorProcessor.cpp" compile="1" resource="0"
+              file="Source/WaveGeneratorProcessor.cpp"/>
+        <FILE id="urxykd" name="WaveGeneratorProcessor.h" compile="0" resource="0"
+              file="Source/WaveGeneratorProcessor.h"/>
         <FILE id="PyQjh6" name="PluginProcessor.cpp" compile="1" resource="0"
               file="Source/PluginProcessor.cpp"/>
         <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"

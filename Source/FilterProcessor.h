@@ -11,7 +11,23 @@
 #ifndef FILTERPROCESSOR_H_INCLUDED
 #define FILTERPROCESSOR_H_INCLUDED
 
+#include "../JuceLibraryCode/JuceHeader.h"
 
+class FilterProcessor
+{
+public:
+    
+    
+    
+private:
+
+  AudioParameterFloat currentFrequency;
+  float bufferedFrequency; //buffered parameter for error checking
+
+
+  //==============================================================================
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessor);
+};
 
 
 
