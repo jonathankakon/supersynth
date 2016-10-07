@@ -12,6 +12,10 @@
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
+        <FILE id="dWi7Xg" name="FilterProcessorEditor.cpp" compile="1" resource="0"
+              file="Source/FilterProcessorEditor.cpp"/>
+        <FILE id="JHwrs8" name="FilterProcessorEditor.h" compile="0" resource="0"
+              file="Source/FilterProcessorEditor.h"/>
         <FILE id="Hxri6B" name="PluginEditor.cpp" compile="1" resource="0"
               file="Source/PluginEditor.cpp"/>
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
