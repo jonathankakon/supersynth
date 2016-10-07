@@ -11,6 +11,8 @@
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4">
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
+      <FILE id="Ui5sI1" name="FilterProcessor.cpp" compile="1" resource="0"
+            file="Source/FilterProcessor.cpp"/>
       <FILE id="PyQjh6" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
