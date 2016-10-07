@@ -18,7 +18,7 @@
 //==============================================================================
 /**
  */
-class WaveGeneratorProcessorEditor  : public AudioProcessorEditor
+class WaveGeneratorProcessorEditor  : public AudioProcessorEditor, Slider::Listener
 {
 public:
   WaveGeneratorProcessorEditor (WaveGeneratorProcessor&);
@@ -27,12 +27,16 @@ public:
   //==============================================================================
   void paint (Graphics&) override;
   void resized() override;
-
+  
+  void sliderValueChanged(Slider* slider) override;
   
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   WaveGeneratorProcessor& processor;
+  
+  Slider* frequencySlider;
+  Slider* volumeSlider;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)
 };
