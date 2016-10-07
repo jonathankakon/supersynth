@@ -41,3 +41,25 @@
 /Builds/VisualStudio2015/*.user
 /Builds/VisualStudio2015/supersynth.VC.opendb
 /Builds/VisualStudio2015/.vs/supersynth/v14/*.suo
+
+Builds/MacOSX/build/Debug/libsupersynth.a
+
+Builds/MacOSX/build/Debug/supersynth.component
+
+Builds/MacOSX/build/Debug/supersynth.vst
+
+Builds/MacOSX/build/Debug/supersynth.vst3
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/xcschememanagement.plist
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/supersynth (VST3).xcscheme
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/supersynth (VST).xcscheme
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/supersynth (Shared Code).xcscheme
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/supersynth (AU).xcscheme
+
+Builds/MacOSX/supersynth.xcodeproj/xcuserdata/Paul.xcuserdatad/xcschemes/supersynth (All).xcscheme
+
+Builds/MacOSX/supersynth.xcodeproj/project.xcworkspace/xcuserdata/Paul.xcuserdatad/UserInterfaceState.xcuserstate
