@@ -13,7 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class WaveGeneratorProcessor: AudioProcessor
+class WaveGeneratorProcessor: public AudioProcessor
 {
 public:
   //==============================================================================
@@ -39,19 +39,32 @@ public:
   //==============================================================================
   
   bool supportsDoublePrecisionProcessing() const override;
+  
+  //==============================================================================
+  
+  void setFrequency(float newFrequency);
 
 
   
 
 private:
   
+  enum waveform
+  {
+    sine,
+    saw,
+    square
+  };
+  
   AudioParameterFloat* currentFrequency;
   AudioParameterFloat* currentVolume;
   
   double currentSampleRate;
   
-  double currentPhase;
+  double currentPhase; //goes from 0 to 2*pi
   double phaseIncrement;
+  
+  waveform currentWaveform;
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);
