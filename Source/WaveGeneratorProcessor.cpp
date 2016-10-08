@@ -9,6 +9,7 @@
 */
 
 #include "WaveGeneratorProcessor.h"
+#include "WaveGeneratorProcessorEditor.h"
 
 
 WaveGeneratorProcessor::WaveGeneratorProcessor()
@@ -32,9 +33,9 @@ WaveGeneratorProcessor::WaveGeneratorProcessor()
   
 }
 
-bool WaveGeneratorProcessor::supportsDoublePrecisionProcessing() const
+WaveGeneratorProcessor::~WaveGeneratorProcessor()
 {
-  return true;
+  
 }
 
 void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -44,6 +45,11 @@ void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
   phaseIncrement = (*currentFrequency/currentSampleRate) * 2 * double_Pi;
   
   getProcessingPrecision();
+}
+
+void WaveGeneratorProcessor::releaseResources()
+{
+  ;
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
@@ -78,10 +84,91 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   {
     currentPhase -= 2 * double_Pi;
   }
+}// End processBlock
+
+AudioProcessorEditor* WaveGeneratorProcessor::createEditor()
+{
+  return new WaveGeneratorProcessorEditor (*this);
+}
+
+bool WaveGeneratorProcessor::hasEditor() const
+{
+  return true;
+}
+
+
+bool WaveGeneratorProcessor::supportsDoublePrecisionProcessing() const
+{
+  return true;
+}
+
+const String WaveGeneratorProcessor::getName() const
+{
+  return "aWave";
+}
+
+bool WaveGeneratorProcessor::acceptsMidi() const
+{
+  return true;
+}
+
+bool WaveGeneratorProcessor::producesMidi() const
+{
+  return false;
+}
+
+double WaveGeneratorProcessor::getTailLengthSeconds() const
+{
+  return 0.0;
+}
+
+int WaveGeneratorProcessor::getNumPrograms()
+{
+  return 1;
+}
+
+int WaveGeneratorProcessor::getCurrentProgram()
+{
+  return 1;
+}
+
+void WaveGeneratorProcessor::setCurrentProgram(int index)
+{
+  ;
+}
+
+const String WaveGeneratorProcessor::getProgramName(int index)
+{
+  return String();
+}
+
+void WaveGeneratorProcessor::changeProgramName(int index, const String& newName)
+{
+  ;
+}
+
+void WaveGeneratorProcessor::getStateInformation(MemoryBlock& destData)
+{
+  ;
+}
+
+void WaveGeneratorProcessor::setStateInformation(const void* data, int sizeInBytes)
+{
+  ;
 }
 
 void WaveGeneratorProcessor::setFrequency(float newFrequency)
 {
   *currentFrequency = newFrequency;
   phaseIncrement = (*currentFrequency/currentSampleRate) * 2 * double_Pi;
+}
+
+float WaveGeneratorProcessor::getFrequency()
+{
+  return *currentFrequency;
+}
+
+void WaveGeneratorProcessor::setWaveform(waveform newWaveform)
+{
+  currentWaveform = newWaveform;
 }

@@ -13,7 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class FilterProcessor: AudioProcessor
+class FilterProcessor: public AudioProcessor
 {
 public:
     

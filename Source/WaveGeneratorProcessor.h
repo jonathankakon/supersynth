@@ -39,15 +39,30 @@ public:
   //==============================================================================
   
   bool supportsDoublePrecisionProcessing() const override;
+
+  //==============================================================================
+  const String getName() const override;
+  
+  bool acceptsMidi() const override;
+  bool producesMidi() const override;
+  double getTailLengthSeconds() const override;
+  
+  //==============================================================================
+  int getNumPrograms() override;
+  int getCurrentProgram() override;
+  void setCurrentProgram (int index) override;
+  const String getProgramName (int index) override;
+  void changeProgramName (int index, const String& newName) override;
+  
+  //==============================================================================
+  void getStateInformation (MemoryBlock& destData) override;
+  void setStateInformation (const void* data, int sizeInBytes) override;
+  
   
   //==============================================================================
   
   void setFrequency(float newFrequency);
-
-
-  
-
-private:
+  float getFrequency();
   
   enum waveform
   {
@@ -55,6 +70,10 @@ private:
     saw,
     square
   };
+  
+  void setWaveform(waveform newWaveform);
+
+private:
   
   AudioParameterFloat* currentFrequency;
   AudioParameterFloat* currentVolume;
