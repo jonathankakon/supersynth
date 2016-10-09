@@ -12,6 +12,12 @@
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
+        <GROUP id="{8BF508D9-A7F3-5871-FCD7-A8985678CD65}" name="Components">
+          <FILE id="lAK43m" name="ToolboxComponent.cpp" compile="1" resource="0"
+                file="Source/ToolboxComponent.cpp"/>
+          <FILE id="WHA7ra" name="ToolboxComponent.h" compile="0" resource="0"
+                file="Source/ToolboxComponent.h"/>
+        </GROUP>
         <FILE id="dWi7Xg" name="FilterProcessorEditor.cpp" compile="1" resource="0"
               file="Source/FilterProcessorEditor.cpp"/>
         <FILE id="JHwrs8" name="FilterProcessorEditor.h" compile="0" resource="0"
@@ -115,4 +121,7 @@
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
