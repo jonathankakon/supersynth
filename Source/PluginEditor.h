@@ -15,13 +15,17 @@
 #include "PluginProcessor.h"
 
 #include "ToolboxComponent.h"
+#include "Worksheet.h"
+#include "CollapseButton.h"
 
 
 //==============================================================================
 /**
 */
 class SupersynthAudioProcessorEditor  : 
-	public AudioProcessorEditor
+	public AudioProcessorEditor,
+	public ButtonListener,
+	public DragAndDropContainer
 {
 public:
     SupersynthAudioProcessorEditor (SupersynthAudioProcessor&);
@@ -30,12 +34,18 @@ public:
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
+	void buttonClicked(Button* buttonThatWasClicked) override;
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
 	ScopedPointer<ToolboxComponent> toolbox;
+	ScopedPointer<CollapseButton> collapseButton;
+	ScopedPointer<Viewport> viewport;
+	ScopedPointer<Worksheet> worksheet;
     SupersynthAudioProcessor& processor;
+
+	bool open = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SupersynthAudioProcessorEditor)
 };

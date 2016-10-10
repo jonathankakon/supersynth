@@ -19,10 +19,14 @@ int ToolboxComponent::getNumRows()
 void ToolboxComponent::paintListBoxItem(int rowNumber, Graphics& g,
 	int width, int height, bool rowIsSelected)
 {
+	g.fillAll(Colour(0xFFC8C8C8));
+	g.setColour(Colour(0xFF1F1F1F));
 	if (rowIsSelected)
-		g.fillAll(Colours::lightblue);
+	{
+		g.fillAll(Colour(0xFF007ACC));
+		g.setColour(Colour(0xFFFFFFFF));
+	}
 
-	g.setColour(Colours::black);
 	g.setFont(height * 0.7f);
 
 	g.drawText((modules[rowNumber])->name,
@@ -44,7 +48,7 @@ var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRow
 
 //==============================================================================
 ToolboxComponent::ToolboxComponent() : 
-	collapseButton(new ToggleButton()), 
+	collapseButton(new CollapseButton()), 
 	moduleList(new ListBox("ModuleList", nullptr))
 {
 	modules.add(new ModulesListElement({ "Wave Generator", "waveGenerator.png", "WaveGeneratorProcessor" }));
@@ -54,18 +58,15 @@ ToolboxComponent::ToolboxComponent() :
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 	Rectangle<int> r(getLocalBounds());
-	Rectangle<int> listBounds = r.withTrimmedRight(20);
-	Rectangle<int> buttonBounds(listBounds.getRight(), listBounds.getY(), 20, r.getHeight());
 
 	addAndMakeVisible(moduleList);
-	moduleList->setBounds(listBounds);
+	moduleList->setColour(ListBox::ColourIds::backgroundColourId, Colour(0xFFC8C8C8));
+	moduleList->setColour(ListBox::ColourIds::outlineColourId, Colour(0xFFC8C8C8));
+	moduleList->setBounds(r);
 	moduleList->setModel(this);
 	moduleList->setMultipleSelectionEnabled(false);
 
-	addAndMakeVisible(collapseButton);
-	collapseButton->setBounds(buttonBounds);
-	collapseButton->addListener(this);
-
+	/*
 	ComponentBoundsConstrainer* bounds = new ComponentBoundsConstrainer();
 	bounds->setMaximumWidth(400);
 	bounds->setMinimumWidth(150);
@@ -73,12 +74,13 @@ ToolboxComponent::ToolboxComponent() :
 	addAndMakeVisible(resizeBorder);
 	resizeBorder->setBorderThickness(BorderSize<int>(0,0,0,3));
 	resizeBorder->setBounds(r);
+	*/
 }
 
 ToolboxComponent::~ToolboxComponent()
 {
 	moduleList = nullptr;
-	collapseButton = nullptr;
+	resizeBorder = nullptr;
 }
 
 void ToolboxComponent::paint (Graphics& g)
@@ -90,15 +92,9 @@ void ToolboxComponent::paint (Graphics& g)
        drawing code..
     */
 
-    g.fillAll (Colours::teal);   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (Colours::lightblue);
-	g.setFont(14.0f);
-    g.drawText ("Toolbox", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
+    g.fillAll (Colour(0xFF3F3F46));   // clear the background
+										 // draw an outline around the component
+										  // draw some placeholder text
 }
 
 void ToolboxComponent::resized()
@@ -107,28 +103,8 @@ void ToolboxComponent::resized()
     // components that your component contains..
 
 	Rectangle<int> r(getLocalBounds());
-	Rectangle<int> listBounds = r.withTrimmedRight(20);
-	Rectangle<int> buttonBounds(listBounds.getRight(), listBounds.getY(), 20, r.getHeight());
 	
-	moduleList->setBounds(listBounds);
-	collapseButton->setBounds(buttonBounds);
-	resizeBorder->setBounds(r);
+	moduleList->setBounds(r);
+	//resizeBorder->setBounds(r);
 }
 
-void ToolboxComponent::buttonClicked(Button* buttonThatWasClicked)
-{
-
-	if (buttonThatWasClicked == collapseButton)
-	{
-		open = collapseButton->getToggleState();
-
-		if (open)
-		{
-			Desktop::getInstance().getAnimator().animateComponent(this, getLocalBounds().withX(-(getWidth() - 20)), 1, 100, true, 1, 0.01);
-		}
-		else
-		{
-			Desktop::getInstance().getAnimator().animateComponent(this, getLocalBounds().withX(0), 1, 100, true, 1, 0.01);
-		}
-	}
-}

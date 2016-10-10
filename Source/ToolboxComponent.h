@@ -12,11 +12,12 @@
 #define TOOLBOXCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "CollapseButton.h"
 
 //==============================================================================
 /*
 */
-class ToolboxComponent    : public Component, public ButtonListener, public ListBoxModel
+class ToolboxComponent : public Component, public ListBoxModel
 {
 public:
 	struct ModulesListElement
@@ -31,17 +32,14 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-	void buttonClicked(Button* buttonThatWasClicked) override;
 
 	int getNumRows() override;
 	void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
 	var getDragSourceDescription(const SparseSet<int>& selectedrow) override;
 
-	bool open = false;
-
 private:
 	ScopedPointer<ListBox> moduleList;
-	ScopedPointer<ToggleButton> collapseButton;
+	ScopedPointer<CollapseButton> collapseButton;
 	ScopedPointer<ResizableBorderComponent> resizeBorder;
 
 	OwnedArray<ModulesListElement> modules;
