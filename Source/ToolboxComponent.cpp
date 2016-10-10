@@ -11,11 +11,46 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ToolboxComponent.h"
 
+int ToolboxComponent::getNumRows()
+{
+	return modules.size();
+}
+
+void ToolboxComponent::paintListBoxItem(int rowNumber, Graphics& g,
+	int width, int height, bool rowIsSelected)
+{
+	if (rowIsSelected)
+		g.fillAll(Colours::lightblue);
+
+	g.setColour(Colours::black);
+	g.setFont(height * 0.7f);
+
+	g.drawText((modules[rowNumber])->name,
+		5, 0, width, height,
+		Justification::centredLeft, true);
+}
+
+var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRows)
+{
+	// for our drag description, we'll just make a comma-separated list of the selected row
+	// numbers - this will be picked up by the drag target and displayed in its box.
+	StringArray rows;
+
+	for (int i = 0; i < selectedRows.size(); ++i)
+		rows.add(String(selectedRows[i] + 1));
+
+	return rows.joinIntoString(", ");
+}
+
 //==============================================================================
 ToolboxComponent::ToolboxComponent() : 
 	collapseButton(new ToggleButton()), 
 	moduleList(new ListBox("ModuleList", nullptr))
 {
+	modules.add(new ModulesListElement({ "Wave Generator", "waveGenerator.png", "WaveGeneratorProcessor" }));
+	modules.add(new ModulesListElement({ "IIR Filter", "filter.png", "FilterProcessor" }));
+	modules.add(new ModulesListElement({ "N-Channel Mixer", "mixer.png", "MixerProcessor" }));
+
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 	Rectangle<int> r(getLocalBounds());
@@ -24,10 +59,20 @@ ToolboxComponent::ToolboxComponent() :
 
 	addAndMakeVisible(moduleList);
 	moduleList->setBounds(listBounds);
+	moduleList->setModel(this);
+	moduleList->setMultipleSelectionEnabled(false);
 
 	addAndMakeVisible(collapseButton);
 	collapseButton->setBounds(buttonBounds);
 	collapseButton->addListener(this);
+
+	ComponentBoundsConstrainer* bounds = new ComponentBoundsConstrainer();
+	bounds->setMaximumWidth(400);
+	bounds->setMinimumWidth(150);
+	resizeBorder = new ResizableBorderComponent(this, bounds);
+	addAndMakeVisible(resizeBorder);
+	resizeBorder->setBorderThickness(BorderSize<int>(0,0,0,3));
+	resizeBorder->setBounds(r);
 }
 
 ToolboxComponent::~ToolboxComponent()
@@ -64,16 +109,14 @@ void ToolboxComponent::resized()
 	Rectangle<int> r(getLocalBounds());
 	Rectangle<int> listBounds = r.withTrimmedRight(20);
 	Rectangle<int> buttonBounds(listBounds.getRight(), listBounds.getY(), 20, r.getHeight());
-
-
+	
 	moduleList->setBounds(listBounds);
 	collapseButton->setBounds(buttonBounds);
+	resizeBorder->setBounds(r);
 }
 
 void ToolboxComponent::buttonClicked(Button* buttonThatWasClicked)
 {
-	//[UserbuttonClicked_Pre]
-	//[/UserbuttonClicked_Pre]
 
 	if (buttonThatWasClicked == collapseButton)
 	{
@@ -81,17 +124,11 @@ void ToolboxComponent::buttonClicked(Button* buttonThatWasClicked)
 
 		if (open)
 		{
-			Desktop::getInstance().getAnimator().animateComponent(this, getLocalBounds().withX(-180), 1, 100, true, 1, 0.01);
+			Desktop::getInstance().getAnimator().animateComponent(this, getLocalBounds().withX(-(getWidth() - 20)), 1, 100, true, 1, 0.01);
 		}
 		else
 		{
 			Desktop::getInstance().getAnimator().animateComponent(this, getLocalBounds().withX(0), 1, 100, true, 1, 0.01);
 		}
-
-		//[UserButtonCode_toggleButton] -- add your button handler code here..
-		//[/UserButtonCode_toggleButton]
 	}
-
-	//[UserbuttonClicked_Post]
-	//[/UserbuttonClicked_Post]
 }

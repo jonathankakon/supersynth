@@ -16,9 +16,16 @@
 //==============================================================================
 /*
 */
-class ToolboxComponent    : public Component, public ButtonListener
+class ToolboxComponent    : public Component, public ButtonListener, public ListBoxModel
 {
 public:
+	struct ModulesListElement
+	{
+		String name;
+		String iconPath;
+		String processorType;
+	};
+
     ToolboxComponent();
     ~ToolboxComponent();
 
@@ -26,11 +33,19 @@ public:
     void resized() override;
 	void buttonClicked(Button* buttonThatWasClicked) override;
 
+	int getNumRows() override;
+	void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
+	var getDragSourceDescription(const SparseSet<int>& selectedrow) override;
+
+	bool open = false;
+
 private:
 	ScopedPointer<ListBox> moduleList;
 	ScopedPointer<ToggleButton> collapseButton;
+	ScopedPointer<ResizableBorderComponent> resizeBorder;
 
-	bool open = false;
+	OwnedArray<ModulesListElement> modules;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToolboxComponent)
 };

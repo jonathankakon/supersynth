@@ -20,7 +20,8 @@
 //==============================================================================
 /**
 */
-class SupersynthAudioProcessorEditor  : public AudioProcessorEditor
+class SupersynthAudioProcessorEditor  : 
+	public AudioProcessorEditor
 {
 public:
     SupersynthAudioProcessorEditor (SupersynthAudioProcessor&);

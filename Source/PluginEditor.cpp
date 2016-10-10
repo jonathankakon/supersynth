@@ -46,7 +46,7 @@ void SupersynthAudioProcessorEditor::paint (Graphics& g)
 void SupersynthAudioProcessorEditor::resized()
 {
 	Rectangle<int> r(getLocalBounds());
-	toolbox->setBounds(r.withWidth(200));
+	toolbox->setBounds(r.withWidth(toolbox->getWidth()).withX(toolbox->getX()));
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
 }
