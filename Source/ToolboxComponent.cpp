@@ -11,6 +11,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ToolboxComponent.h"
 
+#include "PluginEditor.h"
+
 int ToolboxComponent::getNumRows()
 {
 	return modules.size();
@@ -38,22 +40,22 @@ var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRow
 {
 	// for our drag description, we'll just make a comma-separated list of the selected row
 	// numbers - this will be picked up by the drag target and displayed in its box.
-	StringArray rows;
-
-	for (int i = 0; i < selectedRows.size(); ++i)
-		rows.add(String(selectedRows[i] + 1));
-
-	return rows.joinIntoString(", ");
+	if (selectedRows.size() > 0)
+	{
+		return modules[selectedRows[0]]->processorType;
+	}
+	return 0;
 }
 
 //==============================================================================
 ToolboxComponent::ToolboxComponent() : 
-	collapseButton(new CollapseButton()), 
 	moduleList(new ListBox("ModuleList", nullptr))
 {
-	modules.add(new ModulesListElement({ "Wave Generator", "waveGenerator.png", "WaveGeneratorProcessor" }));
-	modules.add(new ModulesListElement({ "IIR Filter", "filter.png", "FilterProcessor" }));
-	modules.add(new ModulesListElement({ "N-Channel Mixer", "mixer.png", "MixerProcessor" }));
+	modules.add(new ModulesListElement({ "Wave Generator", "waveGenerator.png", 0 }));
+	modules.add(new ModulesListElement({ "IIR Filter", "filter.png", 1 }));
+	modules.add(new ModulesListElement({ "N-Channel Mixer", "mixer.png", 2 }));
+	modules.add(new ModulesListElement({ "Output Channel", "out.png", 3 }));
+	modules.add(new ModulesListElement({ "Midi Input", "midi.png", 4 }));
 
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.

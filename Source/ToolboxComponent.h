@@ -24,7 +24,7 @@ public:
 	{
 		String name;
 		String iconPath;
-		String processorType;
+		int processorType;
 	};
 
     ToolboxComponent();
@@ -39,7 +39,6 @@ public:
 
 private:
 	ScopedPointer<ListBox> moduleList;
-	ScopedPointer<CollapseButton> collapseButton;
 	ScopedPointer<ResizableBorderComponent> resizeBorder;
 
 	OwnedArray<ModulesListElement> modules;

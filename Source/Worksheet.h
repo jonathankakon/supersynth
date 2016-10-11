@@ -31,11 +31,14 @@ public:
 	void itemDragExit(const SourceDetails& sourceDetails) override;
 	void itemDropped(const SourceDetails& sourceDetails) override;
 
+	void addEditor(Component* editor);
+
 private:
 	bool somethingIsBeingDraggedOver;
+	Point<int> dropPosition;
 	String message;
 
-
+	OwnedArray<Component> editors;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Worksheet)
 };
 

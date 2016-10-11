@@ -18,7 +18,7 @@
 //==============================================================================
 /**
 */
-class SupersynthAudioProcessor  : public AudioProcessor
+class SupersynthAudioProcessor  : public AudioProcessorGraph
 {
 public:
     //==============================================================================

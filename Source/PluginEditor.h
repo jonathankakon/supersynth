@@ -25,16 +25,21 @@
 class SupersynthAudioProcessorEditor  : 
 	public AudioProcessorEditor,
 	public ButtonListener,
-	public DragAndDropContainer
+	public DragAndDropContainer,
+	public ComponentListener
 {
 public:
     SupersynthAudioProcessorEditor (SupersynthAudioProcessor&);
     ~SupersynthAudioProcessorEditor();
-
+	
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
 	void buttonClicked(Button* buttonThatWasClicked) override;
+	void componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized) override;
+
+	void setViewPortDragScrolling(bool allow);
+	void addAudioProcessor(int processorType);
 
 private:
     // This reference is provided as a quick way for your editor to

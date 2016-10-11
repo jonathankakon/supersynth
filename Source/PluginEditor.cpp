@@ -40,11 +40,14 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
 	viewport->setScrollOnDragEnabled(true);
 	viewport->setScrollBarsShown(true, true);
 	viewport->setViewedComponent(worksheet);
-	viewport->getHorizontalScrollBar()->setColour(ScrollBar::ColourIds::backgroundColourId, Colour(0xFFFFFFFF));
+
+	worksheet->addComponentListener(this);
 }
 
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
 {
+	collapseButton->removeListener(this);
+
 	toolbox = nullptr;
 	worksheet = nullptr;
 	viewport = nullptr;
@@ -68,9 +71,33 @@ void SupersynthAudioProcessorEditor::resized()
 	collapseButton->setBounds(r.withWidth(20).withX(toolsBounds.getRight()));
 	viewport->setBounds(r.withTrimmedLeft(toolsBounds.getWidth() + toolsBounds.getX() + 20));
 
+	if(viewport->getViewWidth() >= worksheet->getWidth())
+	{
+		worksheet->setSize(viewport->getViewWidth() + 100, worksheet->getHeight());
+	}
+
+	if (viewport->getViewHeight() >= worksheet->getHeight())
+	{
+		worksheet->setSize(worksheet->getWidth(), viewport->getViewHeight() + 100);
+	}
+
 
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+}
+
+void SupersynthAudioProcessorEditor::componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized)
+{
+	if (&component == worksheet && wasMoved && !wasResized)
+	{
+		if (viewport->getWidth() + viewport->getViewPositionX() >= worksheet->getWidth() - 30)
+			worksheet->setSize(worksheet->getWidth() + 50, worksheet->getHeight());
+		
+		if (viewport->getHeight() + viewport->getViewPositionY() >= worksheet->getHeight() - 30)
+			worksheet->setSize(worksheet->getWidth(), worksheet->getHeight() + 50);
+
+		worksheet->repaint();
+	}
 }
 
 
@@ -94,5 +121,20 @@ void SupersynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 			Desktop::getInstance().getAnimator().animateComponent(collapseButton, collapseButton->getBounds().withX(newToolboxBounds.getRight()), 1, 100, true, 1, 0.01);
 			Desktop::getInstance().getAnimator().animateComponent(viewport, viewport->getBounds().withX(newToolboxBounds.getRight() + 20).withRight(this->getRight()), 1, 100, true, 1, 0.01);
 		}
+	}
+}
+
+void SupersynthAudioProcessorEditor::setViewPortDragScrolling(bool allow)
+{
+	viewport->setScrollOnDragEnabled(allow);
+}
+
+void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
+{
+	if (processorType == 0)
+	{
+		WaveGeneratorProcessor* wave = new WaveGeneratorProcessor();
+		processor.addNode(wave);
+		worksheet->addEditor(wave->createEditor());
 	}
 }

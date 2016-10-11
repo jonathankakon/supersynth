@@ -10,6 +10,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Worksheet.h"
+#include "ToolboxComponent.h"
+
+#include "PluginEditor.h"
 
 //==============================================================================
 Worksheet::Worksheet()
@@ -63,34 +66,71 @@ void Worksheet::resized()
 
 }
 
-bool Worksheet::isInterestedInDragSource(const SourceDetails& /*dragSourceDetails*/)
+bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
-	// normally you'd check the sourceDescription value to see if it's the
-	// sort of object that you're interested in before returning true, but for
-	// the demo, we'll say yes to anything..
-	return true;
+	if (dragSourceDetails.description.isInt())
+	{
+		return true;
+	}
+	return false;
 }
 
-void Worksheet::itemDragEnter(const SourceDetails& /*dragSourceDetails*/)
+void Worksheet::itemDragEnter(const SourceDetails& dragSourceDetails)
 {
 	somethingIsBeingDraggedOver = true;
+	beginDragAutoRepeat(100);
 	repaint();
 }
 
-void Worksheet::itemDragMove(const SourceDetails& /*dragSourceDetails*/)
-{
+void Worksheet::itemDragMove(const SourceDetails& dragSourceDetails)
+{	
+	Viewport* const viewport = findParentComponentOfClass<Viewport>(); //Get the parent viewport
+	if (viewport != nullptr) //Check for nullness
+	{
+		int x = viewport->getViewPositionX();
+		int y = viewport->getViewPositionY();
+
+		int relativeX = dragSourceDetails.localPosition.getX() - x;
+		int relativeY = dragSourceDetails.localPosition.getY() - y;
+
+		viewport->autoScroll(relativeX, relativeY, 50, 7);																																		  // ... based on the displayed area, paint just what's visible ... //
+	}
 }
 
 void Worksheet::itemDragExit(const SourceDetails& /*dragSourceDetails*/)
 {
 	somethingIsBeingDraggedOver = false;
+	beginDragAutoRepeat(0);
 	repaint();
 }
 
 void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 {
+	dropPosition = dragSourceDetails.localPosition;
+	
+	/*DBG("dropped");
+	if((int)dragSourceDetails.description == 0)
+	{
+		ScopedPointer<AudioProcessor> proc = new WaveGeneratorProcessor();
+		processors.add(&proc);
+		ScopedPointer<AudioProcessorEditor> editor = proc->createEditor();
+		editors.add(&editor);
+		addAndMakeVisible(editor);
+		editor->setBounds(Rectangle<int>(dragSourceDetails.localPosition.getX() + editor->getWidth()/2, dragSourceDetails.localPosition.getY() + editor->getHeight()/2, editor->getWidth(), editor->getHeight()));
+	}*/
+
+	findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(dragSourceDetails.description);
+
 	message = "Items dropped: " + dragSourceDetails.description.toString();
 
 	somethingIsBeingDraggedOver = false;
+	beginDragAutoRepeat(0);
 	repaint();
+}
+
+void Worksheet::addEditor(Component* editor)
+{
+	editors.add(editor);
+	addAndMakeVisible(editor);
+	editor->setBounds(Rectangle<int>(dropPosition.getX() - editor->getWidth() / 2, dropPosition.getY() - editor->getHeight() / 2, editor->getWidth(), editor->getHeight()));
 }
