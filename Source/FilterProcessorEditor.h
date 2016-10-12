@@ -13,8 +13,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FilterProcessor.h"
+#include "ProcessorEditorBase.h"
 
-class FilterProcessorEditor  : public AudioProcessorEditor
+class FilterProcessorEditor  : public ProcessorEditorBase
 {
 public:
   FilterProcessorEditor (FilterProcessor&);

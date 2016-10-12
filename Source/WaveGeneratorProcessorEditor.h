@@ -13,12 +13,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "WaveGeneratorProcessor.h"
+#include "ProcessorEditorBase.h"
 
 
 //==============================================================================
 /**
  */
-class WaveGeneratorProcessorEditor  : public AudioProcessorEditor, Slider::Listener
+class WaveGeneratorProcessorEditor  : public ProcessorEditorBase, Slider::Listener, MouseListener
 {
 public:
   WaveGeneratorProcessorEditor (WaveGeneratorProcessor&);
