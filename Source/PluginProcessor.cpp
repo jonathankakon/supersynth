@@ -79,6 +79,8 @@ void SupersynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+  
+  waveGenerator.prepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void SupersynthAudioProcessor::releaseResources()
@@ -125,6 +127,12 @@ void SupersynthAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     // this code if your algorithm always overwrites all the output channels.
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+  
+  waveGenerator.processBlock(buffer, midiMessages);
+  waveGenerator.setFrequency(700);
+  waveGenerator.setWaveform(WaveGeneratorProcessor::waveform::square);
+  
+  
 }
 
 //==============================================================================

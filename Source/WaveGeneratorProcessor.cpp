@@ -60,6 +60,12 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     {
       buffer.setSample(0, sampleIndex, sin(currentPhase));
       buffer.setSample(1, sampleIndex, sin(currentPhase));
+      
+      currentPhase += phaseIncrement;
+      if(currentPhase > 2 * double_Pi)
+      {
+        currentPhase -= 2 * double_Pi;
+      }
     }
   }
   else if(currentWaveform == saw)
@@ -68,22 +74,29 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     {
       buffer.setSample(0, sampleIndex, currentPhase/double_Pi - 1.0);
       buffer.setSample(1, sampleIndex, currentPhase/double_Pi - 1.0);
+      
+      currentPhase += phaseIncrement;
+      if(currentPhase > 2 * double_Pi)
+      {
+        currentPhase -= 2 * double_Pi;
+      }
     }
   }
   else //waveform == square
   {
     for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
     {
-      buffer.setSample(0, sampleIndex, 2 * (currentPhase && 0x8000000000000000) - 1); //extract sign bit and map to +-1
-      buffer.setSample(1, sampleIndex, 2 * (currentPhase && 0x8000000000000000) - 1);
+      buffer.setSample(0, sampleIndex, ((currentPhase && 0x8000000000000000)>>62) - 1); //extract sign bit and map to +-1
+      buffer.setSample(1, sampleIndex, ((currentPhase && 0x8000000000000000)>>62) - 1);
+      
+      currentPhase += phaseIncrement;
+      if(currentPhase > 2 * double_Pi)
+      {
+        currentPhase -= 2 * double_Pi;
+      }
     }
   }
-    
-  currentPhase += phaseIncrement;
-  if(currentPhase > 2 * double_Pi)
-  {
-    currentPhase -= 2 * double_Pi;
-  }
+  
 }// End processBlock
 
 AudioProcessorEditor* WaveGeneratorProcessor::createEditor()
@@ -99,7 +112,7 @@ bool WaveGeneratorProcessor::hasEditor() const
 
 bool WaveGeneratorProcessor::supportsDoublePrecisionProcessing() const
 {
-  return true;
+  return false;
 }
 
 const String WaveGeneratorProcessor::getName() const
