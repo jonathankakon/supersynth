@@ -72,6 +72,7 @@ public:
   };
   
   void setWaveform(waveform newWaveform);
+  
 
 private:
   
