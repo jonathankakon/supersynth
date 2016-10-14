@@ -58,8 +58,8 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   {
     for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
     {
-      buffer.setSample(0, sampleIndex, sin(currentPhase));
-      buffer.setSample(1, sampleIndex, sin(currentPhase));
+      buffer.setSample(0, sampleIndex, sin(currentPhase) * (*currentVolume) );
+      buffer.setSample(1, sampleIndex, sin(currentPhase) * (*currentVolume) );
       
       currentPhase += phaseIncrement;
       if(currentPhase > 2 * double_Pi)
@@ -72,8 +72,8 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   {
     for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
     {
-      buffer.setSample(0, sampleIndex, currentPhase/double_Pi - 1.0);
-      buffer.setSample(1, sampleIndex, currentPhase/double_Pi - 1.0);
+      buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) * (*currentVolume) );
+      buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) * (*currentVolume) );
       
       currentPhase += phaseIncrement;
       if(currentPhase > 2 * double_Pi)
@@ -88,11 +88,11 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     {
       if(currentPhase > double_Pi)
       {
-        buffer.setSample(0, sampleIndex, 1);
+        buffer.setSample(0, sampleIndex, 1 * (*currentVolume));
       }
       else
       {
-        buffer.setSample(1, sampleIndex, -1);
+        buffer.setSample(1, sampleIndex, -1 * (*currentVolume));
       }
       
       currentPhase += phaseIncrement;
@@ -174,17 +174,6 @@ void WaveGeneratorProcessor::getStateInformation(MemoryBlock& destData)
 void WaveGeneratorProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
   ;
-}
-
-void WaveGeneratorProcessor::setFrequency(float newFrequency)
-{
-  *currentFrequency = newFrequency;
-  phaseIncrement = (*currentFrequency/currentSampleRate) * 2 * double_Pi;
-}
-
-float WaveGeneratorProcessor::getFrequency()
-{
-  return *currentFrequency;
 }
 
 void WaveGeneratorProcessor::setWaveform(waveform newWaveform)

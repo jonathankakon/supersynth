@@ -61,9 +61,6 @@ public:
   
   //==============================================================================
   
-  void setFrequency(float newFrequency);
-  float getFrequency();
-  
   enum waveform
   {
     sine,
