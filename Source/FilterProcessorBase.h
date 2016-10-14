@@ -1,11 +1,18 @@
 /*
   ==============================================================================
 
-    FilterProcessor.cpp
-    Created: 7 Oct 2016 2:45:47pm
+    FilterProcessorBase.h
+    Created: 14 Oct 2016 3:57:59pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#include "FilterProcessor.h"
+#ifndef FILTERPROCESSORBASE_H_INCLUDED
+#define FILTERPROCESSORBASE_H_INCLUDED
+
+
+
+
+
+#endif  // FILTERPROCESSORBASE_H_INCLUDED
