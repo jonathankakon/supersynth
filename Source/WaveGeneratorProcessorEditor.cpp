@@ -20,10 +20,15 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   // editor's size to whatever you need it to be.
   setSize (200, 100);
   
+  
+  
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[0]);
   const AudioParameterFloat* volumeParam = dynamic_cast<AudioParameterFloat*>(params[1]);
+  
+  frequencySlider = new Slider(frequencyParam->name);
+  volumeSlider = new Slider(volumeParam->name);
   
   frequencySlider->setRange(frequencyParam->range.start, frequencyParam->range.end);
   volumeSlider->setRange(volumeParam->range.start, volumeParam->range.end);
@@ -58,11 +63,11 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   g.fillAll (Colours::lightgreen);
   g.setColour (Colours::black);
   g.setFont (15.0f);
-  g.drawFittedText ("Wave Generator!", Rectangle<int>(200,10), Justification::centred, 1);
+  g.drawFittedText ("Wave Generator!", Rectangle<int>(200,15), Justification::centred, 1);
   
   
-  volumeSlider->setBounds(10, 80, 40, 40);
-  frequencySlider->setBounds(60, 90, 120, 20);
+  volumeSlider->setBounds(10, 40, 40, 40);
+  frequencySlider->setBounds(60, 40, 120, 20);
   
 }
 
