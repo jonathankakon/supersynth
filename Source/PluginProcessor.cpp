@@ -81,6 +81,7 @@ void SupersynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // initialisation that you need..
   
   waveGenerator.prepareToPlay(sampleRate, samplesPerBlock);
+  waveGenerator.setFrequency(700);
 }
 
 void SupersynthAudioProcessor::releaseResources()
@@ -129,8 +130,7 @@ void SupersynthAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
         buffer.clear (i, 0, buffer.getNumSamples());
   
   waveGenerator.processBlock(buffer, midiMessages);
-  waveGenerator.setFrequency(700);
-  waveGenerator.setWaveform(WaveGeneratorProcessor::waveform::square);
+
   
   
 }

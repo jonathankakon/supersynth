@@ -86,8 +86,14 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   {
     for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
     {
-      buffer.setSample(0, sampleIndex, ((currentPhase && 0x8000000000000000)>>62) - 1); //extract sign bit and map to +-1
-      buffer.setSample(1, sampleIndex, ((currentPhase && 0x8000000000000000)>>62) - 1);
+      if(currentPhase > double_Pi)
+      {
+        buffer.setSample(0, sampleIndex, 1);
+      }
+      else
+      {
+        buffer.setSample(1, sampleIndex, -1);
+      }
       
       currentPhase += phaseIncrement;
       if(currentPhase > 2 * double_Pi)
