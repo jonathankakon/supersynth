@@ -13,9 +13,9 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
-          <FILE id="dWi7Xg" name="FilterProcessorEditor.cpp" compile="1" resource="0"
+          <FILE id="Vn2wfR" name="FilterProcessorEditor.cpp" compile="1" resource="0"
                 file="Source/FilterProcessorEditor.cpp"/>
-          <FILE id="JHwrs8" name="FilterProcessorEditor.h" compile="0" resource="0"
+          <FILE id="cESYm8" name="FilterProcessorEditor.h" compile="0" resource="0"
                 file="Source/FilterProcessorEditor.h"/>
           <FILE id="Ueg5Hu" name="ProcessorEditorBase.cpp" compile="1" resource="0"
                 file="Source/ProcessorEditorBase.cpp"/>
@@ -43,6 +43,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="Fu011w" name="FilterProcessorBase.cpp" compile="1" resource="0"
+              file="Source/FilterProcessorBase.cpp"/>
+        <FILE id="ARxWBP" name="FilterProcessorBase.h" compile="0" resource="0"
+              file="Source/FilterProcessorBase.h"/>
         <FILE id="PWD6oj" name="WaveGeneratorProcessor.cpp" compile="1" resource="0"
               file="Source/WaveGeneratorProcessor.cpp"/>
         <FILE id="urxykd" name="WaveGeneratorProcessor.h" compile="0" resource="0"
@@ -51,10 +55,6 @@
               file="Source/PluginProcessor.cpp"/>
         <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
               file="Source/PluginProcessor.h"/>
-        <FILE id="Ui5sI1" name="FilterProcessor.cpp" compile="1" resource="0"
-              file="Source/FilterProcessor.cpp"/>
-        <FILE id="mZZEFf" name="FilterProcessor.h" compile="0" resource="0"
-              file="Source/FilterProcessor.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
