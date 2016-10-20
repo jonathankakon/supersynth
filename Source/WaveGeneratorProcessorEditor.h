@@ -38,6 +38,7 @@ private:
   
   Slider* frequencySlider;
   Slider* volumeSlider;
+  ComboBox* waveformBox;
   
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)
