@@ -25,25 +25,24 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[0]);
-  const AudioParameterFloat* volumeParam = dynamic_cast<AudioParameterFloat*>(params[1]);
-  
   frequencySlider = new Slider(frequencyParam->name);
-  volumeSlider = new Slider(volumeParam->name);
-  
   frequencySlider->setRange(frequencyParam->range.start, frequencyParam->range.end);
-  volumeSlider->setRange(volumeParam->range.start, volumeParam->range.end);
-  
   frequencySlider->setSliderStyle(Slider::LinearHorizontal);
-  volumeSlider->setSliderStyle(Slider::RotaryVerticalDrag);
-  
+  frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
-  volumeSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(volumeParam)->getValue());
-  
   frequencySlider->addListener(this);
-  volumeSlider->addListener(this);
-  
   addAndMakeVisible(frequencySlider);
+  
+  const AudioParameterFloat* volumeParam = dynamic_cast<AudioParameterFloat*>(params[1]);
+  volumeSlider = new Slider(volumeParam->name);
+  volumeSlider->setRange(volumeParam->range.start, volumeParam->range.end);
+  volumeSlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  volumeSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+  volumeSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(volumeParam)->getValue());
+  volumeSlider->addListener(this);
   addAndMakeVisible(volumeSlider);
+  
+  
   
   
   //label

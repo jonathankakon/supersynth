@@ -1,35 +1,34 @@
 /*
   ==============================================================================
 
-    WaveGeneratorProcessor.h
-    Created: 7 Oct 2016 3:42:56pm
+    FilterProcessor.h
+    Created: 20 Oct 2016 4:38:12pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#ifndef WAVEGENERATORPROCESSOR_H_INCLUDED
-#define WAVEGENERATORPROCESSOR_H_INCLUDED
+#ifndef FILTERPROCESSOR_H_INCLUDED
+#define FILTERPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "VAOscillator.h"
+#include "IIRFilter.h"
+#include "FilterProcessorEditor.h"
 
-class WaveGeneratorProcessor: public AudioProcessor
+class FilterProcessor: public AudioProcessor
 {
 public:
   //==============================================================================
-  WaveGeneratorProcessor();
-  ~WaveGeneratorProcessor();
+  FilterProcessor();
+  ~FilterProcessor();
   
   //==============================================================================
   void prepareToPlay (double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
- 
-  /*
+  
 #ifndef JucePlugin_PreferredChannelConfigurations
   bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
 #endif
-  */
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   
@@ -37,10 +36,6 @@ public:
   AudioProcessorEditor* createEditor() override;
   bool hasEditor() const override;
   
-  //==============================================================================
-  
-  bool supportsDoublePrecisionProcessing() const override;
-
   //==============================================================================
   const String getName() const override;
   
@@ -60,35 +55,11 @@ public:
   void setStateInformation (const void* data, int sizeInBytes) override;
   
   
-  //==============================================================================
-  
-  enum waveform
-  {
-    sine,
-    saw,
-    square
-  };
-  
-  void setWaveform(waveform newWaveform);
-  
-
 private:
-  
-  AudioParameterFloat* currentFrequency;
-  AudioParameterFloat* currentVolume;
-  AudioParameterChoice* currentWaveformParam;
-  
-  double currentSampleRate;
-  
-  double currentPhase; //goes from 0 to 2*pi
-  double phaseIncrement;
-  
-  waveform currentWaveform;
-  
   //==============================================================================
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessor)
+
 };
 
 
-
-#endif  // WAVEGENERATORPROCESSOR_H_INCLUDED
+#endif  // FILTERPROCESSOR_H_INCLUDED

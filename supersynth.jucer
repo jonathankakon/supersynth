@@ -43,6 +43,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="kaiozE" name="FilterProcessor.cpp" compile="1" resource="0"
+              file="Source/FilterProcessor.cpp"/>
+        <FILE id="jucMtv" name="FilterProcessor.h" compile="0" resource="0"
+              file="Source/FilterProcessor.h"/>
         <FILE id="Fu011w" name="FilterProcessorBase.cpp" compile="1" resource="0"
               file="Source/FilterProcessorBase.cpp"/>
         <FILE id="ARxWBP" name="FilterProcessorBase.h" compile="0" resource="0"
@@ -56,6 +60,11 @@
         <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
               file="Source/PluginProcessor.h"/>
       </GROUP>
+      <FILE id="E22bAe" name="IIRFilter.cpp" compile="1" resource="0" file="Source/IIRFilter.cpp"/>
+      <FILE id="ckzXg3" name="IIRFilter.h" compile="0" resource="0" file="Source/IIRFilter.h"/>
+      <FILE id="k7fQze" name="VAOscillator.cpp" compile="1" resource="0"
+            file="Source/VAOscillator.cpp"/>
+      <FILE id="zLJVya" name="VAOscillator.h" compile="0" resource="0" file="Source/VAOscillator.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
