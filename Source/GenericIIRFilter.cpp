@@ -58,10 +58,28 @@ void GenericIIRFilter::updateSecondOrderCoefficients()
 
 void GenericIIRFilter::firstOrderLowPass(AudioBuffer<float>& buffer)
 {
-
+  AudioBuffer<float> *filtered = new AudioBuffer<float>(buffer);
+  filtered->makeCopyOf(buffer);
+  GenericIIRFilter::firstOrderAllPass(*filtered);
+  
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    buffer.setSample(0, sampleIndex, 0.5 * (buffer.getSample(0, sampleIndex) + filtered->getSample(0, sampleIndex)));
+  }
 }
 
 
+void GenericIIRFilter::firstOrderHighPass(AudioBuffer<float>& buffer)
+{
+  AudioBuffer<float> *filtered = new AudioBuffer<float>(buffer);
+  filtered->makeCopyOf(buffer);
+  GenericIIRFilter::firstOrderAllPass(*filtered);
+  
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    buffer.setSample(0, sampleIndex, 0.5 * (buffer.getSample(0, sampleIndex) - filtered->getSample(0, sampleIndex)));
+  }
+}
 
 
 
