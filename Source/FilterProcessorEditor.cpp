@@ -8,12 +8,11 @@
   ==============================================================================
 */
 
-#include "FilterProcessorBase.h"
 #include "FilterProcessorEditor.h"
 
 
 //==============================================================================
-FilterProcessorEditor::FilterProcessorEditor (FilterProcessorBase& p)
+FilterProcessorEditor::FilterProcessorEditor (FilterProcessor& p)
 : ProcessorEditorBase (&p), processor (p)
 {
   // Make sure that before the constructor has finished, you've set the

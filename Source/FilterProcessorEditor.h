@@ -12,13 +12,14 @@
 #define FILTERPROCESSOREDITOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "FilterProcessorBase.h"
+#include "FilterProcessor.h"
 #include "ProcessorEditorBase.h"
+
 
 class FilterProcessorEditor  : public ProcessorEditorBase
 {
 public:
-  FilterProcessorEditor (FilterProcessorBase&);
+  FilterProcessorEditor (FilterProcessor&);
   ~FilterProcessorEditor();
   //==============================================================================
   
@@ -28,7 +29,7 @@ public:
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
-  FilterProcessorBase& processor;
+  FilterProcessor& processor;
   
   
   

@@ -9,6 +9,7 @@
 */
 
 #include "FilterProcessor.h"
+#include "FilterProcessorEditor.h"
 
 void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 {
@@ -27,7 +28,7 @@ void FilterProcessor::processBlock(AudioSampleBuffer &, juce::MidiBuffer &)
 
 AudioProcessorEditor* FilterProcessor::createEditor()
 {
-  //return new //processorEditor
+  return new FilterProcessorEditor(* this);
 }
 
 bool FilterProcessor::hasEditor() const
