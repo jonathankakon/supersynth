@@ -60,8 +60,10 @@
         <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
               file="Source/PluginProcessor.h"/>
       </GROUP>
-      <FILE id="E22bAe" name="IIRFilter.cpp" compile="1" resource="0" file="Source/IIRFilter.cpp"/>
-      <FILE id="ckzXg3" name="IIRFilter.h" compile="0" resource="0" file="Source/IIRFilter.h"/>
+      <FILE id="E22bAe" name="GenericIIRFilter.cpp" compile="1" resource="0"
+            file="Source/GenericIIRFilter.cpp"/>
+      <FILE id="ckzXg3" name="GenericIIRFilter.h" compile="0" resource="0"
+            file="Source/GenericIIRFilter.h"/>
       <FILE id="k7fQze" name="VAOscillator.cpp" compile="1" resource="0"
             file="Source/VAOscillator.cpp"/>
       <FILE id="zLJVya" name="VAOscillator.h" compile="0" resource="0" file="Source/VAOscillator.h"/>
