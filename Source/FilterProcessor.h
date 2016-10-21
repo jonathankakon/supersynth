@@ -12,7 +12,7 @@
 #define FILTERPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "IIRFilter.h"
+#include "GenericIIRFilter.h"
 
 class FilterProcessor: public AudioProcessor
 {

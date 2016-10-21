@@ -33,7 +33,7 @@ void OutputProcessor::processBlock(AudioSampleBuffer &, juce::MidiBuffer &)
 
 AudioProcessorEditor* OutputProcessor::createEditor()
 {
-  return new OutputProcessorEditor(*this);
+  return new GenericAudioProcessorEditor(this);
 }
 
 bool OutputProcessor::hasEditor() const
