@@ -1,11 +1,11 @@
 /*
   ==============================================================================
 
-    IIRFilter.cpp
-    Created: 19 Oct 2016 6:52:26pm
+    OutputProcessorEditor.cpp
+    Created: 21 Oct 2016 3:43:21pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#include "IIRFilter.h"
+#include "OutputProcessorEditor.h"

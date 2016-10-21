@@ -20,16 +20,14 @@ WaveGeneratorProcessor::WaveGeneratorProcessor()
   addParameter(currentFrequency = new AudioParameterFloat("currentFrequency",
                                                           "Frequency",
                                                           frequencyRange,
-                                                          440.0));
+                                                          220.0));
   
   addParameter(currentVolume = new AudioParameterFloat("volume",
                                                        "Volume",
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.5));
   
-  currentWaveform = saw;
-  currentPhase = 0;
-  phaseIncrement = 0;
+  currentWaveform = square;
   
 }
 
@@ -42,9 +40,11 @@ void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
   
   currentSampleRate = sampleRate;
-  phaseIncrement = (*currentFrequency/currentSampleRate) * 2 * double_Pi;
   
   getProcessingPrecision();
+  
+  oscillator.setSampleRate(sampleRate);
+  oscillator.setFrequency(*currentFrequency);
 }
 
 void WaveGeneratorProcessor::releaseResources()
@@ -56,51 +56,15 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 {
   if(currentWaveform == sine)
   {
-    for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
-    {
-      buffer.setSample(0, sampleIndex, sin(currentPhase) * (*currentVolume) );
-      buffer.setSample(1, sampleIndex, sin(currentPhase) * (*currentVolume) );
-      
-      currentPhase += phaseIncrement;
-      if(currentPhase > 2 * double_Pi)
-      {
-        currentPhase -= 2 * double_Pi;
-      }
-    }
+    oscillator.fillBufferSine(buffer);
   }
   else if(currentWaveform == saw)
   {
-    for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
-    {
-      buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) * (*currentVolume) );
-      buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) * (*currentVolume) );
-      
-      currentPhase += phaseIncrement;
-      if(currentPhase > 2 * double_Pi)
-      {
-        currentPhase -= 2 * double_Pi;
-      }
-    }
+    oscillator.fillBufferRisingSaw(buffer);
   }
   else //waveform == square
   {
-    for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
-    {
-      if(currentPhase > double_Pi)
-      {
-        buffer.setSample(0, sampleIndex, 1 * (*currentVolume));
-      }
-      else
-      {
-        buffer.setSample(1, sampleIndex, -1 * (*currentVolume));
-      }
-      
-      currentPhase += phaseIncrement;
-      if(currentPhase > 2 * double_Pi)
-      {
-        currentPhase -= 2 * double_Pi;
-      }
-    }
+    oscillator.fillBufferSquarePulse(buffer);
   }
   
 }// End processBlock
