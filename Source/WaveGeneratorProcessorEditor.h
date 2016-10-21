@@ -36,9 +36,9 @@ private:
   // access the processor object that created it.
   WaveGeneratorProcessor& processor;
   
-  Slider* frequencySlider;
-  Slider* volumeSlider;
-  ComboBox* waveformBox;
+  ScopedPointer<Slider> frequencySlider;
+  ScopedPointer<Slider> volumeSlider;
+  ScopedPointer<ComboBox> waveformBox;
   
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)

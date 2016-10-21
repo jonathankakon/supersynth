@@ -13,7 +13,7 @@
 
 //==============================================================================
 FilterProcessorEditor::FilterProcessorEditor (FilterProcessor& p)
-: ProcessorEditorBase (&p), processor (p)
+: ProcessorEditorBase (&p, true, true, false), processor (p)
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.

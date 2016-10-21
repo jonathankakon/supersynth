@@ -31,6 +31,14 @@
                 file="Source/CollapseButton.cpp"/>
           <FILE id="jmtsbd" name="CollapseButton.h" compile="0" resource="0"
                 file="Source/CollapseButton.h"/>
+          <FILE id="X7Vn6V" name="InputConnector.cpp" compile="1" resource="0"
+                file="Source/InputConnector.cpp"/>
+          <FILE id="wWX2vA" name="InputConnector.h" compile="0" resource="0"
+                file="Source/InputConnector.h"/>
+          <FILE id="Sl37M4" name="OutputConnector.cpp" compile="1" resource="0"
+                file="Source/OutputConnector.cpp"/>
+          <FILE id="i6ZkyO" name="OutputConnector.h" compile="0" resource="0"
+                file="Source/OutputConnector.h"/>
           <FILE id="lAK43m" name="ToolboxComponent.cpp" compile="1" resource="0"
                 file="Source/ToolboxComponent.cpp"/>
           <FILE id="WHA7ra" name="ToolboxComponent.h" compile="0" resource="0"
