@@ -21,21 +21,42 @@ class VAOscillator
 {
 public:
   
+  VAOscillator();
+  VAOscillator(double sampleRate);
   
-  void fillBufferSaw(AudioBuffer<float> buffer);
-  void fillBufferSine(AudioBuffer<float> buffer);
-  void fillBufferSquarePulse(AudioBuffer<float> buffer);
-  void fillBufferTriangle(AudioBuffer<float> buffer);
+  void fillBufferSine(AudioBuffer<float>& buffer);
+  void fillBufferRisingSaw(AudioBuffer<float>& buffer);
+  void fillBufferFallingSaw(AudioBuffer<float>& buffer);
+  void fillBufferSquarePulse(AudioBuffer<float>& buffer);
+  void fillBufferTriangle(AudioBuffer<float>& buffer);
+  
+  double getSampleRate();
+  void setSampleRate(double newSampleRate);
+  
+  double getFrequency();
+  void setFrequency(double newFrequency);
   
 private:
   
-  void fillBufferNonLimitedSaw(AudioBuffer<float> buffer);
-  void fillBufferNonLimitedSquare(AudioBuffer<float> buffer);
-  void fillBufferNonLimitedTriangle(AudioBuffer<float> buffer);
+  // naive not bandlimited waveforms
+  void fillBufferNonLimitedRisingSaw(AudioBuffer<float>& buffer);
+  void fillBufferNonLimitedFallingSaw(AudioBuffer<float>& buffer);
+  void fillBufferNonLimitedSquare(AudioBuffer<float>& buffer);
+  void fillBufferNonLimitedTriangle(AudioBuffer<float>& buffer);
   
-  void mixInBlitResidualSaw(AudioBuffer<float> nonLimitedBuffer);
-  void mixInBlitResidualSquare(AudioBuffer<float> nonLimitedBuffer);
-  void mixInBlitResidualTriangle(AudioBuffer<float> nonLimitedBuffer);
+  //Bandlimit the naive waveforms
+  void mixInBlitResidualRisingSaw(AudioBuffer<float>& nonLimitedBuffer);
+  void mixInBlitResidualFallingSaw(AudioBuffer<float>& nonLimitedBuffer);
+  void mixInBlitResidualSquare(AudioBuffer<float>& nonLimitedBuffer);
+  void mixInBlitResidualTriangle(AudioBuffer<float>& nonLimitedBuffer);
+  
+  double currentSampleRate;
+  double currentFrequency;
+  double currentPhase;
+  double phaseInc;
+  double phaseOffset; // only for midi stuff. this determins the starting point of the wave when noteOn happens.
+  
+  void updatePhaseInc();
   
   
   //==============================================================================
