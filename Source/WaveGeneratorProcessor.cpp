@@ -12,22 +12,26 @@
 #include "WaveGeneratorProcessorEditor.h"
 
 
-WaveGeneratorProcessor::WaveGeneratorProcessor()
+WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
+    .withInput("FrequencyControl", AudioChannelSet::mono())
+    .withInput("VolumeControl", AudioChannelSet::mono())
+    .withOutput("Audio", AudioChannelSet::mono()))
 {
-  NormalisableRange<float> frequencyRange (100.0f,10000.0f);
-  frequencyRange.skew = 0.2;
+  NormalisableRange<float> frequencyRange (50.0f,20000.0f,0.1, 0.001);
   
   addParameter(currentFrequency = new AudioParameterFloat("currentFrequency",
                                                           "Frequency",
                                                           frequencyRange,
-                                                          220.0));
+                                                          48000.0/128.0));
   
   addParameter(currentVolume = new AudioParameterFloat("volume",
                                                        "Volume",
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.5));
+
+  addListener(this);
   
-  currentWaveform = square;
+  currentWaveform = sine;
   
 }
 
@@ -44,12 +48,20 @@ void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
   getProcessingPrecision();
   
   oscillator.setSampleRate(sampleRate);
-  oscillator.setFrequency(*currentFrequency);
+  oscillator.setFrequency(currentFrequency);
 }
 
 void WaveGeneratorProcessor::releaseResources()
 {
-  ;
+}
+
+void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
+{
+  if (parameterIndex == 0)
+  {
+    DBG("newValue: " << newValue);
+    oscillator.setFrequency(newValue);
+  }
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0

@@ -34,7 +34,8 @@ public:
   void setSampleRate(double newSampleRate);
   
   double getFrequency();
-  void setFrequency(double newFrequency);
+  void setFrequency(AudioParameterFloat* newFrequency);
+  void VAOscillator::setFrequency(double newFrequency);
   
 private:
   
