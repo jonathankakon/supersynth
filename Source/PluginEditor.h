@@ -18,6 +18,9 @@
 #include "Worksheet.h"
 #include "CollapseButton.h"
 
+#include "WaveGeneratorProcessor.h"
+#include "FilterProcessor.h"
+
 
 //==============================================================================
 /**
@@ -48,7 +51,7 @@ private:
 	ScopedPointer<CollapseButton> collapseButton;
 	ScopedPointer<Viewport> viewport;
 	ScopedPointer<Worksheet> worksheet;
-    SupersynthAudioProcessor& processor;
+  SupersynthAudioProcessor& processor;
 
 	bool open = false;
 

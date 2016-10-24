@@ -14,7 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "VAOscillator.h"
 
-class WaveGeneratorProcessor: public AudioProcessor
+class WaveGeneratorProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
@@ -30,6 +30,9 @@ public:
   bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
 #endif
   */
+
+  void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
+  void audioProcessorChanged(AudioProcessor *processor) override { return; }
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   

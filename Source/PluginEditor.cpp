@@ -131,10 +131,23 @@ void SupersynthAudioProcessorEditor::setViewPortDragScrolling(bool allow)
 
 void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
 {
+  if (processor.getNodeForId(0) == nullptr)
+  {
+    processor.addNode(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), 0);
+  }
+
 	if (processorType == 0)
 	{
 		WaveGeneratorProcessor* wave = new WaveGeneratorProcessor();
-		processor.addNode(wave);
+		AudioProcessorGraph::Node* generator = processor.addNode(wave);
+    processor.addConnection(generator->nodeId, 0, 0, 0);
+    processor.addConnection(generator->nodeId, 0, 0, 1);
 		worksheet->addEditor(wave->createEditor());
 	}
+  else if (processorType == 1)
+  {
+    FilterProcessor* filter = new FilterProcessor();
+    AudioProcessorGraph::Node* generator = processor.addNode(filter);
+    worksheet->addEditor(filter->createEditor());
+  }
 }
