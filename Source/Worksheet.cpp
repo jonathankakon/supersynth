@@ -52,11 +52,6 @@ void Worksheet::paint (Graphics& g)
 	{
 		g.drawLine(Line<float>(r.getX(), y, r.getRight(), y), 0.3);
 	}
-
-	g.setColour(Colours::black);  // draw an outline around the component
-    g.setFont (14.0f);
-    g.drawText ("Worksheet + " + message, getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
 }
 
 void Worksheet::resized()
@@ -107,21 +102,8 @@ void Worksheet::itemDragExit(const SourceDetails& /*dragSourceDetails*/)
 void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 {
 	dropPosition = dragSourceDetails.localPosition;
-	
-	/*DBG("dropped");
-	if((int)dragSourceDetails.description == 0)
-	{
-		ScopedPointer<AudioProcessor> proc = new WaveGeneratorProcessor();
-		processors.add(&proc);
-		ScopedPointer<AudioProcessorEditor> editor = proc->createEditor();
-		editors.add(&editor);
-		addAndMakeVisible(editor);
-		editor->setBounds(Rectangle<int>(dragSourceDetails.localPosition.getX() + editor->getWidth()/2, dragSourceDetails.localPosition.getY() + editor->getHeight()/2, editor->getWidth(), editor->getHeight()));
-	}*/
 
 	findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(dragSourceDetails.description);
-
-	message = "Items dropped: " + dragSourceDetails.description.toString();
 
 	somethingIsBeingDraggedOver = false;
 	beginDragAutoRepeat(0);

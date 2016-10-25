@@ -13,7 +13,7 @@
 VAOscillator::VAOscillator()
 {
   currentSampleRate = 0;
-  currentFrequency  = 440.0;
+  currentFrequency = 440.0;
   
   currentPhase = 0.0;
   
@@ -24,9 +24,9 @@ VAOscillator::VAOscillator(double sampleRate)
 {
   currentSampleRate = sampleRate;
   currentFrequency = 440.0;
-  
+
   currentPhase = 0.0;
-  
+
   updatePhaseInc();
 }
 
@@ -37,8 +37,8 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer)
 {
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
+
     buffer.setSample(0, sampleIndex, sin(currentPhase) );
-    buffer.setSample(1, sampleIndex, sin(currentPhase) );
       
     currentPhase += phaseInc;
     if(currentPhase > 2 * double_Pi)
@@ -79,9 +79,15 @@ double VAOscillator::getFrequency()
   return currentFrequency;
 }
 
+void VAOscillator::setFrequency(AudioParameterFloat* newFrequency)
+{
+  currentFrequency = *newFrequency;
+}
+
 void VAOscillator::setFrequency(double newFrequency)
 {
   currentFrequency = newFrequency;
+  updatePhaseInc();
 }
 
 
@@ -103,6 +109,7 @@ void VAOscillator::fillBufferNonLimitedRisingSaw(AudioBuffer<float> &buffer)
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) );
+<<<<<<< HEAD
     buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) );// remove this. pass around just one buffer and copy in the output processor
     
     // TODO: Add code for mixing in the BLEP
@@ -120,6 +127,8 @@ void VAOscillator::fillBufferNonLimitedRisingSaw(AudioBuffer<float> &buffer)
     }
      
     */
+=======
+>>>>>>> origin/master
     
     currentPhase += phaseInc;
     if(currentPhase > 2 * double_Pi)
@@ -139,7 +148,7 @@ void VAOscillator::fillBufferNonLimitedSquare(AudioBuffer<float> &buffer)
     }
     else
     {
-      buffer.setSample(1, sampleIndex, -1);
+      buffer.setSample(0, sampleIndex, -1);
     }
     
     currentPhase += phaseInc;

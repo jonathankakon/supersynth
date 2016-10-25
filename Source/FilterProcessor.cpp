@@ -11,6 +11,17 @@
 #include "FilterProcessor.h"
 #include "FilterProcessorEditor.h"
 
+FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
+  .withInput("Control", AudioChannelSet::mono())
+  .withOutput("Audio", AudioChannelSet::mono())
+  .withInput("Audio", AudioChannelSet::mono()))
+{
+}
+
+FilterProcessor::~FilterProcessor()
+{
+}
+
 void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 {
   

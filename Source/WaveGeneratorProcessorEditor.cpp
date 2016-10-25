@@ -24,8 +24,9 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[0]);
   frequencySlider = new Slider(frequencyParam->name);
-  frequencySlider->setRange(frequencyParam->range.start, frequencyParam->range.end);
-  frequencySlider->setSliderStyle(Slider::LinearHorizontal);
+  frequencySlider->setRange(100, 5000, 0.0001);
+  frequencySlider->setSkewFactor(0.5);
+  frequencySlider->setSliderStyle(Slider::RotaryVerticalDrag);
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
   frequencySlider->addListener(this);
@@ -44,7 +45,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   
   
   setConnectors();
-  
+   
   //label
   
   
@@ -65,9 +66,10 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   g.setFont (15.0f);
   g.drawFittedText ("Wave Generator!", Rectangle<int>(200,15), Justification::centred, 1);
   
-  
+  Rectangle<int> r(getLocalBounds());
   volumeSlider->setBounds(10, 40, 40, 40);
-  frequencySlider->setBounds(60, 40, 120, 20);
+  r.reduce(40, 5);
+  frequencySlider->setBounds(r);
   
 }
 
@@ -86,9 +88,13 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
   {
     AudioProcessorParameter* param = params[0];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost ((float) slider->getValue());
+    {
+      param->setValueNotifyingHost((float)slider->getValue());
+    }
     else
-      param->setValue ((float) slider->getValue());
+    {
+      param->setValue((float)slider->getValue());
+    }
   }
   if (slider == volumeSlider)
   {

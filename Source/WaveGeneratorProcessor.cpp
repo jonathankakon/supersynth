@@ -12,22 +12,26 @@
 #include "WaveGeneratorProcessorEditor.h"
 
 
-WaveGeneratorProcessor::WaveGeneratorProcessor()
+WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
+    .withOutput("Audio", AudioChannelSet::stereo())
+    .withInput("FrequencyControl", AudioChannelSet::mono())
+    .withInput("VolumeControl", AudioChannelSet::mono()))
 {
-  NormalisableRange<float> frequencyRange (100.0f,10000.0f);
-  frequencyRange.skew = 0.2;
+  NormalisableRange<float> frequencyRange (50.0f,20000.0f,0.1, 0.001);
   
   addParameter(currentFrequency = new AudioParameterFloat("currentFrequency",
                                                           "Frequency",
                                                           frequencyRange,
-                                                          220.0));
+                                                          48000.0/128.0));
   
   addParameter(currentVolume = new AudioParameterFloat("volume",
                                                        "Volume",
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.5));
+
+  addListener(this);
   
-  currentWaveform = square;
+  currentWaveform = saw;
   
 }
 
@@ -38,33 +42,40 @@ WaveGeneratorProcessor::~WaveGeneratorProcessor()
 
 void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-  
   currentSampleRate = sampleRate;
   
   getProcessingPrecision();
   
   oscillator.setSampleRate(sampleRate);
-  oscillator.setFrequency(*currentFrequency);
+  oscillator.setFrequency(currentFrequency);
 }
 
 void WaveGeneratorProcessor::releaseResources()
 {
-  ;
+}
+
+void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
+{
+  if (parameterIndex == 0)
+  {
+    oscillator.setFrequency(newValue);
+  }
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
 {
+  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   if(currentWaveform == sine)
   {
-    oscillator.fillBufferSine(buffer);
+    oscillator.fillBufferSine(outBuffer);
   }
   else if(currentWaveform == saw)
   {
-    oscillator.fillBufferRisingSaw(buffer);
+    oscillator.fillBufferRisingSaw(outBuffer);
   }
   else //waveform == square
   {
-    oscillator.fillBufferSquarePulse(buffer);
+    oscillator.fillBufferSquarePulse(outBuffer);
   }
   
 }// End processBlock
