@@ -45,6 +45,7 @@ private:
   void fillBufferNonLimitedTriangle(AudioBuffer<float>& buffer);
   
   //Bandlimit the naive waveforms
+  //TODO: I will remove these functions and do the bandlimiting directly when synthesizing the naive waves, because i have to use the currentPhase a lot to mix in the correct values
   void mixInBlitResidualRisingSaw(AudioBuffer<float>& nonLimitedBuffer);
   void mixInBlitResidualFallingSaw(AudioBuffer<float>& nonLimitedBuffer);
   void mixInBlitResidualSquare(AudioBuffer<float>& nonLimitedBuffer);
@@ -54,7 +55,7 @@ private:
   double currentFrequency;
   double currentPhase;
   double phaseInc;
-  double phaseOffset; // only for midi stuff. this determins the starting point of the wave when noteOn happens.
+  double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
   void updatePhaseInc();
   

@@ -59,7 +59,11 @@ public:
 
 private:
   
-  WaveGeneratorProcessor waveGenerator;
+  WaveGeneratorProcessor* waveGenerator;
+  
+  AudioGraphIOProcessor* output;
+  
+  AudioGraphIOProcessor* input;
   
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SupersynthAudioProcessor)

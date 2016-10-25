@@ -13,7 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class OutputProcessor: public AudioProcessor
+class OutputProcessor: public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
   //==============================================================================

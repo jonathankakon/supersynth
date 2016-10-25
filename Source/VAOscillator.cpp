@@ -103,7 +103,23 @@ void VAOscillator::fillBufferNonLimitedRisingSaw(AudioBuffer<float> &buffer)
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) );
-    buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) );
+    buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) );// remove this. pass around just one buffer and copy in the output processor
+    
+    // TODO: Add code for mixing in the BLEP
+    
+    /*
+    
+    if (currentPhase < 2 * double_Pi * currentFrequency * lengthOfPulse) // maybe save this in a member variable which is updated with frequency and sampleRate to be faster
+    {
+      mixInBlep();
+    }
+
+    else if (currentPhase > 2 * double_Pi (1 - currentFrequency * lengthOfPulse) )
+    {
+      mixInBlep
+    }
+     
+    */
     
     currentPhase += phaseInc;
     if(currentPhase > 2 * double_Pi)

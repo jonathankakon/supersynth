@@ -15,6 +15,16 @@
 //==============================================================================
 SupersynthAudioProcessor::SupersynthAudioProcessor()
 {
+  input = new AudioGraphIOProcessor(AudioGraphIOProcessor::IODeviceType::audioInputNode);
+  output =  new AudioGraphIOProcessor(AudioGraphIOProcessor::IODeviceType::audioOutputNode);
+  waveGenerator = new WaveGeneratorProcessor();
+  
+  addNode(input, 0);
+  addNode(waveGenerator, 1);
+  addNode(output, 2);
+  
+  addConnection(0, 0, 1, 0);
+  addConnection(1, 0, 2, 0);
 }
 
 SupersynthAudioProcessor::~SupersynthAudioProcessor()
@@ -80,7 +90,7 @@ void SupersynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
   
-  waveGenerator.prepareToPlay(sampleRate, samplesPerBlock);
+  waveGenerator->prepareToPlay(sampleRate, samplesPerBlock);
 }
 
 void SupersynthAudioProcessor::releaseResources()
@@ -128,7 +138,7 @@ void SupersynthAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     for (int i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
   
-  waveGenerator.processBlock(buffer, midiMessages);
+  
 
   
   
