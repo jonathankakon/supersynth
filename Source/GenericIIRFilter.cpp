@@ -58,7 +58,7 @@ void GenericIIRFilter::updateSecondOrderCoefficients()
 
 void GenericIIRFilter::firstOrderLowPass(AudioBuffer<float>& buffer)
 {
-  AudioBuffer<float> *filtered = new AudioBuffer<float>(buffer);
+  ScopedPointer<AudioBuffer<float>> filtered = new AudioBuffer<float>(buffer);
   filtered->makeCopyOf(buffer);
   GenericIIRFilter::firstOrderAllPass(*filtered);
   
@@ -71,7 +71,7 @@ void GenericIIRFilter::firstOrderLowPass(AudioBuffer<float>& buffer)
 
 void GenericIIRFilter::firstOrderHighPass(AudioBuffer<float>& buffer)
 {
-  AudioBuffer<float> *filtered = new AudioBuffer<float>(buffer);
+  ScopedPointer<AudioBuffer<float>> filtered = new AudioBuffer<float>(buffer);
   filtered->makeCopyOf(buffer);
   GenericIIRFilter::firstOrderAllPass(*filtered);
   

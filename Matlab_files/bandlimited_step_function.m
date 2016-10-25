@@ -43,8 +43,8 @@ csvwrite('bandlimited_saw_difference_48000.dat',g);
 
 figure(1);
 subplot(1,2,1);
-plot(x2/2,20 *log10(abs(g)));
-%axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); 
+plot(x2/2,g);
+axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); 
 subplot(1,2,2);
 
 zpad = 20;
@@ -59,7 +59,7 @@ grid;
 
 % markers at 20 kHz, fs-20 kHz and fs
 hold;
-%plot([20 20], [0.00001 1], 'g'); plot([fs/1000-20 fs/1000-20], [0.00001 1], 'r'); plot([fs/1000 fs/1000], [0.00001 1], 'r');
+plot([20 20], [0.00001 1], 'g'); plot([fs/1000-20 fs/1000-20], [0.00001 1], 'r'); plot([fs/1000 fs/1000], [0.00001 1], 'r');
 hold off;
 
 %}
