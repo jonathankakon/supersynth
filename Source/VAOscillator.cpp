@@ -37,6 +37,7 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer)
 {
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
+
     buffer.setSample(0, sampleIndex, sin(currentPhase) );
       
     currentPhase += phaseInc;
