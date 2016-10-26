@@ -91,15 +91,6 @@ void VAOscillator::setFrequency(double newFrequency)
 }
 
 
-
-
-
-
-
-
-
-
-
   //==============================================================================
   // Privates:
 
@@ -108,9 +99,7 @@ void VAOscillator::fillBufferNonLimitedRisingSaw(AudioBuffer<float> &buffer)
 {
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) );
-<<<<<<< HEAD
-    buffer.setSample(1, sampleIndex, (currentPhase/double_Pi - 1.0) );// remove this. pass around just one buffer and copy in the output processor
+    buffer.setSample(0, sampleIndex, (currentPhase/double_Pi - 1.0) );// remove this. pass around just one buffer and copy in the output processor
     
     // TODO: Add code for mixing in the BLEP
     
@@ -127,8 +116,6 @@ void VAOscillator::fillBufferNonLimitedRisingSaw(AudioBuffer<float> &buffer)
     }
      
     */
-=======
->>>>>>> origin/master
     
     currentPhase += phaseInc;
     if(currentPhase > 2 * double_Pi)

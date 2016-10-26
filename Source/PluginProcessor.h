@@ -28,18 +28,6 @@ public:
     bool hasEditor() const override;
 
 private:
-<<<<<<< HEAD
-  
-  WaveGeneratorProcessor* waveGenerator;
-  
-  AudioGraphIOProcessor* output;
-  
-  AudioGraphIOProcessor* input;
-  
-    //==============================================================================
-=======
-
->>>>>>> origin/master
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SupersynthAudioProcessor)
 };
 
