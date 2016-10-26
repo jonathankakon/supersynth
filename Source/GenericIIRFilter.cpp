@@ -58,7 +58,7 @@ void GenericIIRFilter::updateSecondOrderCoefficients()
 
 void GenericIIRFilter::firstOrderLowPass(AudioBuffer<float>& buffer)
 {
-
+  ignoreUnused(buffer);
 }
 
 

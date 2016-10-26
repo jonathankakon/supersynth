@@ -13,7 +13,7 @@
 
 ProcessorEditorBase::ProcessorEditorBase(AudioProcessor* p, bool hasAudioInput, bool hasControlInput, bool hasGateInput)
 : AudioProcessorEditor (p), processor (*p), dragStop(new DragStopHelper(*this)),
-  takesAudioSignal(hasAudioInput), takesControlSignal(takesControlSignal), takesGateSignal(hasGateInput),
+  takesAudioSignal(hasAudioInput), takesControlSignal(hasControlInput), takesGateSignal(hasGateInput),
   inputConnector(new InputConnector()), outputConnector(new OutputConnector())
 {
   // Make sure that before the constructor has finished, you've set the
@@ -60,7 +60,7 @@ void ProcessorEditorBase::mouseDrag(const MouseEvent& e)
   }
 }
 
-void ProcessorEditorBase::mouseUp(const MouseEvent& e)
+void ProcessorEditorBase::mouseUp(const MouseEvent&)
 {
 	beginDragAutoRepeat(0);
 }
@@ -88,12 +88,12 @@ void ProcessorEditorBase::setConnectors()
   outputConnector->setBounds(r.withWidth(20).withHeight(20).withX(r.getWidth() - 20).withY(r.getHeight() / 2 - 10));
 }
 
-void ProcessorEditorBase::mouseExit(const MouseEvent& e)
+void ProcessorEditorBase::mouseExit(const MouseEvent&)
 {
   setViewPortDragging(true);
 }
 
-void ProcessorEditorBase::mouseEnter(const MouseEvent& e)
+void ProcessorEditorBase::mouseEnter(const MouseEvent&)
 {
   setViewPortDragging(false);
 }
@@ -110,26 +110,26 @@ ProcessorEditorBase::DragStopHelper::~DragStopHelper()
 {
 }
 
-void ProcessorEditorBase::DragStopHelper::mouseDown(const MouseEvent & e)
+void ProcessorEditorBase::DragStopHelper::mouseDown(const MouseEvent &)
 {
 }
 
-void ProcessorEditorBase::DragStopHelper::mouseDrag(const MouseEvent & e)
+void ProcessorEditorBase::DragStopHelper::mouseDrag(const MouseEvent &)
 {
 }
 
-void ProcessorEditorBase::DragStopHelper::mouseEnter(const MouseEvent & e)
+void ProcessorEditorBase::DragStopHelper::mouseEnter(const MouseEvent &)
 {
   owner.setViewPortDragging(false);
   owner.setComponentDragging(false);
 }
 
-void ProcessorEditorBase::DragStopHelper::mouseExit(const MouseEvent & e)
+void ProcessorEditorBase::DragStopHelper::mouseExit(const MouseEvent &)
 {
   owner.setViewPortDragging(true);
   owner.setComponentDragging(true);
 }
 
-void ProcessorEditorBase::DragStopHelper::mouseUp(const MouseEvent & e)
+void ProcessorEditorBase::DragStopHelper::mouseUp(const MouseEvent &)
 {
 }

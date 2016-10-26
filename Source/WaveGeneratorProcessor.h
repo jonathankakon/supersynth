@@ -32,7 +32,7 @@ public:
   */
 
   void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
-  void audioProcessorChanged(AudioProcessor *processor) override { return; }
+  void audioProcessorChanged(AudioProcessor *) override { return; }
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   

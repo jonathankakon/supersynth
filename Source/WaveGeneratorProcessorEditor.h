@@ -19,7 +19,7 @@
 //==============================================================================
 /**
  */
-class WaveGeneratorProcessorEditor  : public ProcessorEditorBase, Slider::Listener, MouseListener
+class WaveGeneratorProcessorEditor  : public ProcessorEditorBase, Slider::Listener
 {
 public:
   WaveGeneratorProcessorEditor (WaveGeneratorProcessor&);

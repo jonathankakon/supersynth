@@ -45,12 +45,12 @@ void Worksheet::paint (Graphics& g)
     g.setColour (Colours::darkgrey);
 	for (int x = 0; x < getWidth(); x += 50)
 	{
-		g.drawLine(Line<float>(x, r.getY(), x, r.getBottom()), 0.3);
+		g.drawLine(Line<float>((float)x, (float)r.getY(), (float)x, (float)r.getBottom()), 0.3f);
 	}
 
 	for (int y = 0; y < getHeight(); y += 50)
 	{
-		g.drawLine(Line<float>(r.getX(), y, r.getRight(), y), 0.3);
+		g.drawLine(Line<float>((float)r.getX(), (float)y, (float)r.getRight(), (float)y), 0.3f);
 	}
 }
 
@@ -72,6 +72,7 @@ bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 
 void Worksheet::itemDragEnter(const SourceDetails& dragSourceDetails)
 {
+  ignoreUnused(dragSourceDetails);
 	somethingIsBeingDraggedOver = true;
 	beginDragAutoRepeat(100);
 	repaint();

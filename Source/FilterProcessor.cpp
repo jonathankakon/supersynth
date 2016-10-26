@@ -24,12 +24,11 @@ FilterProcessor::~FilterProcessor()
 
 void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 {
-  
+  ignoreUnused(sampleRate, samplesPerBlock);
 }
 
 void FilterProcessor::releaseResources()
 {
-  
 }
 
 void FilterProcessor::processBlock(AudioSampleBuffer &, juce::MidiBuffer &)
@@ -79,25 +78,28 @@ int FilterProcessor::getCurrentProgram()
 
 void FilterProcessor::setCurrentProgram(int index)
 {
+  ignoreUnused(index);
 }
 
 const String FilterProcessor::getProgramName(int index)
 {
+  ignoreUnused(index);
   return String();
 }
 
 void FilterProcessor::changeProgramName(int index, const juce::String &newName)
 {
+  ignoreUnused(index, newName);
 }
 
 void FilterProcessor::getStateInformation(juce::MemoryBlock &destData)
 {
-  
+  ignoreUnused(destData);
 }
 
 void FilterProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
-  
+  ignoreUnused(data, sizeInBytes);
 }
 
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="pZVG3V" name="supersynth" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="pZVG3V" name="supersynth" projectType="audioplug" version="0.0.1"
               bundleIdentifier="com.yourcompany.supersynth" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
               buildAAX="0" pluginName="supersynth" pluginDesc="supersynth"
-              pluginManufacturer="yourcompany" pluginManufacturerCode="Manu"
-              pluginCode="Pzvg" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
+              pluginManufacturer="pkj" pluginManufacturerCode="Manu" pluginCode="Pzvg"
+              pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.supersynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4">
+              pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.pkj.supersynth"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
+              pluginVSTCategory="">
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
@@ -159,7 +160,8 @@
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
+               JUCE_PLUGINHOST_AU="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>

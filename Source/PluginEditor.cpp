@@ -147,7 +147,7 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
   else if (processorType == 1)
   {
     FilterProcessor* filter = new FilterProcessor();
-    AudioProcessorGraph::Node* generator = processor.addNode(filter);
+    processor.addNode(filter);
     worksheet->addEditor(filter->createEditor());
   }
 }

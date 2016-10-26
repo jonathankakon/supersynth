@@ -17,7 +17,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
     .withInput("FrequencyControl", AudioChannelSet::mono())
     .withInput("VolumeControl", AudioChannelSet::mono()))
 {
-  NormalisableRange<float> frequencyRange (50.0f,20000.0f,0.1, 0.001);
+  NormalisableRange<float> frequencyRange (50.0f,20000.0f,0.1f, 0.001f);
   
   addParameter(currentFrequency = new AudioParameterFloat("currentFrequency",
                                                           "Frequency",
@@ -42,6 +42,8 @@ WaveGeneratorProcessor::~WaveGeneratorProcessor()
 
 void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+  ignoreUnused(samplesPerBlock);
+
   currentSampleRate = sampleRate;
   
   getProcessingPrecision();
@@ -56,6 +58,7 @@ void WaveGeneratorProcessor::releaseResources()
 
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
 {
+  ignoreUnused(processor);
   if (parameterIndex == 0)
   {
     oscillator.setFrequency(newValue);
@@ -64,6 +67,7 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
 {
+  ignoreUnused(midiBuffer);
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   if(currentWaveform == sine)
   {
@@ -128,27 +132,28 @@ int WaveGeneratorProcessor::getCurrentProgram()
 
 void WaveGeneratorProcessor::setCurrentProgram(int index)
 {
-  ;
+  ignoreUnused(index);
 }
 
 const String WaveGeneratorProcessor::getProgramName(int index)
 {
+  ignoreUnused(index);
   return String();
 }
 
 void WaveGeneratorProcessor::changeProgramName(int index, const String& newName)
 {
-  ;
+  ignoreUnused(index, newName);
 }
 
 void WaveGeneratorProcessor::getStateInformation(MemoryBlock& destData)
 {
-  ;
+  ignoreUnused(destData);
 }
 
 void WaveGeneratorProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-  ;
+  ignoreUnused(data, sizeInBytes);
 }
 
 void WaveGeneratorProcessor::setWaveform(waveform newWaveform)

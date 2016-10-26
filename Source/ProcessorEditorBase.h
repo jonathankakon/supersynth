@@ -15,7 +15,7 @@
 #include "InputConnector.h"
 #include "OutputConnector.h"
 
-class ProcessorEditorBase  : public AudioProcessorEditor, MouseListener
+class ProcessorEditorBase  : public AudioProcessorEditor
 {
 public:
   ProcessorEditorBase(AudioProcessor* processor, bool hasAudioInput, bool hasControlInput, bool hasGateInput);
