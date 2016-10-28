@@ -22,7 +22,6 @@ SupersynthAudioProcessor::~SupersynthAudioProcessor()
 {
 }
 
-
 bool SupersynthAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)

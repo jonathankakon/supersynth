@@ -14,7 +14,7 @@
 
 void OutputProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-  
+  ignoreUnused(sampleRate, samplesPerBlock);
 }
 
 void OutputProcessor::releaseResources()
@@ -73,27 +73,28 @@ int OutputProcessor::getCurrentProgram()
 
 void OutputProcessor::setCurrentProgram(int index)
 {
-  
+  ignoreUnused(index);
 }
 
 const String OutputProcessor::getProgramName(int index)
 {
+  ignoreUnused(index);
   return String();
 }
 
 void OutputProcessor::changeProgramName(int index, const juce::String &newName)
 {
-  
+  ignoreUnused(index, newName);
 }
 
 void OutputProcessor::getStateInformation(juce::MemoryBlock &destData)
 {
-  
+  ignoreUnused(destData);
 }
 
 void OutputProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
-  
+  ignoreUnused(data, sizeInBytes);
 }
 
 
