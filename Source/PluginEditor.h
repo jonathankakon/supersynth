@@ -51,6 +51,8 @@ private:
 	ScopedPointer<CollapseButton> collapseButton;
 	ScopedPointer<Viewport> viewport;
 	ScopedPointer<Worksheet> worksheet;
+
+
   SupersynthAudioProcessor& processor;
 
 	bool open = false;

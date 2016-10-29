@@ -13,8 +13,8 @@
 
 
 //==============================================================================
-WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcessor& p)
-: ProcessorEditorBase (&p, false, true, false), processor (p)
+WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcessor* p, ProcessorEditorBase* b)
+: AudioProcessorEditor (p), processor (*p), parent(*b)
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -30,7 +30,6 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
   frequencySlider->addListener(this);
-  registerImmobileObject(*frequencySlider);
   addAndMakeVisible(frequencySlider);
   
   const AudioParameterFloat* volumeParam = dynamic_cast<AudioParameterFloat*>(params[1]);
@@ -40,12 +39,10 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   volumeSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   volumeSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(volumeParam)->getValue());
   volumeSlider->addListener(this);
-  registerImmobileObject(*volumeSlider);
   addAndMakeVisible(volumeSlider);
   
-  
-  setConnectors();
-   
+  parent.registerImmobileObject(*volumeSlider);
+  parent.registerImmobileObject(*frequencySlider);
   //label
   
   

@@ -86,7 +86,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 
 AudioProcessorEditor* WaveGeneratorProcessor::createEditor()
 {
-  return new WaveGeneratorProcessorEditor (*this);
+  return new ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGeneratorProcessorEditor>(this);
 }
 
 bool WaveGeneratorProcessor::hasEditor() const

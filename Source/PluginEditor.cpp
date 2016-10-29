@@ -25,7 +25,7 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 	setResizable(true, true);
-	setResizeLimits(300, 200, 10000, 10000);
+	setResizeLimits(800, 500, 10000, 10000);
 
 	addAndMakeVisible(toolbox);
 	Rectangle<int> r(getLocalBounds());

@@ -11,21 +11,11 @@
 #include "ProcessorEditorBase.h"
 #include "PluginEditor.h"
 
-ProcessorEditorBase::ProcessorEditorBase(AudioProcessor* p, bool hasAudioInput, bool hasControlInput, bool hasGateInput)
-: AudioProcessorEditor (p), processor (*p), dragStop(new DragStopHelper(*this)),
-  takesAudioSignal(hasAudioInput), takesControlSignal(hasControlInput), takesGateSignal(hasGateInput),
-  inputConnector(new InputConnector()), outputConnector(new OutputConnector())
+
+ProcessorEditorBase::ProcessorEditorBase(AudioProcessor * p) 
+  : AudioProcessorEditor(p), processor(*p), dragStop(new DragStopHelper(*this))
 {
-  // Make sure that before the constructor has finished, you've set the
-  // editor's size to whatever you need it to be.
-
-  registerImmobileObject(*inputConnector);
-  addAndMakeVisible(inputConnector);
-
-  registerImmobileObject(*outputConnector);
-  addAndMakeVisible(outputConnector);
 }
-
 
 ProcessorEditorBase::~ProcessorEditorBase()
 {
@@ -55,7 +45,7 @@ void ProcessorEditorBase::mouseDrag(const MouseEvent& e)
       int relativeX = getX() + e.x - x;
       int relativeY = getY() + e.y - y;
 
-      viewport->autoScroll(relativeX, relativeY, 50, 7);																																		  // ... based on the displayed area, paint just what's visible ... //
+      viewport->autoScroll(relativeX, relativeY, 50, 7);
     }
   }
 }
@@ -65,10 +55,12 @@ void ProcessorEditorBase::mouseUp(const MouseEvent&)
 	beginDragAutoRepeat(0);
 }
 
+
 void ProcessorEditorBase::setViewPortDragging(bool enableDragging)
 {
   findParentComponentOfClass<SupersynthAudioProcessorEditor>()->setViewPortDragScrolling(enableDragging);
 }
+
 
 void ProcessorEditorBase::setComponentDragging(bool enableDragging)
 {
@@ -80,13 +72,6 @@ void ProcessorEditorBase::registerImmobileObject(Component & component)
   component.addMouseListener(dragStop, false);
 }
 
-void ProcessorEditorBase::setConnectors()
-{
-  Rectangle<int> r(getLocalBounds());
-
-  inputConnector->setBounds(r.withWidth(20).withHeight(20).withY(r.getHeight() / 2 - 10));
-  outputConnector->setBounds(r.withWidth(20).withHeight(20).withX(r.getWidth() - 20).withY(r.getHeight() / 2 - 10));
-}
 
 void ProcessorEditorBase::mouseExit(const MouseEvent&)
 {
@@ -133,3 +118,4 @@ void ProcessorEditorBase::DragStopHelper::mouseExit(const MouseEvent &)
 void ProcessorEditorBase::DragStopHelper::mouseUp(const MouseEvent &)
 {
 }
+

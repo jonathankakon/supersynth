@@ -38,7 +38,7 @@ void FilterProcessor::processBlock(AudioSampleBuffer &, juce::MidiBuffer &)
 
 AudioProcessorEditor* FilterProcessor::createEditor()
 {
-  return new FilterProcessorEditor(* this);
+  return new ProcessorEditorWithConnectors<FilterProcessor, FilterProcessorEditor>(this);
 }
 
 bool FilterProcessor::hasEditor() const
@@ -101,8 +101,3 @@ void FilterProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
   ignoreUnused(data, sizeInBytes);
 }
-
-
-
-
-

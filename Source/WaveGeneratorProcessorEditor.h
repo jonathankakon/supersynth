@@ -13,16 +13,16 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "WaveGeneratorProcessor.h"
-#include "ProcessorEditorBase.h"
+#include "ProcessorEditorWithConnectors.h"
 
 
 //==============================================================================
 /**
  */
-class WaveGeneratorProcessorEditor  : public ProcessorEditorBase, Slider::Listener
+class WaveGeneratorProcessorEditor  : public AudioProcessorEditor, Slider::Listener
 {
 public:
-  WaveGeneratorProcessorEditor (WaveGeneratorProcessor&);
+  WaveGeneratorProcessorEditor (WaveGeneratorProcessor* p, ProcessorEditorBase* b);
   ~WaveGeneratorProcessorEditor();
   
   //==============================================================================
@@ -35,6 +35,7 @@ private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   WaveGeneratorProcessor& processor;
+  ProcessorEditorBase& parent;
   
   ScopedPointer<Slider> frequencySlider;
   ScopedPointer<Slider> volumeSlider;

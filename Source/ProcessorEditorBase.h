@@ -12,13 +12,11 @@
 #define PROCESSOREDITORBASE_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "InputConnector.h"
-#include "OutputConnector.h"
 
-class ProcessorEditorBase  : public AudioProcessorEditor
+class ProcessorEditorBase : public AudioProcessorEditor
 {
 public:
-  ProcessorEditorBase(AudioProcessor* processor, bool hasAudioInput, bool hasControlInput, bool hasGateInput);
+  ProcessorEditorBase(AudioProcessor* processor);
   ~ProcessorEditorBase();
 
   class DragStopHelper : public MouseListener
@@ -36,7 +34,8 @@ public:
     ProcessorEditorBase& owner;
   };
 
-  //==============================================================================
+  void registerImmobileObject(Component& component);
+
   void mouseDown(const MouseEvent& e) override;
   void mouseDrag(const MouseEvent& e) override;
   void mouseEnter(const MouseEvent& e) override;
@@ -46,28 +45,14 @@ public:
   void setViewPortDragging(bool enableDragging);
   void setComponentDragging(bool enableDragging);
 
-  void registerImmobileObject(Component& component);
-  void setConnectors();
-  
-
 private:
-  
-  // This reference is provided as a quick way for your editor to
-  // access the processor object that created it.
-  bool takesControlSignal;
-  bool takesGateSignal;
-  bool takesAudioSignal;
-
   bool draggingEnabled;
-	ComponentDragger dragger;
-	AudioProcessor& processor;
-  
+  ComponentDragger dragger;
+  AudioProcessor& processor;
+
   ScopedPointer<DragStopHelper> dragStop;
-  ScopedPointer<InputConnector> inputConnector;
-  ScopedPointer<OutputConnector> outputConnector;
-  
-  
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessorEditorBase)
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProcessorEditorBase);
 };
 
 
