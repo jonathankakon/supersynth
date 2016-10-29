@@ -38,7 +38,13 @@ private:
   
   ScopedPointer<Slider> frequencySlider;
   ScopedPointer<Slider> volumeSlider;
+  ScopedPointer<Slider> octavesSlider;
+  ScopedPointer<Slider> semitonesSlider;
+  ScopedPointer<Slider> centsSlider;
+  
   ScopedPointer<ComboBox> waveformBox;
+  
+  
   
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)

@@ -20,31 +20,26 @@ VAOscillator::VAOscillator()
   phaseInc = 0.0;
 }
 
-VAOscillator::VAOscillator(double sampleRate)
-{
-  currentSampleRate = sampleRate;
-  currentFrequency = 440.0;
-
-  currentPhase = 0.0;
-
-  updatePhaseInc();
-}
-
   //==============================================================================
   // waveforms:
 
-void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer)
+void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer)// add midi buffer and know channel with control Voltage
 {
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
 
     buffer.setSample(0, sampleIndex, sin(currentPhase) );
-      
+    
+    //update the Phase
+    phaseInc = (2 * double_Pi * (currentFrequency)/currentSampleRate);
+    
     currentPhase += phaseInc;
+    
     if(currentPhase > 2 * double_Pi)
     {
       currentPhase -= 2 * double_Pi;
     }
+
   }
 }
 
@@ -77,11 +72,6 @@ void VAOscillator::setSampleRate(double newSampleRate)
 double VAOscillator::getFrequency()
 {
   return currentFrequency;
-}
-
-void VAOscillator::setFrequency(AudioParameterFloat* newFrequency)
-{
-  currentFrequency = *newFrequency;
 }
 
 void VAOscillator::setFrequency(double newFrequency)

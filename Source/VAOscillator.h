@@ -22,7 +22,6 @@ class VAOscillator
 public:
   
   VAOscillator();
-  VAOscillator(double sampleRate);
   
   void fillBufferSine(AudioBuffer<float>& buffer);
   void fillBufferRisingSaw(AudioBuffer<float>& buffer);
@@ -51,6 +50,7 @@ private:
   void mixInBlitResidualFallingSaw(AudioBuffer<float>& nonLimitedBuffer);
   void mixInBlitResidualSquare(AudioBuffer<float>& nonLimitedBuffer);
   void mixInBlitResidualTriangle(AudioBuffer<float>& nonLimitedBuffer);
+  
   
   double currentSampleRate;
   double currentFrequency;
