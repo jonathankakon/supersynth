@@ -81,6 +81,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   
   button0->addListener(this);
   addAndMakeVisible(button0);
+  button0->setToggleState(true, juce::dontSendNotification);
   
   button1->addListener(this);
   addAndMakeVisible(button1);
