@@ -77,15 +77,25 @@ public:
 
 private:
   
-  AudioParameterFloat* currentFrequency;
-  AudioParameterFloat* currentVolume;
+  AudioParameterFloat* frequencyParam;
+  AudioParameterFloat* volumeParam;
   AudioParameterChoice* currentWaveformParam;
+  
+  AudioParameterInt* octaveParam;
+  AudioParameterInt* semitonesParam;
+  AudioParameterInt* centsParam;
   
   double currentSampleRate;
   
   waveform currentWaveform;
   
-  VAOscillator oscillator;
+  VAOscillator* oscillator;
+  
+  
+  // factors to multiply when changing the frequency the middle value is always 1 => no change
+  const float octaves[7] = {0.125, 0.25, 0.5, 1, 2, 4, 8};
+  const float semitones[1] = {1.0};
+  const float cents[1] = {1.0};
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);
