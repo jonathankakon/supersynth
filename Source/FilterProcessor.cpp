@@ -17,16 +17,22 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio", AudioChannelSet::mono())
   .withInput("Audio", AudioChannelSet::mono())), types(new StringArray)
 {
-  addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 100, 5000, 1000));
-  addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 3, 0.72));
+  addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 100, 10000, 100));
+  addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter);
   
+  types->add("bypass");
   types->add("lowpass");
   types->add("highpass");
   types->add("bandpass");
   types->add("bandstop");
+  types->add("second order lowpass");
+  types->add("second order highpass");
+  types->add("canonical bandpass");
+  types->add("canonical bandstop");
   
-  addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
+  
+  addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 1));
   
   addListener(this);
 }
@@ -51,32 +57,80 @@ void FilterProcessor::releaseResources()
 void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer & midiBuffer)
 {
   
-  /* types: 0 = IIR lowpass
-            1 = IIR highpass
-            2 = IIR bandpass
-            3 = IIR bandstop
+  /* types: 0 = Bypass
+            1 = IIR lowpass
+            2 = IIR highpass
+            3 = IIR bandpass
+            4 = IIR bandstop
+            5 = IIR canonical second order lowpass
+            6 = IIR canonical second order highpass
+            7 = IIR canonical bandpass
+            8 = IIR canonical bandstop
    */
   
   ignoreUnused(midiBuffer);
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
-//  *filterType = 1;
   
-  if(filterType->getIndex() == 0)
-  {
-    filterIIR->firstOrderLowPass(outBuffer);
+  //*filterType = 2;
+  
+  switch (filterType->getIndex()) {
+    case 0:
+      break;
+      
+    case 1:
+      filterIIR->firstOrderLowPass(outBuffer);
+      break;
+      
+    case 2:
+      filterIIR->firstOrderHighPass(outBuffer);
+      break;
+      
+    case 3:
+      filterIIR->bandpass(outBuffer);
+      break;
+      
+    case 4:
+      filterIIR->bandstop(outBuffer);
+      break;
+      
+    case 5:
+      filterIIR->secondOrderLowPass(outBuffer);
+      break;
+      
+    case 6:
+      filterIIR->secondOrderHighPass(outBuffer);
+      break;
+      
+    case 7:
+      filterIIR->canonicalBandPass(outBuffer);
+      break;
+      
+    case 8:
+      filterIIR->canonicalBandstop(outBuffer);
+      break;
+      
+    default:
+      break;
   }
-  else if(filterType->getIndex() == 1)
-  {
-    filterIIR->firstOrderHighPass(outBuffer);
-  }
-  else if (filterType->getIndex() == 2)
-  {
-    filterIIR->bandpass(outBuffer);
-  }
-  else if (filterType->getIndex() == 3)
-  {
-    filterIIR->bandstop(outBuffer);
-  }
+  
+  
+  
+//  if(filterType->getIndex() == 0)
+//  {
+//    filterIIR->firstOrderLowPass(outBuffer);
+//  }
+//  else if(filterType->getIndex() == 1)
+//  {
+//    filterIIR->firstOrderHighPass(outBuffer);
+//  }
+//  else if (filterType->getIndex() == 2)
+//  {
+//    filterIIR->bandpass(outBuffer);
+//  }
+//  else if (filterType->getIndex() == 3)
+//  {
+//    filterIIR->bandstop(outBuffer);
+//  }
 }
 
 void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue)

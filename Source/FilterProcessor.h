@@ -52,6 +52,10 @@ public:
   //==============================================================================
   void getStateInformation (MemoryBlock& destData) override;
   void setStateInformation (const void* data, int sizeInBytes) override;
+  void changeFilterType(int newIndex)
+  {
+    *filterType = newIndex;
+  };
   
   
 private:
@@ -60,7 +64,6 @@ private:
   
   AudioParameterFloat* cutoffFreqency;
   AudioParameterFloat* qParameter;
-  
   AudioParameterChoice* filterType;
   
   StringArray* types;
