@@ -64,10 +64,6 @@
               file="Source/FilterProcessor.cpp"/>
         <FILE id="jucMtv" name="FilterProcessor.h" compile="0" resource="0"
               file="Source/FilterProcessor.h"/>
-        <FILE id="Fu011w" name="FilterProcessorBase.cpp" compile="1" resource="0"
-              file="Source/FilterProcessorBase.cpp"/>
-        <FILE id="ARxWBP" name="FilterProcessorBase.h" compile="0" resource="0"
-              file="Source/FilterProcessorBase.h"/>
         <FILE id="PWD6oj" name="WaveGeneratorProcessor.cpp" compile="1" resource="0"
               file="Source/WaveGeneratorProcessor.cpp"/>
         <FILE id="urxykd" name="WaveGeneratorProcessor.h" compile="0" resource="0"

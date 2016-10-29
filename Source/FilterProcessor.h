@@ -14,7 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GenericIIRFilter.h"
 
-class FilterProcessor: public AudioProcessor
+class FilterProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
@@ -27,6 +27,9 @@ public:
   
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
+  
+  void audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue) override;
+  void audioProcessorChanged(AudioProcessor* processor) override {return;}
   
   //==============================================================================
   AudioProcessorEditor* createEditor() override;
@@ -54,6 +57,17 @@ public:
 private:
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessor)
+  
+  AudioParameterFloat* cutoffFreqency;
+  AudioParameterFloat* qParameter;
+  
+  AudioParameterChoice* filterType;
+  
+  StringArray *types = new StringArray();
+  
+  double currentSampleRate;
+  
+  ScopedPointer<GenericIIRFilter> filterIIR;
 
 };
 

@@ -19,11 +19,11 @@ class GenericIIRFilter
 {
 public:
   
-  GenericIIRFilter(AudioParameterFloat *cutOffFrequency)
+  GenericIIRFilter(float frequency, float q)
   {
-    currentCutOffFrequency = cutOffFrequency;
-    updateFirstOrderCoefficients();
-    updateSecondOrderCoefficients();
+    cutoffFrequency = frequency;
+    qParameter = q;
+
     resetFirstOrderState();
     resetSecondOrderState();
   }
@@ -40,15 +40,32 @@ public:
   void highShelf(AudioBuffer<float>& buffer);
   void lowShelf(AudioBuffer<float>& buffer);
   
+  void updateSampleRate(double newSampleRate)
+  {
+    sampleRate = newSampleRate;
+  }
+  
+  void setCutoff(float frequency)
+  {
+    cutoffFrequency = frequency;
+  }
+  
+  void setQ(float q)
+  {
+    qParameter = q;
+  }
+  
 private:
   
-  AudioParameterFloat *currentCutOffFrequency;
+  float cutoffFrequency;
+  float qParameter;
+
   double sampleRate;
 
   
   struct filterState
   {
-    double c0, c1, stateXh0, stateXh1, stateXh2;
+    double c0, c1, stateXh0, stateXh1, stateXh2;  //c0 and c1 are the coefficients for the filter
   };
   
   filterState firstOrderState;
@@ -65,9 +82,10 @@ private:
     secondOrderState.stateXh1 = 0;
     secondOrderState.stateXh2 = 0;
   };
-  void updateFirstOrderCoefficients();
-  void updateSecondOrderCoefficients();
+  void updateFirstOrderCoefficients(float frequency);
+  void updateSecondOrderCoefficients(float frequency);
   
+  float computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer);
   
 //==============================================================================
 JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GenericIIRFilter)

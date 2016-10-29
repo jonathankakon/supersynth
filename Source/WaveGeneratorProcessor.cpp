@@ -13,7 +13,7 @@
 
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
-    .withOutput("Audio", AudioChannelSet::stereo())
+    .withOutput("Audio", AudioChannelSet::mono())
     .withInput("FrequencyControl", AudioChannelSet::mono())
     .withInput("VolumeControl", AudioChannelSet::mono()))
 {
