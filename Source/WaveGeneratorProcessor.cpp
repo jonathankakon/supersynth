@@ -17,21 +17,42 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
     .withInput("FrequencyControl", AudioChannelSet::mono())
     .withInput("VolumeControl", AudioChannelSet::mono()))
 {
-  NormalisableRange<float> frequencyRange (50.0f,20000.0f,0.1f, 0.001f);
   
-  addParameter(currentFrequency = new AudioParameterFloat("currentFrequency",
-                                                          "Frequency",
-                                                          frequencyRange,
-                                                          48000.0/128.0));
-  
-  addParameter(currentVolume = new AudioParameterFloat("volume",
+  // dont change the order of the parameters here, because the Editor depends on it!
+  addParameter(volumeParam = new AudioParameterFloat("volume",
                                                        "Volume",
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.5));
+  
+  addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
+                                                        "Frequency",
+                                                        NormalisableRange<float>(100.0,5000.0),
+                                                        440.0f));
 
+  addParameter(octaveParam = new AudioParameterInt("octaves",
+                                                   "Octaves",
+                                                   0,
+                                                   6,
+                                                   3)); // from -3 to 3
+  addParameter(semitonesParam = new AudioParameterInt("semitones",
+                                                      "Semitones",
+                                                      0,
+                                                      24,
+                                                      12)); // from -12 to 12
+  addParameter(centsParam = new AudioParameterInt("cents",
+                                                  "Cents",
+                                                  0,
+                                                  200,
+                                                  100)); // from -100 to 100
+  
+  
+  
+  
   addListener(this);
   
-  currentWaveform = saw;
+  currentWaveform = sine;
+  
+  oscillator = new VAOscillator();
   
 }
 
@@ -40,46 +61,53 @@ WaveGeneratorProcessor::~WaveGeneratorProcessor()
   
 }
 
+
+
 void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+  // we must set the sample rate of the oscillator object here
+  
   ignoreUnused(samplesPerBlock);
 
   currentSampleRate = sampleRate;
   
-  getProcessingPrecision();
-  
-  oscillator.setSampleRate(sampleRate);
-  oscillator.setFrequency(currentFrequency);
+  oscillator->setSampleRate(sampleRate);
 }
 
 void WaveGeneratorProcessor::releaseResources()
 {
 }
 
+
+//you cannot change the parameter values in here => loop
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
 {
   ignoreUnused(processor);
-  if (parameterIndex == 0)
+
+  
+  if(parameterIndex != 0)
   {
-    oscillator.setFrequency(newValue);
+    oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()]);
   }
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
 {
   ignoreUnused(midiBuffer);
+  
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   if(currentWaveform == sine)
   {
-    oscillator.fillBufferSine(outBuffer);
+    oscillator->fillBufferSine(outBuffer);
+    outBuffer.applyGain(*volumeParam);
   }
   else if(currentWaveform == saw)
   {
-    oscillator.fillBufferRisingSaw(outBuffer);
+    oscillator->fillBufferRisingSaw(outBuffer);
   }
   else //waveform == square
   {
-    oscillator.fillBufferSquarePulse(outBuffer);
+    oscillator->fillBufferSquarePulse(outBuffer);
   }
   
 }// End processBlock
