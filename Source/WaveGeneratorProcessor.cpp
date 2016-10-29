@@ -13,9 +13,10 @@
 
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
-    .withOutput("Audio", AudioChannelSet::stereo())
-    .withInput("FrequencyControl", AudioChannelSet::mono())
-    .withInput("VolumeControl", AudioChannelSet::mono()))
+  .withOutput("Audio", AudioChannelSet::mono())
+  .withInput("FrequencyControl", AudioChannelSet::mono())
+  .withInput("VolumeControl", AudioChannelSet::mono())),
+  oscillator(new VAOscillator())
 {
   
   // dont change the order of the parameters here, because the Editor depends on it!
@@ -50,10 +51,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addListener(this);
   
-  currentWaveform = sine;
-  
-  oscillator = new VAOscillator();
-  
+  currentWaveform = saw;
 }
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
@@ -99,15 +97,17 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   if(currentWaveform == sine)
   {
     oscillator->fillBufferSine(outBuffer);
-    outBuffer.applyGain(*volumeParam);
+    outBuffer.applyGain(volumeParam->get());
   }
   else if(currentWaveform == saw)
   {
     oscillator->fillBufferRisingSaw(outBuffer);
+    outBuffer.applyGain(volumeParam->get());
   }
   else //waveform == square
   {
     oscillator->fillBufferSquarePulse(outBuffer);
+    outBuffer.applyGain(volumeParam->get());
   }
   
 }// End processBlock

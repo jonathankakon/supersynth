@@ -16,7 +16,7 @@
 #include "ProcessorEditorWithConnectors.h"
 
 
-class FilterProcessorEditor  : public AudioProcessorEditor
+class FilterProcessorEditor  : public AudioProcessorEditor, Slider::Listener
 {
 public:
   FilterProcessorEditor (FilterProcessor* p, ProcessorEditorBase* b);
@@ -26,13 +26,17 @@ public:
   void paint(Graphics&) override;
   void resized() override;
   
+  void sliderValueChanged(Slider* slider) override;
+  
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   FilterProcessor& processor;
   ProcessorEditorBase& parent;
   
-  
+  ScopedPointer<Slider> frequencySlider;
+  ScopedPointer<Slider> qSlider;
+
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessorEditor)
 };

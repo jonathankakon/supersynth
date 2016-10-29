@@ -140,14 +140,24 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
 	{
 		WaveGeneratorProcessor* wave = new WaveGeneratorProcessor();
 		AudioProcessorGraph::Node* generator = processor.addNode(wave);
-		processor.addConnection(generator->nodeId, 0, 1, 0);
-		processor.addConnection(generator->nodeId, 0, 1, 1);
-		worksheet->addEditor(wave->createEditor());
+
+    FilterProcessor* filter = new FilterProcessor();
+    AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
+    worksheet->addEditor(filter->createEditor());
+    processor.addConnection(filterNode->nodeId, 0, 1, 0);
+    processor.addConnection(filterNode->nodeId, 0, 1, 1);
+    
+    worksheet->addEditor(wave->createEditor());
+    processor.addConnection(generator->nodeId, 0, filterNode->nodeId, 0);
 	}
   else if (processorType == 1)
   {
+    
     FilterProcessor* filter = new FilterProcessor();
-    processor.addNode(filter);
+    AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
+    //processor.addNode(filter);
     worksheet->addEditor(filter->createEditor());
+    processor.addConnection(filterNode->nodeId, 0, 1, 0);
+    processor.addConnection(filterNode->nodeId, 0, 1, 1);
   }
 }

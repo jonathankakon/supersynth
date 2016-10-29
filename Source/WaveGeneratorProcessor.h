@@ -89,7 +89,7 @@ private:
   
   waveform currentWaveform;
   
-  VAOscillator* oscillator;
+  ScopedPointer<VAOscillator> oscillator;
   
   
   // factors to multiply when changing the frequency the middle value is always 1 => no change

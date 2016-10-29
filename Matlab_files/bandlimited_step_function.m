@@ -44,7 +44,8 @@ csvwrite('bandlimited_saw_difference_48000.dat',g);
 figure(1);
 subplot(1,2,1);
 plot(x2/2,g);
-axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); subplot(1,2,2);
+axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); 
+subplot(1,2,2);
 
 zpad = 20;
 g2 = [g ; zeros((zpad-1)*pts,1)];

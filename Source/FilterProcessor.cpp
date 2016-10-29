@@ -10,30 +10,88 @@
 
 #include "FilterProcessor.h"
 #include "FilterProcessorEditor.h"
+#include "GenericIIRFilter.h"
 
 FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withInput("Control", AudioChannelSet::mono())
   .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("Audio", AudioChannelSet::mono()))
+  .withInput("Audio", AudioChannelSet::mono())), types(new StringArray)
 {
+  addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 100, 5000, 1000));
+  addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 3, 0.72));
+  filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter);
+  
+  types->add("lowpass");
+  types->add("highpass");
+  types->add("bandpass");
+  types->add("bandstop");
+  
+  addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
+  
+  addListener(this);
 }
 
 FilterProcessor::~FilterProcessor()
 {
+  delete types;
 }
 
 void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 {
   ignoreUnused(sampleRate, samplesPerBlock);
+  currentSampleRate = sampleRate;
+  filterIIR->updateSampleRate(sampleRate);
+  
 }
 
 void FilterProcessor::releaseResources()
 {
 }
 
-void FilterProcessor::processBlock(AudioSampleBuffer &, juce::MidiBuffer &)
+void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer & midiBuffer)
 {
   
+  /* types: 0 = IIR lowpass
+            1 = IIR highpass
+            2 = IIR bandpass
+            3 = IIR bandstop
+   */
+  
+  ignoreUnused(midiBuffer);
+  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
+//  *filterType = 1;
+  
+  if(filterType->getIndex() == 0)
+  {
+    filterIIR->firstOrderLowPass(outBuffer);
+  }
+  else if(filterType->getIndex() == 1)
+  {
+    filterIIR->firstOrderHighPass(outBuffer);
+  }
+  else if (filterType->getIndex() == 2)
+  {
+    filterIIR->bandpass(outBuffer);
+  }
+  else if (filterType->getIndex() == 3)
+  {
+    filterIIR->bandstop(outBuffer);
+  }
+}
+
+void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue)
+{
+  switch (parameterIndex) {
+    case 0:
+      filterIIR->setCutoff(newValue);
+      break;
+    case 1:
+      filterIIR->setQ(newValue);
+      DBG("q: " << newValue);
+      break;
+    default:
+      break;
+  }
 }
 
 AudioProcessorEditor* FilterProcessor::createEditor()
