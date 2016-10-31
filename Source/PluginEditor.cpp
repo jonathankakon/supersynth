@@ -133,7 +133,8 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
 {
   if (processor.getNodeForId(1) == nullptr)
   {
-    processor.addNode(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), 1);
+    AudioProcessorGraph::AudioGraphIOProcessor* node = new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
+    processor.addNode(node, 1);
   }
 
 	if (processorType == 0)
@@ -144,6 +145,8 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
     FilterProcessor* filter = new FilterProcessor();
     AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
     worksheet->addEditor(filter->createEditor());
+
+    processor.getNodeForId(1)->getProcessor()->enableAllBuses();
     processor.addConnection(filterNode->nodeId, 0, 1, 0);
     processor.addConnection(filterNode->nodeId, 0, 1, 1);
     

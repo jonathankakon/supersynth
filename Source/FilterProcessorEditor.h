@@ -16,7 +16,7 @@
 #include "ProcessorEditorWithConnectors.h"
 
 
-class FilterProcessorEditor  : public ProcessorEditorBase, Slider::Listener, ToggleButton::Listener
+class FilterProcessorEditor  : public AudioProcessorEditor, Slider::Listener, ToggleButton::Listener
 {
 public:
   FilterProcessorEditor (FilterProcessor* p, ProcessorEditorBase* b);

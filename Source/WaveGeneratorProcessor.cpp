@@ -53,8 +53,6 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   currentWaveform = saw;
   
-  oscillator = new VAOscillator();
-  
 }
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()

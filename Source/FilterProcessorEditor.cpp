@@ -13,7 +13,7 @@
 
 //==============================================================================
 FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEditorBase* b)
-: ProcessorEditorBase(p) , processor (*p), parent(*b)
+: AudioProcessorEditor(p) , processor (*p), parent(*b)
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
