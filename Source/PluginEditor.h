@@ -20,6 +20,7 @@
 
 #include "WaveGeneratorProcessor.h"
 #include "FilterProcessor.h"
+#include "EQFourProcessor.h"
 
 
 //==============================================================================

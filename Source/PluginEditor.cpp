@@ -144,14 +144,21 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
 
     FilterProcessor* filter = new FilterProcessor();
     AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
+    
+    EQFourProcessor* eqFour = new EQFourProcessor();
+    AudioProcessorGraph::Node* eqNode = processor.addNode(eqFour);
+    
     worksheet->addEditor(filter->createEditor());
-
+    processor.addConnection(filterNode->nodeId, 0, eqNode->nodeId, 0);
     processor.getNodeForId(1)->getProcessor()->enableAllBuses();
-    processor.addConnection(filterNode->nodeId, 0, 1, 0);
-    processor.addConnection(filterNode->nodeId, 0, 1, 1);
     
     worksheet->addEditor(wave->createEditor());
     processor.addConnection(generator->nodeId, 0, filterNode->nodeId, 0);
+    
+    worksheet->addEditor(eqFour->createEditor());
+    processor.addConnection(eqNode->nodeId, 0, 1, 0);
+    processor.addConnection(eqNode->nodeId, 0, 1, 1);
+    
 	}
   else if (processorType == 1)
   {

@@ -19,7 +19,8 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
 {
   addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 100, 10000, 100));
   addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
-  filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter);
+  addParameter(gainParameter = new AudioParameterFloat("gainParameter2", "Gain", -12, 12, 0));
+  filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
   
   types->add("bypass");
   types->add("lowpass");
@@ -30,9 +31,11 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   types->add("second order highpass");
   types->add("canonical bandpass");
   types->add("canonical bandstop");
+  types->add("lowshelf");
+  types->add("highshelf");
   
   
-  addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 1));
+  addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
   
   addListener(this);
 }
@@ -66,6 +69,8 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
             6 = IIR canonical second order highpass
             7 = IIR canonical bandpass
             8 = IIR canonical bandstop
+            9 = IIR first order lowshelf
+           10 = IIR first order highshelf
    */
   
   ignoreUnused(midiBuffer);
@@ -109,6 +114,14 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
       filterIIR->canonicalBandstop(outBuffer);
       break;
       
+    case 9:
+      filterIIR->lowShelf(outBuffer);
+      break;
+      
+    case 10:
+      filterIIR->highShelf(outBuffer);
+      break;
+      
     default:
       break;
   }
@@ -142,6 +155,9 @@ void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* processor, 
     case 1:
       filterIIR->setQ(newValue);
       DBG("q: " << newValue);
+      break;
+    case 2:
+      filterIIR->setGain(newValue);
       break;
     default:
       break;

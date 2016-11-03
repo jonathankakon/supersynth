@@ -15,6 +15,8 @@
 #include "ProcessorEditorBase.h"
 #include "WaveGeneratorProcessorEditor.h"
 #include "FilterProcessorEditor.h"
+#include "EQFourProcessor.h"
+#include "EQFourProcessorEditor.h"
 
 #include "InputConnector.h"
 #include "OutputConnector.h"
