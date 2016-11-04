@@ -34,7 +34,7 @@ public:
     ProcessorEditorBase& owner;
   };
 
-  void registerImmobileObject(Component& component);
+  void registerImmobileObject(Component& component) const;
 
   void mouseDown(const MouseEvent& e) override;
   void mouseDrag(const MouseEvent& e) override;
@@ -42,8 +42,10 @@ public:
   void mouseExit(const MouseEvent& e) override;
   void mouseUp(const MouseEvent& e) override;
 
-  void setViewPortDragging(bool enableDragging);
+  void setViewPortDragging(bool enableDragging) const;
   void setComponentDragging(bool enableDragging);
+  int addProcessorToGraph(AudioProcessor* processor) const;
+  virtual void setConnectors() {};
 
 private:
   bool draggingEnabled;

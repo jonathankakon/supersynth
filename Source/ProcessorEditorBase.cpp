@@ -12,8 +12,8 @@
 #include "PluginEditor.h"
 
 
-ProcessorEditorBase::ProcessorEditorBase(AudioProcessor * p) 
-  : AudioProcessorEditor(p), processor(*p), dragStop(new DragStopHelper(*this))
+ProcessorEditorBase::ProcessorEditorBase(AudioProcessor * p)
+  : AudioProcessorEditor(p), draggingEnabled(true), processor(*p), dragStop(new DragStopHelper(*this))
 {
 }
 
@@ -56,7 +56,7 @@ void ProcessorEditorBase::mouseUp(const MouseEvent&)
 }
 
 
-void ProcessorEditorBase::setViewPortDragging(bool enableDragging)
+void ProcessorEditorBase::setViewPortDragging(bool enableDragging) const
 {
   findParentComponentOfClass<SupersynthAudioProcessorEditor>()->setViewPortDragScrolling(enableDragging);
 }
@@ -67,7 +67,12 @@ void ProcessorEditorBase::setComponentDragging(bool enableDragging)
   draggingEnabled = enableDragging;
 }
 
-void ProcessorEditorBase::registerImmobileObject(Component & component)
+int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor) const
+{
+  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor);
+}
+
+void ProcessorEditorBase::registerImmobileObject(Component & component) const
 {
   component.addMouseListener(dragStop, false);
 }

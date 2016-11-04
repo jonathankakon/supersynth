@@ -12,8 +12,8 @@
 
 
 
-EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p,ProcessorEditorBase* b)
-: ProcessorEditorBase(p) , processor (*p), parent(*b)
+EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEditorBase* b)
+: AudioProcessorEditor(p) , processor (*p), parent(*b)
 {
   setSize(500, 300);
   

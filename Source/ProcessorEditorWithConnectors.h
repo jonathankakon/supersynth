@@ -28,11 +28,11 @@ template<class AudioProcessorType, class EditorType>
 class ProcessorEditorWithConnectors : public ProcessorEditorBase
 {
 public:
-  ProcessorEditorWithConnectors(AudioProcessorType* processor);
+  explicit ProcessorEditorWithConnectors(AudioProcessorType* processor);
   ~ProcessorEditorWithConnectors();
 
   //==============================================================================
-  void setConnectors();
+  void setConnectors() override;
 
   void resized() override;
   void paint(Graphics& g) override;

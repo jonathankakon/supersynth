@@ -16,7 +16,7 @@
 #include "EQFourProcessor.h"
 
 
-class EQFourProcessorEditor: public ProcessorEditorBase, Slider::Listener, ToggleButton::Listener
+class EQFourProcessorEditor: public AudioProcessorEditor, Slider::Listener, ToggleButton::Listener
 {
 public:
   EQFourProcessorEditor(EQFourProcessor* p, ProcessorEditorBase* b);

@@ -18,47 +18,47 @@
 #include "Worksheet.h"
 #include "CollapseButton.h"
 
-#include "WaveGeneratorProcessor.h"
-#include "FilterProcessor.h"
 #include "EQFourProcessor.h"
-
 
 //==============================================================================
 /**
 */
-class SupersynthAudioProcessorEditor  : 
-	public AudioProcessorEditor,
-	public ButtonListener,
-	public DragAndDropContainer,
-	public ComponentListener
+class SupersynthAudioProcessorEditor :
+  public AudioProcessorEditor,
+  public ButtonListener,
+  public DragAndDropContainer,
+  public ComponentListener
 {
 public:
-    SupersynthAudioProcessorEditor (SupersynthAudioProcessor&);
-    ~SupersynthAudioProcessorEditor();
-	
-    //==============================================================================
-    void paint (Graphics&) override;
-    void resized() override;
-	void buttonClicked(Button* buttonThatWasClicked) override;
-	void componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized) override;
+  SupersynthAudioProcessorEditor(SupersynthAudioProcessor&);
+  ~SupersynthAudioProcessorEditor();
 
-	void setViewPortDragScrolling(bool allow);
-	void addAudioProcessor(int processorType);
+  //==============================================================================
+  void paint(Graphics&) override;
+  void resized() override;
+  void buttonClicked(Button* buttonThatWasClicked) override;
+  void componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized) override;
+
+  void setViewPortDragScrolling(bool allow) const;
+  void addAudioProcessor(ToolboxComponent::ModulesListElement*) const;
+  int addAudioProcessor(AudioProcessor*) const;
+
+  void addIOComponents() const;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-	ScopedPointer<ToolboxComponent> toolbox;
-	ScopedPointer<CollapseButton> collapseButton;
-	ScopedPointer<Viewport> viewport;
-	ScopedPointer<Worksheet> worksheet;
+  // This reference is provided as a quick way for your editor to
+  // access the processor object that created it.
+  ScopedPointer<ToolboxComponent> toolbox;
+  ScopedPointer<CollapseButton> collapseButton;
+  ScopedPointer<Viewport> viewport;
+  ScopedPointer<Worksheet> worksheet;
 
 
   SupersynthAudioProcessor& processor;
 
-	bool open = false;
+  bool open = false;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SupersynthAudioProcessorEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SupersynthAudioProcessorEditor)
 };
 
 

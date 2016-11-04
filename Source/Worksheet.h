@@ -32,6 +32,7 @@ public:
 	void itemDropped(const SourceDetails& sourceDetails) override;
 
 	void addEditor(Component* editor);
+	void addEditor(Component* editor, double x, double y);
 
 private:
 	bool somethingIsBeingDraggedOver;
