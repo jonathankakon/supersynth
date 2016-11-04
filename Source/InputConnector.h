@@ -13,20 +13,30 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class ProcessorEditorBase;
+
 //==============================================================================
 /*
 */
-class InputConnector    : public Component
+class InputConnector : public AudioProcessorEditor , SliderListener
 {
 public:
-    InputConnector();
-    ~InputConnector();
+  InputConnector(AudioProcessor* p, ProcessorEditorBase* b);
+  ~InputConnector();
 
-    void paint (Graphics&) override;
-    void resized() override;
+  void paint(Graphics&) override;
+  void resized() override;
 
+  void sliderValueChanged(Slider* slider) override;
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputConnector)
+
+  OwnedArray<Slider> sliders;
+
+  AudioProcessor& processor;
+  ProcessorEditorBase& parent;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InputConnector)
 };
 
 

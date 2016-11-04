@@ -12,6 +12,8 @@
 #include "PluginEditor.h"
 
 #include "ToolboxComponent.h"
+#include "InternalIOProcessor.h"
+#include "ProcessorEditorBase.h"
 
 
 //==============================================================================
@@ -42,6 +44,8 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
 	viewport->setViewedComponent(worksheet);
 
 	worksheet->addComponentListener(this);
+
+  addIOComponents();
 }
 
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
@@ -52,6 +56,29 @@ SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
 	worksheet = nullptr;
 	viewport = nullptr;
 	collapseButton = nullptr;
+}
+
+void SupersynthAudioProcessorEditor::addIOComponents() const
+{
+  InternalIOProcessor* audioInput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode);
+  InternalIOProcessor* audioOutput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode);
+  InternalIOProcessor* midiInput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::midiInputNode);
+
+  AudioProcessorGraph::Node* aiNode = processor.addNode(audioInput);
+  AudioProcessorGraph::Node* aoNode = processor.addNode(audioOutput);
+  AudioProcessorGraph::Node* miNode = processor.addNode(midiInput);
+
+  ProcessorEditorBase* editor = static_cast<ProcessorEditorBase*>(audioInput->createEditor());
+  worksheet->addEditor(editor, 100, 30);
+  editor->setConnectors();
+
+  editor = static_cast<ProcessorEditorBase*>(audioOutput->createEditor());
+  worksheet->addEditor(editor, 100, 80);
+  editor->setConnectors();
+
+  editor = static_cast<ProcessorEditorBase*>(midiInput->createEditor());
+  worksheet->addEditor(editor, 500, 440);
+  editor->setConnectors();
 }
 
 //==============================================================================
@@ -124,13 +151,23 @@ void SupersynthAudioProcessorEditor::buttonClicked(Button* buttonThatWasClicked)
 	}
 }
 
-void SupersynthAudioProcessorEditor::setViewPortDragScrolling(bool allow)
+void SupersynthAudioProcessorEditor::setViewPortDragScrolling(bool allow) const
 {
 	viewport->setScrollOnDragEnabled(allow);
 }
 
-void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
+void SupersynthAudioProcessorEditor::addAudioProcessor(ToolboxComponent::ModulesListElement* element) const
 {
+  AudioProcessor* proc = element->getInstance();
+  AudioProcessorGraph::Node* node = processor.addNode(proc);
+  if (proc->hasEditor())
+  {
+    AudioProcessorEditor* editor =  proc->createEditor();
+    worksheet->addEditor(editor);
+    static_cast<ProcessorEditorBase*>(editor)->setConnectors();
+  }
+
+  /*
   if (processor.getNodeForId(1) == nullptr)
   {
     AudioProcessorGraph::AudioGraphIOProcessor* node = new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
@@ -162,5 +199,11 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(int processorType)
     worksheet->addEditor(filter->createEditor());
     processor.addConnection(filterNode->nodeId, 0, 1, 0);
     processor.addConnection(filterNode->nodeId, 0, 1, 1);
-  }
+  }*/
+}
+
+int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p) const
+{
+  AudioProcessorGraph::Node* node = processor.addNode(p);
+  return node->nodeId;
 }

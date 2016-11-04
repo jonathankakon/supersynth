@@ -11,7 +11,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ToolboxComponent.h"
 
-#include "PluginEditor.h"
+#include "WaveGeneratorProcessor.h"
+#include "FilterProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -19,64 +20,59 @@ int ToolboxComponent::getNumRows()
 }
 
 void ToolboxComponent::paintListBoxItem(int rowNumber, Graphics& g,
-	int width, int height, bool rowIsSelected)
+  int width, int height, bool rowIsSelected)
 {
-	g.fillAll(Colour(0xFFC8C8C8));
-	g.setColour(Colour(0xFF1F1F1F));
-	if (rowIsSelected)
-	{
-		g.fillAll(Colour(0xFF007ACC));
-		g.setColour(Colour(0xFFFFFFFF));
-	}
+  g.fillAll(Colour(0xFFC8C8C8));
+  g.setColour(Colour(0xFF1F1F1F));
+  if (rowIsSelected)
+  {
+    g.fillAll(Colour(0xFF007ACC));
+    g.setColour(Colour(0xFFFFFFFF));
+  }
 
-	g.setFont(height * 0.7f);
+  g.setFont(height * 0.7f);
 
-	g.drawText((modules[rowNumber])->name,
-		5, 0, width, height,
-		Justification::centredLeft, true);
+  g.drawText((modules[rowNumber])->name,
+    5, 0, width, height,
+    Justification::centredLeft, true);
 }
 
 var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRows)
 {
-	// for our drag description, we'll just make a comma-separated list of the selected row
-	// numbers - this will be picked up by the drag target and displayed in its box.
-	if (selectedRows.size() > 0)
-	{
-		return modules[selectedRows[0]]->processorType;
-	}
-	return 0;
+  // for our drag description, we'll just make a comma-separated list of the selected row
+  // numbers - this will be picked up by the drag target and displayed in its box.
+  if (selectedRows.size() > 0)
+  {
+    return new ToolboxComponent::ModulesListElement(*modules[selectedRows[0]]);
+  }
+  return 0;
 }
 
 //==============================================================================
-ToolboxComponent::ToolboxComponent() : 
-	moduleList(new ListBox("ModuleList", nullptr))
+ToolboxComponent::ToolboxComponent() :
+  moduleList(new ListBox("ModuleList", nullptr))
 {
-	modules.add(new ModulesListElement({ "Wave Generator", "waveGenerator.png", 0 }));
-	modules.add(new ModulesListElement({ "IIR Filter", "filter.png", 1 }));
-	modules.add(new ModulesListElement({ "N-Channel Mixer", "mixer.png", 2 }));
-	modules.add(new ModulesListElement({ "Output Channel", "out.png", 3 }));
-	modules.add(new ModulesListElement({ "Midi Input", "midi.png", 4 }));
+  modules.add(new ModulesListElement("Wave Generator", "wave.png", &createInstance<WaveGeneratorProcessor>));
+  modules.add(new ModulesListElement("IIR Filter", "filter.png", &createInstance<FilterProcessor>));
 
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-	Rectangle<int> r(getLocalBounds());
+  Rectangle<int> r(getLocalBounds());
 
-	addAndMakeVisible(moduleList);
-	moduleList->setColour(ListBox::ColourIds::backgroundColourId, Colour(0xFFC8C8C8));
-	moduleList->setColour(ListBox::ColourIds::outlineColourId, Colour(0xFFC8C8C8));
-	moduleList->setBounds(r);
-	moduleList->setModel(this);
-	moduleList->setMultipleSelectionEnabled(false);
+  addAndMakeVisible(moduleList);
+  moduleList->setColour(ListBox::ColourIds::backgroundColourId, Colour(0xFFC8C8C8));
+  moduleList->setColour(ListBox::ColourIds::outlineColourId, Colour(0xFFC8C8C8));
+  moduleList->setBounds(r);
+  moduleList->setModel(this);
+  moduleList->setMultipleSelectionEnabled(false);
 
-	/*
-	ComponentBoundsConstrainer* bounds = new ComponentBoundsConstrainer();
-	bounds->setMaximumWidth(400);
-	bounds->setMinimumWidth(150);
-	resizeBorder = new ResizableBorderComponent(this, bounds);
-	addAndMakeVisible(resizeBorder);
-	resizeBorder->setBorderThickness(BorderSize<int>(0,0,0,3));
-	resizeBorder->setBounds(r);
-	*/
+  /*
+  ComponentBoundsConstrainer* bounds = new ComponentBoundsConstrainer();
+  bounds->setMaximumWidth(400);
+  bounds->setMinimumWidth(150);
+  resizeBorder = new ResizableBorderComponent(this, bounds);
+  addAndMakeVisible(resizeBorder);
+  resizeBorder->setBorderThickness(BorderSize<int>(0,0,0,3));
+  resizeBorder->setBounds(r);
+  */
 }
 
 ToolboxComponent::~ToolboxComponent()
@@ -85,28 +81,19 @@ ToolboxComponent::~ToolboxComponent()
 	resizeBorder = nullptr;
 }
 
-void ToolboxComponent::paint (Graphics& g)
+void ToolboxComponent::paint(Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (Colour(0xFF3F3F46));   // clear the background
-										 // draw an outline around the component
-										  // draw some placeholder text
+  g.fillAll(Colour(0xFF3F3F46)); 
 }
 
 void ToolboxComponent::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
+  // This method is where you should set the bounds of any child
+  // components that your component contains..
 
-	Rectangle<int> r(getLocalBounds());
-	
-	moduleList->setBounds(r);
-	//resizeBorder->setBounds(r);
+  Rectangle<int> r(getLocalBounds());
+
+  moduleList->setBounds(r);
+  //resizeBorder->setBounds(r);
 }
 

@@ -18,6 +18,8 @@
                 file="Source/FilterProcessorEditor.cpp"/>
           <FILE id="cESYm8" name="FilterProcessorEditor.h" compile="0" resource="0"
                 file="Source/FilterProcessorEditor.h"/>
+          <FILE id="hbytox" name="IOEditor.cpp" compile="1" resource="0" file="Source/IOEditor.cpp"/>
+          <FILE id="MRTBHW" name="IOEditor.h" compile="0" resource="0" file="Source/IOEditor.h"/>
           <FILE id="Ueg5Hu" name="ProcessorEditorBase.cpp" compile="1" resource="0"
                 file="Source/ProcessorEditorBase.cpp"/>
           <FILE id="fsXoLH" name="ProcessorEditorBase.h" compile="0" resource="0"
@@ -58,6 +60,14 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="gLA5e2" name="InputConnectorProcessor.cpp" compile="1" resource="0"
+              file="Source/InputConnectorProcessor.cpp"/>
+        <FILE id="y3WLnM" name="InputConnectorProcessor.h" compile="0" resource="0"
+              file="Source/InputConnectorProcessor.h"/>
+        <FILE id="Yc7JTL" name="InternalIOProcessor.cpp" compile="1" resource="0"
+              file="Source/InternalIOProcessor.cpp"/>
+        <FILE id="mWgu1k" name="InternalIOProcessor.h" compile="0" resource="0"
+              file="Source/InternalIOProcessor.h"/>
         <FILE id="kaiozE" name="FilterProcessor.cpp" compile="1" resource="0"
               file="Source/FilterProcessor.cpp"/>
         <FILE id="jucMtv" name="FilterProcessor.h" compile="0" resource="0"

@@ -45,12 +45,12 @@ void Worksheet::paint (Graphics& g)
     g.setColour (Colours::darkgrey);
 	for (int x = 0; x < getWidth(); x += 50)
 	{
-		g.drawLine(Line<float>((float)x, (float)r.getY(), (float)x, (float)r.getBottom()), 0.3f);
+		g.drawLine(Line<float>(static_cast<float>(x), static_cast<float>(r.getY()), static_cast<float>(x), static_cast<float>(r.getBottom())), 0.3f);
 	}
 
 	for (int y = 0; y < getHeight(); y += 50)
 	{
-		g.drawLine(Line<float>((float)r.getX(), (float)y, (float)r.getRight(), (float)y), 0.3f);
+		g.drawLine(Line<float>(static_cast<float>(r.getX()), static_cast<float>(y), static_cast<float>(r.getRight()), static_cast<float>(y)), 0.3f);
 	}
 }
 
@@ -63,7 +63,7 @@ void Worksheet::resized()
 
 bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
-	if (dragSourceDetails.description.isInt())
+  if (dragSourceDetails.description.hasSameTypeAs(new var(new ToolboxComponent::ModulesListElement("", "", nullptr))));
 	{
 		return true;
 	}
@@ -104,7 +104,7 @@ void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 {
 	dropPosition = dragSourceDetails.localPosition;
 
-	findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(dragSourceDetails.description);
+	findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(static_cast<ToolboxComponent::ModulesListElement*> (dragSourceDetails.description.getObject()));
 
 	somethingIsBeingDraggedOver = false;
 	beginDragAutoRepeat(0);
@@ -113,7 +113,13 @@ void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 
 void Worksheet::addEditor(Component* editor)
 {
-	editors.add(editor);
-	addAndMakeVisible(editor);
-	editor->setBounds(Rectangle<int>(dropPosition.getX() - editor->getWidth() / 2, dropPosition.getY() - editor->getHeight() / 2, editor->getWidth(), editor->getHeight()));
+  addEditor(editor, dropPosition.getX(), dropPosition.getY());
+}
+
+void Worksheet::addEditor(Component* editor, double x, double y)
+{
+  editors.add(editor);
+  addAndMakeVisible(editor);
+  Rectangle<int>r(x - editor->getWidth() / 2, y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
+  editor->setBounds(r);
 }

@@ -10,12 +10,26 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "InputConnector.h"
+#include "ProcessorEditorBase.h"
 
 //==============================================================================
-InputConnector::InputConnector()
+InputConnector::InputConnector(AudioProcessor* p, ProcessorEditorBase * b) : AudioProcessorEditor(p),
+   sliders(OwnedArray<Slider>()), processor(*p), parent(*b)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
+
+  setSize(32, 32);
+  Slider* firstSlider = new Slider();
+  firstSlider->setRange(0, 1);
+  firstSlider->addListener(this);
+  firstSlider->setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+  firstSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+  firstSlider->setBounds(Rectangle<int>(getLocalBounds().withX(getLocalBounds().getX() + 11).withY(getLocalBounds().getY() + 4).withWidth(24).withHeight(24)));
+  sliders.add(firstSlider);
+
+  parent.registerImmobileObject(*firstSlider);
+  addAndMakeVisible(firstSlider);
 }
 
 InputConnector::~InputConnector()
@@ -24,14 +38,19 @@ InputConnector::~InputConnector()
 
 void InputConnector::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+  g.setColour(Colour(0x4F000000));
+  g.fillRoundedRectangle (getLocalBounds().toFloat(), 10);
+  
+  g.setColour(Colours::blue);
+  for (int i = 0; i < sliders.size(); i++)
+  {
+    Rectangle<float> r(getLocalBounds().withHeight(12).withWidth(12).toFloat());
+    
+    r.setX(0);
+    r.setY(r.getY() + 10 + i*40);
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (Colours::green);   // clear the background
+    g.fillEllipse(r);
+  }
 }
 
 void InputConnector::resized()
@@ -39,4 +58,8 @@ void InputConnector::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
+}
+
+void InputConnector::sliderValueChanged(Slider* slider)
+{
 }
