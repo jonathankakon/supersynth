@@ -17,19 +17,20 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize(250, 300);
+  setSize(400, 150);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[0]);
   frequencySlider = new Slider(frequencyParam->name);
-  frequencySlider->setRange(100, 10000, 0.0001);
+  frequencySlider->setRange(50, 15000, 0.0001);
   frequencySlider->setSkewFactor(0.5);
   frequencySlider->setSliderStyle(Slider::RotaryVerticalDrag);
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
   //frequencySlider->setPopupDisplayEnabled(true, this);
-  frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
+  frequencySlider->setValue(50);
   frequencySlider->addListener(this);
+  frequencySlider->setTextValueSuffix(" Hz");
   parent.registerImmobileObject(*frequencySlider);
   addAndMakeVisible(frequencySlider);
   
@@ -40,7 +41,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   qSlider->setSliderStyle(Slider::RotaryVerticalDrag);
   qSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
   //qSlider->setPopupDisplayEnabled(true, this);
-  qSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(qParam)->getValue());
+  qSlider->setValue(0.72);
   qSlider->addListener(this);
   parent.registerImmobileObject(*qSlider);
   addAndMakeVisible(qSlider);
@@ -50,7 +51,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   gainSlider->setRange(-12, 12,0.001);
   gainSlider->setSliderStyle(Slider::RotaryVerticalDrag);
   gainSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
-  gainSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(gainParam)->getValue());
+  gainSlider->setValue(0);
   gainSlider->addListener(this);
   parent.registerImmobileObject(*gainSlider);
   addAndMakeVisible(gainSlider);
@@ -66,36 +67,66 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
 //  registerImmobileObject(*filterTypeSlider);
 //  addAndMakeVisible(filterTypeSlider);
   
-  buttonOnOff = new ToggleButton("Bypass");
-  button0 = new ToggleButton("1st Lowpass" );
-  button1 = new ToggleButton("1st Highpass");
-  button2 = new ToggleButton("Bandpass");
-  button3 = new ToggleButton("Bandstop");
-  button4 = new ToggleButton("2nd Lowpass");
-  button5 = new ToggleButton("2nd Highpass");
-  button6 = new ToggleButton("Can. Bandpass");
-  button7 = new ToggleButton("Can. Bandstop");
-  button8 = new ToggleButton("1st Lowshelf");
-  button9 = new ToggleButton("1st Highshelf");
+  //COMBOBOX
+  dropdownMenuFilterTypes = new ComboBox("dropdownMenuFilterType");
+  dropdownMenuFilterTypes->addItemList({"Bypass","1st Lowpass", "1st Highpass", "Bandpass", "Bandstop", "2nd Lowpass",  "2nd Highpass", "Can. Bandpass", "Can. Bandstop", "1st Lowshelf", "1st Highshelf"}, 1);
+  dropdownMenuFilterTypes->addListener(this);
+  dropdownMenuFilterTypes->setSelectedId(1);
+  parent.registerImmobileObject(*dropdownMenuFilterTypes);
+  addAndMakeVisible(dropdownMenuFilterTypes);
   
-  buttonOnOff->setRadioGroupId(1);
-  button0->setRadioGroupId(1);
-  button1->setRadioGroupId(1);
-  button2->setRadioGroupId(1);
-  button3->setRadioGroupId(1);
-  button4->setRadioGroupId(1);
-  button5->setRadioGroupId(1);
-  button6->setRadioGroupId(1);
-  button7->setRadioGroupId(1);
-  button8->setRadioGroupId(1);
-  button9->setRadioGroupId(1);
+  //LABELS
+  //LABELS
+  addAndMakeVisible(frequencyLabel);
+  addAndMakeVisible(qLabel);
+  addAndMakeVisible(gainLabel);
   
+  frequencyLabel.setText("Frequency", juce::dontSendNotification);
+  qLabel.setText("Q", juce::dontSendNotification);
+  gainLabel.setText("Gain", juce::dontSendNotification);
+  
+  frequencyLabel.attachToComponent(frequencySlider, false);
+  qLabel.attachToComponent(qSlider, false);
+  gainLabel.attachToComponent(gainSlider, false);
+  
+  frequencyLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  qLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  gainLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  
+  //BUTTONS
+//  buttonOnOff = new ToggleButton("Bypass");
+//  button0 = new ToggleButton("1st Lowpass" );
+//  button1 = new ToggleButton("1st Highpass");
+//  button2 = new ToggleButton("Bandpass");
+//  button3 = new ToggleButton("Bandstop");
+//  button4 = new ToggleButton("2nd Lowpass");
+//  button5 = new ToggleButton("2nd Highpass");
+//  button6 = new ToggleButton("Can. Bandpass");
+//  button7 = new ToggleButton("Can. Bandstop");
+//  button8 = new ToggleButton("1st Lowshelf");
+//  button9 = new ToggleButton("1st Highshelf");
+  
+//  buttonOnOff->setRadioGroupId(1);
+//  button0->setRadioGroupId(1);
+//  button1->setRadioGroupId(1);
+//  button2->setRadioGroupId(1);
+//  button3->setRadioGroupId(1);
+//  button4->setRadioGroupId(1);
+//  button5->setRadioGroupId(1);
+//  button6->setRadioGroupId(1);
+//  button7->setRadioGroupId(1);
+//  button8->setRadioGroupId(1);
+//  button9->setRadioGroupId(1);
+  
+  //setting default button
+  //buttonOnOff->setToggleState(true, juce::dontSendNotification); //buttonOnOff is on by default
+
+  /*
   buttonOnOff->addListener(this);
   addAndMakeVisible(buttonOnOff);
   
   button0->addListener(this);
   addAndMakeVisible(button0);
-  buttonOnOff->setToggleState(true, juce::dontSendNotification); //buttonOnOff is on by default
   
   button1->addListener(this);
   addAndMakeVisible(button1);
@@ -123,7 +154,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   
   button9->addListener(this);
   addAndMakeVisible(button9);
-  
+  */
   
 }
 
@@ -141,24 +172,26 @@ void FilterProcessorEditor::paint (Graphics& g)
   
   
   Rectangle<int> r(getLocalBounds());
-  r.reduce(10,10);
+  r.reduce(20,20);
   int offset = r.getWidth()/5;
   int yoffset = r.getHeight()/numButtons;
   
   //filterTypeSlider->setBounds(r.withWidth(offset).withX(offset));
-  frequencySlider->setBounds(r.withWidth(offset).withX(2*offset).withHeight(2*offset));
-  qSlider->setBounds(r.withWidth(offset).withX(3*offset).withHeight(2*offset));
-  gainSlider->setBounds(r.withWidth(offset).withX(4*offset).withHeight(2*offset));
+  frequencySlider->setBounds(r.withWidth(offset).withX(r.getX()+2*offset));
+  qSlider->setBounds(r.withWidth(offset).withX(r.getX()+3*offset));
+  gainSlider->setBounds(r.withWidth(offset).withX(r.getX()+4*offset));
   
-  buttonOnOff->setBounds(r.withWidth(1.8*offset).withHeight(yoffset));
-  button0->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(1*yoffset));
-  button1->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(2*yoffset));
-  button4->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(3*yoffset));
-  button5->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(4*yoffset));
-  button6->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(5*yoffset));
-  button7->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(6*yoffset));
-  button8->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(7*yoffset));
-  button9->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(8*yoffset));
+  dropdownMenuFilterTypes->setBounds(r.withWidth(1.8*offset).withHeight(r.getHeight()/3).withY(r.getY()+r.getHeight()/6));
+  
+//  buttonOnOff->setBounds(r.withWidth(1.8*offset).withHeight(yoffset));
+//  button0->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(1*yoffset));
+//  button1->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(2*yoffset));
+//  button4->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(3*yoffset));
+//  button5->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(4*yoffset));
+//  button6->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(5*yoffset));
+//  button7->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(6*yoffset));
+//  button8->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(7*yoffset));
+//  button9->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(8*yoffset));
   
   
   
@@ -270,5 +303,56 @@ void FilterProcessorEditor::buttonClicked(Button* button)
 
 void FilterProcessorEditor::buttonStateChanged(Button *button)
 {
+}
 
+void FilterProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
+{
+  switch (comboBoxThatHasChanged->getSelectedId()) {
+    case 1:
+      processor.changeFilterType(0);
+      break;
+    
+    case 2:
+      processor.changeFilterType(1);
+      break;
+      
+    case 3:
+      processor.changeFilterType(2);
+      break;
+      
+    case 4:
+      processor.changeFilterType(3);
+      break;
+      
+    case 5:
+      processor.changeFilterType(4);
+      break;
+      
+    case 6:
+      processor.changeFilterType(5);
+      break;
+      
+    case 7:
+      processor.changeFilterType(6);
+      break;
+      
+    case 8:
+      processor.changeFilterType(7);
+      break;
+      
+    case 9:
+      processor.changeFilterType(8);
+      break;
+      
+    case 10:
+      processor.changeFilterType(9);
+      break;
+      
+    case 11:
+      processor.changeFilterType(10);
+      break;
+      
+    default:
+      break;
+  }
 }

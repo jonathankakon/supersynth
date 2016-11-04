@@ -17,7 +17,7 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio", AudioChannelSet::mono())
   .withInput("Audio", AudioChannelSet::mono())), types(new StringArray)
 {
-  addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 100, 10000, 100));
+  addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 50, 15000, 100));
   addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
   addParameter(gainParameter = new AudioParameterFloat("gainParameter2", "Gain", -12, 12, 0));
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);

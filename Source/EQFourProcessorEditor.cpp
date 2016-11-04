@@ -162,7 +162,7 @@ void EQFourProcessorEditor::paint (Graphics& g)
   g.drawFittedText ("Equalizer!", Rectangle<int>(200,15), Justification::centred, 1);
 
   Rectangle<int> topBar(getLocalBounds().withHeight(30));
-  g.drawRect(topBar);
+//  g.drawRect(topBar);
   
   
   Rectangle<int> r(getLocalBounds());

@@ -16,7 +16,7 @@
 #include "ProcessorEditorWithConnectors.h"
 
 
-class FilterProcessorEditor  : public AudioProcessorEditor, Slider::Listener, ToggleButton::Listener
+class FilterProcessorEditor  : public AudioProcessorEditor, Slider::Listener, ToggleButton::Listener, ComboBox::Listener
 {
 public:
   FilterProcessorEditor (FilterProcessor* p, ProcessorEditorBase* b);
@@ -29,7 +29,8 @@ public:
   void sliderValueChanged(Slider* slider) override;
   void buttonClicked(Button* button) override;
   void buttonStateChanged(Button* button) override;
-  
+  void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
@@ -40,6 +41,8 @@ private:
   ScopedPointer<Slider> qSlider;
   ScopedPointer<Slider> gainSlider;
   //ScopedPointer<Slider> filterTypeSlider;
+  
+  ScopedPointer<ComboBox> dropdownMenuFilterTypes;
   
   int numButtons = 9; //number of Buttons
   
@@ -54,6 +57,10 @@ private:
   ScopedPointer<ToggleButton> button7;
   ScopedPointer<ToggleButton> button8;
   ScopedPointer<ToggleButton> button9;
+  
+  Label frequencyLabel;
+  Label qLabel;
+  Label gainLabel;
 
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessorEditor)
