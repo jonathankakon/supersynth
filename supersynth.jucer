@@ -14,6 +14,10 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="LrK78v" name="EQFourProcessorEditor.cpp" compile="1" resource="0"
+                file="Source/EQFourProcessorEditor.cpp"/>
+          <FILE id="qbxhrZ" name="EQFourProcessorEditor.h" compile="0" resource="0"
+                file="Source/EQFourProcessorEditor.h"/>
           <FILE id="Vn2wfR" name="FilterProcessorEditor.cpp" compile="1" resource="0"
                 file="Source/FilterProcessorEditor.cpp"/>
           <FILE id="cESYm8" name="FilterProcessorEditor.h" compile="0" resource="0"
@@ -60,6 +64,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="a0BAzy" name="EQFourProcessor.h" compile="0" resource="0"
+              file="Source/EQFourProcessor.h"/>
+        <FILE id="AnEhdg" name="EQFourProcessor.cpp" compile="1" resource="0"
+              file="Source/EQFourProcessor.cpp"/>
         <FILE id="gLA5e2" name="InputConnectorProcessor.cpp" compile="1" resource="0"
               file="Source/InputConnectorProcessor.cpp"/>
         <FILE id="y3WLnM" name="InputConnectorProcessor.h" compile="0" resource="0"

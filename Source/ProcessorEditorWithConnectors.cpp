@@ -74,3 +74,4 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::resized()
 template class ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGeneratorProcessorEditor>;
 template class ProcessorEditorWithConnectors<FilterProcessor, FilterProcessorEditor>;
 template class ProcessorEditorWithConnectors<InternalIOProcessor, IOEditor>;
+template class ProcessorEditorWithConnectors<EQFourProcessor, EQFourProcessorEditor>;

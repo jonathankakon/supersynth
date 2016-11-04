@@ -13,6 +13,7 @@
 
 #include "WaveGeneratorProcessor.h"
 #include "FilterProcessor.h"
+#include "EQFourProcessorEditor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -54,6 +55,7 @@ ToolboxComponent::ToolboxComponent() :
 {
   modules.add(new ModulesListElement("Wave Generator", "wave.png", &createInstance<WaveGeneratorProcessor>));
   modules.add(new ModulesListElement("IIR Filter", "filter.png", &createInstance<FilterProcessor>));
+  modules.add(new ModulesListElement("Equalizer", "eq.png", &createInstance<EQFourProcessor>));
 
   Rectangle<int> r(getLocalBounds());
 

@@ -24,7 +24,7 @@ aw = 1 - apof * kaiser(pts, apobeta);
 g = aw.*g;
 g = g/max(g);
 
-csvwrite('bandlimited_step_function_48000.dat',g);
+dlmwrite('bandlimited_step_function_48000.dat',g', 'precision', 32);
 
 %g(501) = 0;
 %h = zeros(1001,1);
@@ -38,7 +38,7 @@ for ii = ceil(pts/2):pts
 end
 
 g = g/max(g);
-csvwrite('bandlimited_saw_difference_48000.dat',g);
+dlmwrite('bandlimited_saw_difference_48000.dat',g', 'precision', 32);
 % Plot
 
 figure(1);

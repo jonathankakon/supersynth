@@ -1,25 +1,27 @@
 /*
   ==============================================================================
 
-    FilterProcessor.h
-    Created: 20 Oct 2016 4:38:12pm
-    Author:  Paul Lehmann
+    EQFourProcessor.h
+    Created: 2 Nov 2016 4:05:01pm
+    Author:  Kian Hunziker
 
   ==============================================================================
 */
 
-#ifndef FILTERPROCESSOR_H_INCLUDED
-#define FILTERPROCESSOR_H_INCLUDED
+#ifndef EQFOURPROCESSOR_H_INCLUDED
+#define EQFOURPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "FilterProcessor.h"
 #include "GenericIIRFilter.h"
 
-class FilterProcessor: public AudioProcessor, AudioProcessorListener
+
+class EQFourProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
-  FilterProcessor();
-  ~FilterProcessor();
+  EQFourProcessor();
+  ~EQFourProcessor();
   
   //==============================================================================
   void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -52,28 +54,49 @@ public:
   //==============================================================================
   void getStateInformation (MemoryBlock& destData) override;
   void setStateInformation (const void* data, int sizeInBytes) override;
-  void changeFilterType(int newIndex)
-  {
-    *filterType = newIndex;
-  };
   
+  double currentSampleRate;
+  void applyEQBand(AudioBuffer<float>& buffer, GenericIIRFilter* filter, AudioParameterFloat* gain);
+
+  void changeFilterTypeBand1(int newIndex);
+  void changeFilterTypeBand2(int newIndex);
+  void changeFilterTypeBand3(int newIndex);
+  void changeFilterTypeBand4(int newIndex);
   
 private:
   //==============================================================================
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterProcessor)
   
-  AudioParameterFloat* cutoffFreqency;
-  AudioParameterFloat* qParameter;
-  AudioParameterChoice* filterType;
-  AudioParameterFloat* gainParameter;
+  ScopedPointer<GenericIIRFilter> filterBand1;
+  ScopedPointer<GenericIIRFilter> filterBand2;
+  ScopedPointer<GenericIIRFilter> filterBand3;
+  ScopedPointer<GenericIIRFilter> filterBand4;
   
-  StringArray* types;
+  AudioParameterFloat* cutoffFreq1;
+  AudioParameterFloat* cutoffFreq2;
+  AudioParameterFloat* cutoffFreq3;
+  AudioParameterFloat* cutoffFreq4;
   
-  double currentSampleRate;
+  AudioParameterFloat* qParam1;
+  AudioParameterFloat* qParam2;
+  AudioParameterFloat* qParam3;
+  AudioParameterFloat* qParam4;
   
-  ScopedPointer<GenericIIRFilter> filterIIR;
-
+  AudioParameterFloat* gainParam1;
+  AudioParameterFloat* gainParam2;
+  AudioParameterFloat* gainParam3;
+  AudioParameterFloat* gainParam4;
+  
+  AudioParameterChoice* filterTypeBand1;
+  AudioParameterChoice* filterTypeBand2;
+  AudioParameterChoice* filterTypeBand3;
+  AudioParameterChoice* filterTypeBand4;
+  
+  
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EQFourProcessor)
 };
 
 
-#endif  // FILTERPROCESSOR_H_INCLUDED
+
+
+
+#endif  // EQFOURPROCESSOR_H_INCLUDED

@@ -45,6 +45,16 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   parent.registerImmobileObject(*qSlider);
   addAndMakeVisible(qSlider);
   
+  const AudioParameterFloat* gainParam = dynamic_cast<AudioParameterFloat*>(params[2]);
+  gainSlider = new Slider(gainParam->name);
+  gainSlider->setRange(-12, 12,0.001);
+  gainSlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  gainSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
+  gainSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(gainParam)->getValue());
+  gainSlider->addListener(this);
+  parent.registerImmobileObject(*gainSlider);
+  addAndMakeVisible(gainSlider);
+  
 //  const AudioParameterChoice* typeParam = dynamic_cast<AudioParameterChoice*>(params[2]);
 //  filterTypeSlider = new Slider (typeParam->name);
 //  filterTypeSlider->setRange(0, 7, 1);
@@ -65,6 +75,8 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   button5 = new ToggleButton("2nd Highpass");
   button6 = new ToggleButton("Can. Bandpass");
   button7 = new ToggleButton("Can. Bandstop");
+  button8 = new ToggleButton("1st Lowshelf");
+  button9 = new ToggleButton("1st Highshelf");
   
   buttonOnOff->setRadioGroupId(1);
   button0->setRadioGroupId(1);
@@ -75,22 +87,24 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   button5->setRadioGroupId(1);
   button6->setRadioGroupId(1);
   button7->setRadioGroupId(1);
+  button8->setRadioGroupId(1);
+  button9->setRadioGroupId(1);
   
   buttonOnOff->addListener(this);
   addAndMakeVisible(buttonOnOff);
   
   button0->addListener(this);
   addAndMakeVisible(button0);
-  button0->setToggleState(true, juce::dontSendNotification);
+  buttonOnOff->setToggleState(true, juce::dontSendNotification); //buttonOnOff is on by default
   
   button1->addListener(this);
   addAndMakeVisible(button1);
   
   button2->addListener(this);
-  addAndMakeVisible(button2);
+  //addAndMakeVisible(button2);
   
   button3->addListener(this);
-  addAndMakeVisible(button3);
+  //addAndMakeVisible(button3);
   
   button4->addListener(this);
   addAndMakeVisible(button4);
@@ -104,7 +118,11 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   button7->addListener(this);
   addAndMakeVisible(button7);
 
+  button8->addListener(this);
+  addAndMakeVisible(button8);
   
+  button9->addListener(this);
+  addAndMakeVisible(button9);
   
   
 }
@@ -124,22 +142,24 @@ void FilterProcessorEditor::paint (Graphics& g)
   
   Rectangle<int> r(getLocalBounds());
   r.reduce(10,10);
-  int offset = r.getWidth()/4;
+  int offset = r.getWidth()/5;
   int yoffset = r.getHeight()/numButtons;
   
   //filterTypeSlider->setBounds(r.withWidth(offset).withX(offset));
   frequencySlider->setBounds(r.withWidth(offset).withX(2*offset).withHeight(2*offset));
   qSlider->setBounds(r.withWidth(offset).withX(3*offset).withHeight(2*offset));
+  gainSlider->setBounds(r.withWidth(offset).withX(4*offset).withHeight(2*offset));
   
   buttonOnOff->setBounds(r.withWidth(1.8*offset).withHeight(yoffset));
   button0->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(1*yoffset));
   button1->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(2*yoffset));
-  button2->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(3*yoffset));
-  button3->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(4*yoffset));
-  button4->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(5*yoffset));
-  button5->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(6*yoffset));
-  button6->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(7*yoffset));
-  button7->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(8*yoffset));
+  button4->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(3*yoffset));
+  button5->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(4*yoffset));
+  button6->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(5*yoffset));
+  button7->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(6*yoffset));
+  button8->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(7*yoffset));
+  button9->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(8*yoffset));
+  
   
   
   
@@ -165,6 +185,13 @@ void FilterProcessorEditor::sliderValueChanged(Slider* slider)
     }
   else if (slider == qSlider) {
     AudioProcessorParameter* param = params[1];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) slider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else if (slider == gainSlider){
+    AudioProcessorParameter* param = params[2];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
     else
@@ -226,6 +253,16 @@ void FilterProcessorEditor::buttonClicked(Button* button)
   else if(button == button7){
     if (button7->getState()) {
       processor.changeFilterType(8);
+    }
+  }
+  else if(button == button8){
+    if (button8->getState()) {
+      processor.changeFilterType(9);
+    }
+  }
+  else if (button == button9){
+    if (button9->getState()) {
+      processor.changeFilterType(10);
     }
   }
 

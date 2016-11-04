@@ -18,6 +18,7 @@
 #include "Worksheet.h"
 #include "CollapseButton.h"
 
+#include "EQFourProcessor.h"
 
 //==============================================================================
 /**
