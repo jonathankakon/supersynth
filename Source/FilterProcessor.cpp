@@ -154,7 +154,6 @@ void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* processor, 
       break;
     case 1:
       filterIIR->setQ(newValue);
-      DBG("q: " << newValue);
       break;
     case 2:
       filterIIR->setGain(newValue);

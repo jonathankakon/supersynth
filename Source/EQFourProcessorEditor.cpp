@@ -15,7 +15,7 @@
 EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p,ProcessorEditorBase* b)
 : ProcessorEditorBase(p) , processor (*p), parent(*b)
 {
-  setSize(500, 400);
+  setSize(500, 300);
   
   //SLIDERS initialising and setting skew factors for frequency sliders
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
@@ -23,15 +23,22 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p,ProcessorEditor
   AudioParameterFloat* param = dynamic_cast< AudioParameterFloat*>(params[0]);
   cutoffFreqBand1 = new Slider(param->name);
   initialiseSlider(cutoffFreqBand1, param, 50, 10000, 0.001, 50);
+  cutoffFreqBand1->setTextValueSuffix(" Hz");
+  
   param = dynamic_cast< AudioParameterFloat*>(params[1]);
   cutoffFreqBand2 = new Slider(param->name);
   initialiseSlider(cutoffFreqBand2, param, 50, 10000, 0.001, 1000);
+  cutoffFreqBand2->setTextValueSuffix(" Hz");
+  
   param = dynamic_cast< AudioParameterFloat*>(params[2]);
   cutoffFreqBand3 = new Slider(param->name);
   initialiseSlider(cutoffFreqBand3, param, 50, 15000, 0.001, 5000);
+  cutoffFreqBand3->setTextValueSuffix(" Hz");
+  
   param = dynamic_cast< AudioParameterFloat*>(params[3]);
   cutoffFreqBand4 = new Slider(param->name);
   initialiseSlider(cutoffFreqBand4, param, 50, 15000, 0.001, 15000);
+  cutoffFreqBand4->setTextValueSuffix(" Hz");
   
   param = dynamic_cast< AudioParameterFloat*>(params[4]);
   qParamBand1 = new Slider(param->name);
@@ -70,11 +77,11 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p,ProcessorEditor
   buttonLowCut2 = new ToggleButton("2nd Lowcut");
   buttonLowShelf = new ToggleButton("Lowshelf");
   
-  buttonBandpass2 = new ToggleButton("Bandpass");
+  buttonBandpass2 = new ToggleButton("Peak");
   buttonNotch2 = new ToggleButton("Notch");
 
   
-  buttonBandpass3 = new ToggleButton("Bandpass");
+  buttonBandpass3 = new ToggleButton("Peak");
   buttonNotch3 = new ToggleButton("Notch");
   
   buttonHighCut1 = new ToggleButton("1st Highcut");
@@ -124,6 +131,21 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p,ProcessorEditor
   addAndMakeVisible(buttonLowShelf);
   addAndMakeVisible(buttonNotch2);
   addAndMakeVisible(buttonNotch3);
+  
+  
+  //LABELS
+  addAndMakeVisible(frequencyLabel);
+  addAndMakeVisible(qLabel);
+  addAndMakeVisible(gainLabel);
+  
+  frequencyLabel.setText("Frequency", juce::dontSendNotification);
+  qLabel.setText("Q", juce::dontSendNotification);
+  gainLabel.setText("Gain", juce::dontSendNotification);
+  
+  frequencyLabel.attachToComponent(cutoffFreqBand1, true);
+  qLabel.attachToComponent(qParamBand1, true);
+  gainLabel.attachToComponent(gainBand1, true);
+  
 }
 
 
@@ -134,14 +156,18 @@ EQFourProcessorEditor::~EQFourProcessorEditor()
 //==============================================================================
 void EQFourProcessorEditor::paint (Graphics& g)
 {
-  g.fillAll (Colours::lightblue);
+  g.fillAll (Colours::lightgoldenrodyellow);
   g.setColour (Colours::black);
   g.setFont (15.0f);
   g.drawFittedText ("Equalizer!", Rectangle<int>(200,15), Justification::centred, 1);
 
+  Rectangle<int> topBar(getLocalBounds().withHeight(30));
+  g.drawRect(topBar);
+  
   
   Rectangle<int> r(getLocalBounds());
-  r.reduce(20, 30);
+  r.reduce(30, 30);
+  r.setX(60);
   int xoffset = r.getWidth()/4;
   int yoffset = r.getHeight()/4;
   int yoffset12 = r.getHeight()/12;
@@ -149,36 +175,36 @@ void EQFourProcessorEditor::paint (Graphics& g)
   //SLIDERS
 //  Rectangle<int> r1(getLocalBounds());
 //  r1 = r.withWidth(xoffset).withHeight(yoffset);
-  cutoffFreqBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20).withY(30));
-  cutoffFreqBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+1*xoffset).withY(30));
-  cutoffFreqBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+2*xoffset).withY(30));
-  cutoffFreqBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+3*xoffset).withY(30));
+  cutoffFreqBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()).withY(r.getY()));
+  cutoffFreqBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+1*xoffset).withY(r.getY()));
+  cutoffFreqBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+2*xoffset).withY(r.getY()));
+  cutoffFreqBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+3*xoffset).withY(r.getY()));
   
-  qParamBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+0*xoffset).withY(30+yoffset));
-  qParamBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+1*xoffset).withY(30+yoffset));
-  qParamBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+2*xoffset).withY(30+yoffset));
-  qParamBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+3*xoffset).withY(30+yoffset));
+  qParamBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+0*xoffset).withY(r.getY()+yoffset));
+  qParamBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+1*xoffset).withY(r.getY()+yoffset));
+  qParamBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+2*xoffset).withY(r.getY()+yoffset));
+  qParamBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+3*xoffset).withY(r.getY()+yoffset));
   
-  gainBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+0*xoffset).withY(30+2*yoffset));
-  gainBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+1*xoffset).withY(30+2*yoffset));
-  gainBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+2*xoffset).withY(30+2*yoffset));
-  gainBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(20+3*xoffset).withY(30+2*yoffset));
+  gainBand1->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+0*xoffset).withY(r.getY()+2*yoffset));
+  gainBand2->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+1*xoffset).withY(r.getY()+2*yoffset));
+  gainBand3->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+2*xoffset).withY(r.getY()+2*yoffset));
+  gainBand4->setBounds(r.withWidth(xoffset).withHeight(yoffset).withX(r.getX()+3*xoffset).withY(r.getY()+2*yoffset));
   
   
   //BUTTONS
-  buttonLowCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(30+3*yoffset+0));
-  buttonLowCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(30+3*yoffset+1*yoffset12));
-  buttonLowShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(30+3*yoffset+2*yoffset12));
+  buttonLowCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+0));
+  buttonLowCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonLowShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+2*yoffset12));
   
-  buttonBandpass2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+xoffset).withY(30+3*yoffset+0*yoffset12));
-  buttonNotch2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+xoffset).withY(30+3*yoffset+1*yoffset12));
+  buttonBandpass2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
+  buttonNotch2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
   
-  buttonBandpass3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+2*xoffset).withY(30+3*yoffset+0*yoffset12));
-  buttonNotch3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+2*xoffset).withY(30+3*yoffset+1*yoffset12));
+  buttonBandpass3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
+  buttonNotch3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
   
-  buttonHighCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+3*xoffset).withY(30+3*yoffset+0*yoffset12));
-  buttonHighCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+3*xoffset).withY(30+3*yoffset+1*yoffset12));
-  buttonHighShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(20+3*xoffset).withY(30+3*yoffset+2*yoffset12));
+  buttonHighCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
+  buttonHighCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonHighShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+2*yoffset12));
   
   
 }
@@ -191,6 +217,8 @@ void EQFourProcessorEditor::initialiseSlider(juce::Slider *slider, juce::AudioPa
   slider->setValue(dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   slider->addListener(this);
   slider->setValue(initialValue);
+  slider->setTextBoxIsEditable(true);
+  slider->setDoubleClickReturnValue(true, initialValue);
   parent.registerImmobileObject(*slider);
   addAndMakeVisible(slider);
 }
@@ -209,8 +237,9 @@ void EQFourProcessorEditor::sliderValueChanged(Slider* slider)
     AudioProcessorParameter* param = params[0];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
-    else
+    else{
       param->setValue ((float) slider->getValue());
+    }
   }
   else if (slider == cutoffFreqBand2) {
     AudioProcessorParameter* param = params[1];

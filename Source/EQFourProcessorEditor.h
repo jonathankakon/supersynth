@@ -68,6 +68,10 @@ private:
   ScopedPointer<ToggleButton> buttonHighCut2;
   ScopedPointer<ToggleButton> buttonHighShelf;
   
+  Label frequencyLabel;
+  Label qLabel;
+  Label gainLabel;
+  
   
 };
 

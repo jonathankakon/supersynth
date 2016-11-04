@@ -205,7 +205,6 @@ void EQFourProcessor::audioProcessorParameterChanged(AudioProcessor* processor, 
       
     case 9:
       filterBand2->setGain(newValue);
-      DBG("Gain2 = " << newValue);
       break;
       
     case 10:
