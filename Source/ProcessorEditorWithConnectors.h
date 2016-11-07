@@ -33,6 +33,13 @@ public:
 
   //==============================================================================
   void setConnectors() override;
+  void registerNodeConnectionListener(Connection* connection, int input_node_id, int output_node_id) override; 
+  bool hasInputWithId(int inputNodeId, int& x, int& y) override;
+  bool hasOutputWithId(int outputNodeId, int& x, int& y) override;
+
+  void setNodeId(int id) override { nodeId = id; };
+  int getNodeId() override { return nodeId; };
+  int getMixerNodeId() override { return mixerNodeId; };
 
   void resized() override;
   void paint(Graphics& g) override;
@@ -45,8 +52,10 @@ private:
   bool takesGateSignal;
   bool takesAudioSignal;
 
-  ScopedPointer<InputConnector> audioInputConnector;
-  OwnedArray<InputConnector> controlInputConnectors;
+  int nodeId;
+  int mixerNodeId;
+
+  OwnedArray<InputConnector> inputConnectors;
   ScopedPointer<OutputConnector> outputConnector;
 
   ScopedPointer<EditorType> processorEditor;

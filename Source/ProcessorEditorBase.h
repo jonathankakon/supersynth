@@ -12,6 +12,8 @@
 #define PROCESSOREDITORBASE_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "InputConnector.h"
+#include "OutputConnector.h"
 
 class ProcessorEditorBase : public AudioProcessorEditor
 {
@@ -36,6 +38,8 @@ public:
 
   void registerImmobileObject(Component& component) const;
 
+  bool findConnectorAt(const bool isInput, int x, int y, Point<int>& outPosition, int& nodeId);
+
   void mouseDown(const MouseEvent& e) override;
   void mouseDrag(const MouseEvent& e) override;
   void mouseEnter(const MouseEvent& e) override;
@@ -44,8 +48,15 @@ public:
 
   void setViewPortDragging(bool enableDragging) const;
   void setComponentDragging(bool enableDragging);
-  int addProcessorToGraph(AudioProcessor* processor) const;
+  int addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const;
+
   virtual void setConnectors() {};
+  virtual void setNodeId(int id) {};
+  virtual void registerNodeConnectionListener(Connection* connection, int inputNodeId, int outputNodeId) {};
+  virtual bool hasInputWithId(int inputNodeId, int& x, int& y) { return false; };
+  virtual bool hasOutputWithId(int outputNodeId, int& x, int& y) { return false; };
+  virtual int getNodeId() { return 0; };
+  virtual int getMixerNodeId() { return 0; };
 
 private:
   bool draggingEnabled;
@@ -56,6 +67,4 @@ private:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProcessorEditorBase);
 };
-
-
 #endif  // PROCESSOREDITORBASE_H_INCLUDED

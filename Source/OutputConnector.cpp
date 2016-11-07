@@ -12,7 +12,7 @@
 #include "OutputConnector.h"
 
 //==============================================================================
-OutputConnector::OutputConnector()
+OutputConnector::OutputConnector(int processorNodeId) : nodeId(processorNodeId)
 {
   setSize(32, 32);
 }
@@ -40,4 +40,9 @@ void OutputConnector::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
+}
+
+Point<int> OutputConnector::getClosestConnector(const int x, const int y)
+{
+  return Point<int>(16, 16);
 }

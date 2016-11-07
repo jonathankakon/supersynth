@@ -13,8 +13,8 @@
 #include "ProcessorEditorBase.h"
 
 //==============================================================================
-InputConnector::InputConnector(AudioProcessor* p, ProcessorEditorBase * b) : AudioProcessorEditor(p),
-   sliders(OwnedArray<Slider>()), processor(*p), parent(*b)
+InputConnector::InputConnector(AudioProcessor* p, ProcessorEditorBase * b, int mixerNodeId) : AudioProcessorEditor(p),
+   nodeId(mixerNodeId), sliders(OwnedArray<Slider>()), processor(*p), parent(*b)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -62,4 +62,24 @@ void InputConnector::resized()
 
 void InputConnector::sliderValueChanged(Slider* slider)
 {
+}
+
+void InputConnector::mouseDown(const MouseEvent & e)
+{
+  getWorksheet()->beginConnectorDrag(0, 0, nodeId, 0, e);
+}
+
+Point<int> InputConnector::getClosestConnector(const int x, const int y)
+{
+  return Point<int>(6, y - (y % 32) + 16);
+}
+
+void InputConnector::mouseDrag(const MouseEvent & e)
+{
+  getWorksheet()->dragConnector(e);
+}
+
+void InputConnector::mouseUp(const MouseEvent & e)
+{
+  getWorksheet()->endDraggingConnector(e);
 }

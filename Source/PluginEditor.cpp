@@ -14,6 +14,7 @@
 #include "ToolboxComponent.h"
 #include "InternalIOProcessor.h"
 #include "ProcessorEditorBase.h"
+#include "WaveGeneratorProcessor.h"
 
 
 //==============================================================================
@@ -63,22 +64,56 @@ void SupersynthAudioProcessorEditor::addIOComponents() const
   InternalIOProcessor* audioInput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode);
   InternalIOProcessor* audioOutput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode);
   InternalIOProcessor* midiInput = new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::midiInputNode);
+    
+  addInternalProcessor(audioInput, 100, 30);
+  addInternalProcessor(midiInput, 100, 80);
+  addInternalProcessor(audioOutput, 500, 440);
+}
 
-  AudioProcessorGraph::Node* aiNode = processor.addNode(audioInput);
-  AudioProcessorGraph::Node* aoNode = processor.addNode(audioOutput);
-  AudioProcessorGraph::Node* miNode = processor.addNode(midiInput);
+void SupersynthAudioProcessorEditor::enableAllInternalBuses(int outNode, int inNode) const
+{
+  processor.getNodeForId(outNode)->getProcessor()->enableAllBuses();
+  processor.getNodeForId(inNode)->getProcessor()->enableAllBuses();
+}
 
-  ProcessorEditorBase* editor = static_cast<ProcessorEditorBase*>(audioInput->createEditor());
-  worksheet->addEditor(editor, 100, 30);
+void SupersynthAudioProcessorEditor::addConnection(Connection* connection) const
+{
+  enableAllInternalBuses(connection->outputNodeId, connection->inputNodeId);
+  int a = processor.addConnection(connection->outputNodeId, connection->outputNodeChannel, connection->inputNodeId, connection->inputNodeChannel);
+  
+  /*DBG("creating connection from: " << connection->outputNodeId);
+  DBG(" to " << connection->inputNodeId);
+  DBG("success: " << a);*/
+}
+
+void SupersynthAudioProcessorEditor::removeConnection(Connection& connection) const
+{
+  int a = processor.removeConnection(connection.outputNodeId, connection.outputNodeChannel, connection.inputNodeId, connection.inputNodeChannel);
+  /*DBG("deleting connection from: " << connection.outputNodeId);
+  DBG(" to " << connection.inputNodeId);
+  DBG("success: " << a);*/
+}
+
+bool SupersynthAudioProcessorEditor::testConnection(Connection& connection, int dest_id) const
+{
+  int outputNodeId = connection.draggingToInput ? connection.outputNodeId : dest_id;
+  int inputNodeId = connection.draggingToInput ? dest_id : connection.inputNodeId;
+
+  enableAllInternalBuses(outputNodeId, inputNodeId);
+  return processor.canConnect(outputNodeId, connection.outputNodeChannel, inputNodeId, connection.inputNodeChannel);
+}
+
+int SupersynthAudioProcessorEditor::addInternalProcessor(InternalIOProcessor* p, int x, int y) const
+{
+  AudioProcessorGraph::Node* node = processor.addNode(p);
+  ProcessorEditorBase* editor = static_cast<ProcessorEditorBase*>(p->createEditor());
+  worksheet->addEditor(editor, x, y);
+  editor->setNodeId(node->nodeId);
   editor->setConnectors();
 
-  editor = static_cast<ProcessorEditorBase*>(audioOutput->createEditor());
-  worksheet->addEditor(editor, 100, 80);
-  editor->setConnectors();
-
-  editor = static_cast<ProcessorEditorBase*>(midiInput->createEditor());
-  worksheet->addEditor(editor, 500, 440);
-  editor->setConnectors();
+  p->enableAllBuses();
+  processor.addConnection(editor->getMixerNodeId(), 0, node->nodeId, 0);
+  return node->nodeId;
 }
 
 //==============================================================================
@@ -162,55 +197,41 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(ToolboxComponent::Modules
   AudioProcessorGraph::Node* node = processor.addNode(proc);
   if (proc->hasEditor())
   {
-    AudioProcessorEditor* editor =  proc->createEditor();
+    ProcessorEditorBase* editor = static_cast<ProcessorEditorBase*>(proc->createEditor());
     worksheet->addEditor(editor);
-    static_cast<ProcessorEditorBase*>(editor)->setConnectors();
+    editor->setNodeId(node->nodeId);
+    editor->setConnectors();
   }
 
   /*
-  if (processor.getNodeForId(1) == nullptr)
-  {
-    AudioProcessorGraph::AudioGraphIOProcessor* node = new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
-    processor.addNode(node, 1);
-  }
+  WaveGeneratorProcessor* wave = new WaveGeneratorProcessor();
+  AudioProcessorGraph::Node* waveNode = processor.addNode(wave);
 
-	if (processorType == 0)
-	{
-		WaveGeneratorProcessor* wave = new WaveGeneratorProcessor();
-		AudioProcessorGraph::Node* generator = processor.addNode(wave);
+  ProcessorEditorBase* waveEditor = static_cast<ProcessorEditorBase*>(wave->createEditor());
+  worksheet->addEditor(waveEditor);
+  waveEditor->setConnectors();
 
-    FilterProcessor* filter = new FilterProcessor();
-    AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
-    
-    EQFourProcessor* eqFour = new EQFourProcessor();
-    AudioProcessorGraph::Node* eqNode = processor.addNode(eqFour);
-    
-    worksheet->addEditor(filter->createEditor());
-    processor.addConnection(filterNode->nodeId, 0, eqNode->nodeId, 0);
-    processor.getNodeForId(1)->getProcessor()->enableAllBuses();
-    
-    worksheet->addEditor(wave->createEditor());
-    processor.addConnection(generator->nodeId, 0, filterNode->nodeId, 0);
-    
-    worksheet->addEditor(eqFour->createEditor());
-    processor.addConnection(eqNode->nodeId, 0, 1, 0);
-    processor.addConnection(eqNode->nodeId, 0, 1, 1);
-    
-	}
-  else if (processorType == 1)
-  {
-    
-    FilterProcessor* filter = new FilterProcessor();
-    AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
-    //processor.addNode(filter);
-    worksheet->addEditor(filter->createEditor());
-    processor.addConnection(filterNode->nodeId, 0, 1, 0);
-    processor.addConnection(filterNode->nodeId, 0, 1, 1);
-  }*/
+  FilterProcessor* filter = new FilterProcessor();
+  AudioProcessorGraph::Node* filterNode = processor.addNode(filter);
+
+  ProcessorEditorBase* filterEditor = static_cast<ProcessorEditorBase*>(filter->createEditor());
+  worksheet->addEditor(filterEditor);
+  filterEditor->setConnectors();
+
+  processor.addConnection(waveNode->nodeId, 0, filterNode->nodeId, 0);
+  processor.getNodeForId(outId)->getProcessor()->enableAllBuses();
+  int connected = processor.addConnection(filterNode->nodeId, 0, outId, 0);
+  DBG("connected: " << connected);
+  processor.getNodeForId(outId)->getProcessor()->enableAllBuses();
+  connected = processor.addConnection(filterNode->nodeId, 0, outId, 1); 
+  DBG("connected: " << connected);
+  processor.getNodeForId(outId)->getProcessor()->enableAllBuses();
+*/
 }
 
-int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p) const
+int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int nodeIdToConnect, int channelToConnect) const
 {
   AudioProcessorGraph::Node* node = processor.addNode(p);
+  processor.addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
   return node->nodeId;
 }

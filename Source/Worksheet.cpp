@@ -13,6 +13,7 @@
 #include "ToolboxComponent.h"
 
 #include "PluginEditor.h"
+#include "ProcessorEditorBase.h"
 
 //==============================================================================
 Worksheet::Worksheet()
@@ -63,6 +64,7 @@ void Worksheet::resized()
 
 bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
+  return true;
   if (dragSourceDetails.description.hasSameTypeAs(new var(new ToolboxComponent::ModulesListElement("", "", nullptr))));
 	{
 		return true;
@@ -89,7 +91,7 @@ void Worksheet::itemDragMove(const SourceDetails& dragSourceDetails)
 		int relativeX = dragSourceDetails.localPosition.getX() - x;
 		int relativeY = dragSourceDetails.localPosition.getY() - y;
 
-		viewport->autoScroll(relativeX, relativeY, 50, 7);																																		  // ... based on the displayed area, paint just what's visible ... //
+		viewport->autoScroll(relativeX, relativeY, 50, 7);	// ... based on the displayed area, paint just what's visible ... //
 	}
 }
 
@@ -122,4 +124,121 @@ void Worksheet::addEditor(Component* editor, double x, double y)
   addAndMakeVisible(editor);
   Rectangle<int>r(x - editor->getWidth() / 2, y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
   editor->setBounds(r);
+}
+
+void Worksheet::beginConnectorDrag(int outputNodeId, int outputChannel, int inputNodeId, int inputChannel, const MouseEvent& e)
+{
+  draggingConnection = dynamic_cast<Connection*> (e.originalComponent);
+
+  if (draggingConnection == nullptr)
+  {
+    const MouseEvent e2(e.getEventRelativeTo(this));
+    draggingConnection = new Connection(inputNodeId, inputChannel, outputNodeId, outputChannel);
+    Point<int> connectorPosition{};
+    int nodeId = 0;
+    if (findConnectorAt(!draggingConnection->draggingToInput, e2.x, e2.y, connectorPosition, nodeId))
+      draggingConnection->setFixedConnectorPosition(connectorPosition);
+  }
+  else
+  {
+    if(SupersynthAudioProcessorEditor* mainProcessor = findParentComponentOfClass<SupersynthAudioProcessorEditor>())
+    {
+      mainProcessor->setViewPortDragScrolling(false);
+      mainProcessor->removeConnection(*draggingConnection);
+    }
+  }
+
+  addAndMakeVisible(draggingConnection);
+  draggingConnection->toFront(false);
+
+  dragConnector(e);
+}
+
+void Worksheet::dragConnector(const MouseEvent& e)
+{
+  const MouseEvent e2(e.getEventRelativeTo(this));
+
+  if(draggingConnection != nullptr)
+  {
+    int x = e2.x;
+    int y = e2.y;
+    int destId = 0;
+
+    //findPin, updateConnection, check if can connect, snap to pin.
+
+    if(draggingConnection->draggingToInput)
+    {
+      Point<int> connectorPosition{};
+      if(findConnectorAt(draggingConnection->draggingToInput, x, y, connectorPosition, destId)
+            && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+        draggingConnection->dragEnd(connectorPosition.getX(), connectorPosition.getY());
+      else
+        draggingConnection->dragEnd(x, y);
+    }
+    else
+    {
+      Point<int> connectorPosition{};
+      if (findConnectorAt(draggingConnection->draggingToInput, x, y, connectorPosition, destId)
+            && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+        draggingConnection->dragStart(connectorPosition.getX(), connectorPosition.getY());
+      else
+        draggingConnection->dragStart(x, y);
+    }
+  }
+}
+
+void Worksheet::endDraggingConnector(const MouseEvent& e)
+{
+  if (draggingConnection == nullptr)
+    return;
+
+  const MouseEvent e2(e.getEventRelativeTo(this));
+
+  Point<int> connectorPosition{};
+  int nodeId;
+  if(findConnectorAt(draggingConnection->draggingToInput, e2.x, e2.y, connectorPosition, nodeId)) // hasPin and is valid
+  {
+    Connection* newConnection = new Connection(*draggingConnection);
+    newConnection->setDestNodeId(nodeId);
+    connections.add(newConnection);
+    addAndMakeVisible(newConnection);
+    registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
+    findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addConnection(newConnection);
+    draggingConnection = nullptr;
+  } else
+  {
+    findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeConnection(*draggingConnection);
+    connections.removeObject(draggingConnection, false);
+    draggingConnection = nullptr;
+  }
+}
+
+
+bool Worksheet::findConnectorAt(const bool isInput, const int x, const int y, Point<int>& outPosition, int& nodeId) const
+{
+  for (Component* editor : editors)
+  {
+    if (reinterpret_cast<ProcessorEditorBase*>(editor)->findConnectorAt(isInput, x - editor->getX(), y - editor->getY(), outPosition, nodeId))
+    {
+      outPosition.addXY(editor->getX(), editor->getY());
+      return true;
+    }
+  }  
+  return false;
+}
+
+void Worksheet::clearEditorListeners(Connection* connection)
+{
+  for(Component* editor : editors)
+  {
+    editor->removeComponentListener(connection);
+  }
+}
+
+void Worksheet::registerComponentListener(Connection* connection, int inputNodeId, int outputNodeId)
+{
+  for (Component* editor : editors)
+  {
+    reinterpret_cast<ProcessorEditorBase*>(editor)->registerNodeConnectionListener(connection, inputNodeId, outputNodeId);
+  }
 }

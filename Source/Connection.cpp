@@ -10,42 +10,227 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Connection.h"
+#include "Worksheet.h"
+#include "InputConnector.h"
+#include "OutputConnector.h"
+#include "ProcessorEditorBase.h"
 
-//==============================================================================
-Connection::Connection()
+Connection::Connection(int inId, int inChannel, int outId, int outChannel) : Component(),
+inputNodeId(inId), inputNodeChannel(inChannel), outputNodeId(outId), outputNodeChannel(outChannel), 
+draggingToInput(inId == 0), dragging(false), lastInputX(0),
+lastOutputX(0), lastOutputY(0), lastInputY(0)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
+  setAlwaysOnTop(false);
+}
 
+Connection::Connection(Connection& c) : Component(),
+inputNodeId(c.inputNodeId), inputNodeChannel(c.inputNodeChannel), outputNodeId(c.outputNodeId),
+outputNodeChannel(c.outputNodeChannel), draggingToInput(c.inputNodeId == 0), 
+dragging(false), lastInputX(c.getX1()), lastOutputX(c.getX2()), lastOutputY(c.getY2()), lastInputY(c.getY1())
+{
+  setAlwaysOnTop(false);
+  resizeToFit();
 }
 
 Connection::~Connection()
 {
+  findParentComponentOfClass<Worksheet>()->clearEditorListeners(this);
 }
 
 void Connection::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (Colours::white);   // clear the background
-
-    g.setColour (Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (Colours::lightblue);
-    g.setFont (14.0f);
-    g.drawText ("Connection", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
+  g.setColour(Colours::blue);
+  g.fillPath(path);
 }
 
 void Connection::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
+  float x1, y1, x2, y2;
+  getPoints(x1, y1, x2, y2);
 
+  lastInputX = x1;
+  lastInputY = y1;
+  lastOutputX = x2;
+  lastOutputY = y2;
+
+  x1 -= getX();
+  y1 -= getY();
+  x2 -= getX();
+  y2 -= getY();
+
+  path.clear();
+  path.startNewSubPath(x1, y1);
+  path.cubicTo(x1 - jmin(2*abs(x2-x1) , 100.0f), y1,
+    x2 + jmin(2*abs(x2 - x1), 100.0f), y2,
+    x2, y2);
+
+  PathStrokeType wideStroke(8.0f);
+  wideStroke.createStrokedPath(hitPath, path);
+
+  PathStrokeType stroke(2.5f);
+  stroke.createStrokedPath(path, path);
+
+  path.setUsingNonZeroWinding(true);
+}
+
+bool Connection::hitTest(int x, int y)
+{
+  if (hitPath.contains((float)x, (float)y))
+  {
+    double distanceFromStart, distanceFromEnd;
+    getDistancesFromEnds(x, y, distanceFromStart, distanceFromEnd);
+
+    //avoid clicking when over connector
+    bool isHit = distanceFromStart > 7.0 && distanceFromEnd > 7.0;
+    return isHit;
+  }
+
+  return false;
+}
+
+void Connection::mouseDown(const MouseEvent&)
+{
+  dragging = false;
+}
+
+void Connection::mouseDrag(const MouseEvent& e)
+{
+  if (dragging)
+  {
+    getWorksheet()->dragConnector(e);
+  }
+  else if (e.mouseWasDraggedSinceMouseDown())
+  {
+    dragging = true;
+
+    double distanceFromStart, distanceFromEnd;
+    getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);
+
+    draggingToInput = (distanceFromStart < distanceFromEnd);
+    DBG("dragging to Input: " << (int)draggingToInput);
+
+    getWorksheet()->beginConnectorDrag(outputNodeId, outputNodeChannel, inputNodeId, inputNodeChannel, e);
+
+    inputNodeId = (draggingToInput ? 0 : inputNodeId);
+    outputNodeId = (draggingToInput ? outputNodeId : 0);
+
+    DBG("outNodeId: " << outputNodeId);
+    DBG("inNodeId: " << inputNodeId);
+  }
+}
+
+void Connection::mouseUp(const MouseEvent& e)
+{
+  if (dragging)
+    getWorksheet()->endDraggingConnector(e);
+}
+
+void Connection::componentMovedOrResized(Component& component, bool wasMoved, bool wasResized)
+{
+  if (ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(&component))
+  {
+    int x = 0;
+    int y = 0;
+
+    if(editor->hasInputWithId(inputNodeId, x, y))
+    {
+      lastInputX = x + editor->getX();
+      lastInputY = y + editor->getY();
+    }
+    else if (editor->hasOutputWithId(outputNodeId, x, y))
+    {
+      lastOutputX = x + editor->getX();
+      lastOutputY = y + editor->getY();
+    }
+  }
+  resizeToFit();
+}
+
+void Connection::dragEnd(int x, int y)
+{
+  lastInputX = (float)x;
+  lastInputY = (float)y;
+  resizeToFit();
+}
+
+void Connection::dragStart(int x, int y)
+{
+  lastOutputX = (float)x;
+  lastOutputY = (float)y;
+  resizeToFit();
+}
+
+void Connection::update()
+{
+  float x1, y1, x2, y2;
+  getPoints(x1, y1, x2, y2);
+
+  if (lastInputX != x1
+    || lastInputY != y1
+    || lastOutputX != x2
+    || lastOutputY != y2)
+  {
+    resizeToFit();
+  }
+}
+
+void Connection::setFixedConnectorPosition(const Point<int>& point)
+{
+  if (draggingToInput)
+  {
+    lastOutputX = (float)point.getX();
+    lastOutputY = (float)point.getY();
+  }
+  else
+  {
+    lastInputX = (float)point.getX();
+    lastInputY = (float)point.getY();
+  }
+  resizeToFit();
+}
+
+void Connection::setDestNodeId(int nodeId)
+{
+  if (draggingToInput)
+    inputNodeId = nodeId;
+  else
+    outputNodeId = nodeId;
+}
+
+void Connection::getDistancesFromEnds(int x, int y, double& distanceFromStart, double& distanceFromEnd) const
+{
+  float x1, y1, x2, y2;
+  getPoints(x1, y1, x2, y2);
+
+  distanceFromStart = juce_hypot(x - (x1 - getX()), y - (y1 - getY()));
+  distanceFromEnd = juce_hypot(x - (x2 - getX()), y - (y2 - getY()));
+}
+
+void Connection::getPoints(float& x1, float& y1, float& x2, float& y2) const
+{
+  
+  x1 = lastInputX;
+  y1 = lastInputY;
+  x2 = lastOutputX;
+  y2 = lastOutputY;
+}
+
+void Connection::resizeToFit()
+{
+  float x1, y1, x2, y2;
+  getPoints(x1, y1, x2, y2);
+
+  const Rectangle<int> newBounds(std::abs((int)jmin(x1, x2) - 4),
+    std::abs((int)jmin(y1, y2) - 4),
+    (int)std::abs(x1 - x2) + 8,
+    (int)std::abs(y1 - y2) + 8);
+
+  if (newBounds != getBounds())
+    setBounds(newBounds);
+  else
+    resized();
+
+  repaint();
+
+  x1 = x2;
 }

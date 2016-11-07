@@ -21,6 +21,28 @@ ProcessorEditorBase::~ProcessorEditorBase()
 {
 }
 
+bool ProcessorEditorBase::findConnectorAt(const bool isInput, int x, int y, Point<int>& outPosition, int& nodeId)
+{
+    Component* componentAtPos = getComponentAt(x, y);
+    if(InputConnector* in = dynamic_cast<InputConnector*>(componentAtPos))
+    {
+      outPosition = in->getClosestConnector(x - in->getX(), y - in->getY());
+      outPosition.setX(outPosition.getX() + in->getX());
+      outPosition.setY(outPosition.getY() + in->getY());
+      nodeId = in->getNodeId();
+      return isInput; 
+    }
+    else if (OutputConnector* out = dynamic_cast<OutputConnector*>(componentAtPos))
+    {
+      outPosition = out->getClosestConnector(x - out->getX(), y - out->getY());
+      outPosition.setX(outPosition.getX() + out->getX());
+      outPosition.setY(outPosition.getY() + out->getY());
+      nodeId = out->getNodeId();
+      return !isInput;
+    }
+    return false;
+}
+
 void ProcessorEditorBase::mouseDown(const MouseEvent& e)
 {
   if (draggingEnabled)
@@ -67,16 +89,15 @@ void ProcessorEditorBase::setComponentDragging(bool enableDragging)
   draggingEnabled = enableDragging;
 }
 
-int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor) const
+int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const
 {
-  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor);
+  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor, nodeIdToConnect, channelNumberToConnect);
 }
 
 void ProcessorEditorBase::registerImmobileObject(Component & component) const
 {
   component.addMouseListener(dragStop, false);
 }
-
 
 void ProcessorEditorBase::mouseExit(const MouseEvent&)
 {
@@ -89,9 +110,7 @@ void ProcessorEditorBase::mouseEnter(const MouseEvent&)
 }
 
 
-
 //DragStopHelper to stop dragging of components in lower levels
-
 ProcessorEditorBase::DragStopHelper::DragStopHelper(ProcessorEditorBase& baseEditor) : owner(baseEditor)
 {
 }
@@ -102,6 +121,7 @@ ProcessorEditorBase::DragStopHelper::~DragStopHelper()
 
 void ProcessorEditorBase::DragStopHelper::mouseDown(const MouseEvent &)
 {
+  int i = 0;
 }
 
 void ProcessorEditorBase::DragStopHelper::mouseDrag(const MouseEvent &)
