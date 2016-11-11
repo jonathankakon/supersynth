@@ -79,11 +79,10 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   waveformSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   waveformSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(waveformParam)->getValue());
   waveformSlider->addListener(this);
-  registerImmobileObject(*waveformSlider);
+  parent.registerImmobileObject(*waveformSlider);
   addAndMakeVisible(waveformSlider);
   
   
-  setConnectors();
   volumeSlider->addListener(this);
    
   //label
@@ -92,7 +91,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   blepSlider->setRange(0, 1, 1);
   blepSlider->setSliderStyle(Slider::LinearHorizontal);
   blepSlider->addListener(this);
-  registerImmobileObject(*blepSlider);
+  parent.registerImmobileObject(*blepSlider);
   addAndMakeVisible(blepSlider);
   
   

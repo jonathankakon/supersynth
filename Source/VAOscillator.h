@@ -43,15 +43,19 @@ private:
   double currentSampleRate;
   double fourFoldSampleRate;
   double currentFrequency;
+  double targetFrequency;
   double currentPhase;
   double phaseInc;
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
+  
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;
   
   ScopedPointer<FFT> transformer;
   
   double getPolyBlep(double phase, double phaseIncr);
+  
+  void updateFrequency();
   void updatePhaseInc();
   
   int blepOn = 0;
