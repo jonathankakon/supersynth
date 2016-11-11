@@ -34,7 +34,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[1]);
   frequencySlider = new Slider(frequencyParam->name);
-  frequencySlider->setRange(0, 1, 0.0001);
+  frequencySlider->setRange(0, 1, 0.000001);
   frequencySlider->setSliderStyle(Slider::RotaryVerticalDrag);
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
@@ -54,23 +54,33 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   
   const AudioParameterInt* semitoneParam = dynamic_cast<AudioParameterInt*>(params[3]);
   semitonesSlider = new Slider(semitoneParam->name);
-  semitonesSlider->setRange(0, 24, 1);
+  semitonesSlider->setRange(0, 1, 1.0f/24.0f);
   semitonesSlider->setSliderStyle(Slider::RotaryVerticalDrag);
   semitonesSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
-  semitonesSlider->setValue(semitoneParam->get());
+  semitonesSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(semitoneParam)->getValue());
   semitonesSlider->addListener(this);
   registerImmobileObject(*semitonesSlider);
   addAndMakeVisible(semitonesSlider);
   
   const AudioParameterInt* centParam = dynamic_cast<AudioParameterInt*>(params[4]);
   centsSlider = new Slider(centParam->name);
-  centsSlider->setRange(0, 200, 1);
+  centsSlider->setRange(0, 1, 1.0f/200.0f);
   centsSlider->setSliderStyle(Slider::RotaryVerticalDrag);
   centsSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
-  centsSlider->setValue(centParam->get());
+  centsSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(centParam)->getValue());
   centsSlider->addListener(this);
   registerImmobileObject(*centsSlider);
   addAndMakeVisible(centsSlider);
+  
+  const AudioParameterChoice* waveformParam = dynamic_cast<AudioParameterChoice*>(params[5]);
+  waveformSlider = new Slider(waveformParam->name);
+  waveformSlider->setRange(0, 1, 0.25);
+  waveformSlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  waveformSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+  waveformSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(waveformParam)->getValue());
+  waveformSlider->addListener(this);
+  registerImmobileObject(*waveformSlider);
+  addAndMakeVisible(waveformSlider);
   
   
   setConnectors();
@@ -78,6 +88,12 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
    
   //label
   
+  blepSlider = new Slider();
+  blepSlider->setRange(0, 1, 1);
+  blepSlider->setSliderStyle(Slider::LinearHorizontal);
+  blepSlider->addListener(this);
+  registerImmobileObject(*blepSlider);
+  addAndMakeVisible(blepSlider);
   
   
   
@@ -100,6 +116,9 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   volumeSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
+  waveformSlider->setBounds(r);
+  
+  r.setX(r.getX() + 40);
   frequencySlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -110,6 +129,9 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   
   r.setX(r.getX() + 40);
   centsSlider->setBounds(r);
+  
+  r.setX(r.getX() + 40);
+  blepSlider->setBounds(r);
   
 }
 
@@ -132,16 +154,16 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
     DBG("volume 222: " << volumeSlider->getValue());
     AudioProcessorParameter* param = params[0];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost ((float) volumeSlider->getValue());
+      param->setValueNotifyingHost ((float) slider->getValue());
     else
-      param->setValue ((float) volumeSlider->getValue());
+      param->setValue ((float) slider->getValue());
   }
   else if (slider == frequencySlider)
   {
     DBG("freq 222: " << frequencySlider->getValue());
     AudioProcessorParameter* param = params[1];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost (frequencySlider->getValue());
+      param->setValueNotifyingHost (slider->getValue());
     else
       param->setValue ((float) slider->getValue());
   }
@@ -149,9 +171,37 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
   {
     AudioProcessorParameter* param = params[2];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost ((float) octavesSlider->getValue());
+      param->setValueNotifyingHost ((float) slider->getValue());
     else
       param->setValue ((float) slider->getValue());
+  }
+  else if (slider == semitonesSlider)
+  {
+    AudioProcessorParameter* param = params[3];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) slider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else if (slider == centsSlider)
+  {
+    AudioProcessorParameter* param = params[4];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) slider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else if (slider == waveformSlider)
+  {
+    AudioProcessorParameter* param = params[5];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) waveformSlider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else
+  {
+    processor.setBlepOn(slider->getValue() );
   }
   
   

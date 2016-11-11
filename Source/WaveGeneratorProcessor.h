@@ -68,18 +68,23 @@ public:
   enum waveform
   {
     sine,
-    saw,
-    square
+    sawUp,
+    sawDown,
+    square,
+    triangle
   };
   
   void setWaveform(waveform newWaveform);
+  
+  inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
+  
   
 
 private:
   
   AudioParameterFloat* frequencyParam;
   AudioParameterFloat* volumeParam;
-  AudioParameterChoice* currentWaveformParam;
+  AudioParameterChoice* waveformParam;
   
   AudioParameterInt* octaveParam;
   AudioParameterInt* semitonesParam;
@@ -90,12 +95,6 @@ private:
   waveform currentWaveform;
   
   VAOscillator* oscillator;
-  
-  
-  // factors to multiply when changing the frequency the middle value is always 1 => no change
-  const float octaves[7] = {0.125, 0.25, 0.5, 1, 2, 4, 8};
-  const float semitones[1] = {1.0};
-  const float cents[1] = {1.0};
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);

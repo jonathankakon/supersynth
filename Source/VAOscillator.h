@@ -35,29 +35,25 @@ public:
   double getFrequency();
   void setFrequency(double newFrequency);
   
+  inline void setBlepOn(double on){blepOn = (int)on;}
+  
 private:
   
-  // naive not bandlimited waveforms
-  void fillBufferNonLimitedRisingSaw(AudioBuffer<float>& buffer);
-  void fillBufferNonLimitedFallingSaw(AudioBuffer<float>& buffer);
-  void fillBufferNonLimitedSquare(AudioBuffer<float>& buffer);
-  void fillBufferNonLimitedTriangle(AudioBuffer<float>& buffer);
-  
-  //Bandlimit the naive waveforms
-  //TODO: I will remove these functions and do the bandlimiting directly when synthesizing the naive waves, because i have to use the currentPhase a lot to mix in the correct values
-  void mixInBlitResidualRisingSaw(AudioBuffer<float>& nonLimitedBuffer);
-  void mixInBlitResidualFallingSaw(AudioBuffer<float>& nonLimitedBuffer);
-  void mixInBlitResidualSquare(AudioBuffer<float>& nonLimitedBuffer);
-  void mixInBlitResidualTriangle(AudioBuffer<float>& nonLimitedBuffer);
-  
-  
   double currentSampleRate;
+  double fourFoldSampleRate;
   double currentFrequency;
   double currentPhase;
   double phaseInc;
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
+  double twoPiHalfPulseLength;
+  double phaseToIncludeBlep;
   
+  ScopedPointer<FFT> transformer;
+  
+  double getPolyBlep(double phase, double phaseIncr);
   void updatePhaseInc();
+  
+  int blepOn = 0;
   
   
   //==============================================================================

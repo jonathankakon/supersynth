@@ -77,6 +77,7 @@
         <FILE id="OD0U9U" name="PluginProcessor.h" compile="0" resource="0"
               file="Source/PluginProcessor.h"/>
       </GROUP>
+      <FILE id="cnLiw4" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
       <FILE id="E22bAe" name="GenericIIRFilter.cpp" compile="1" resource="0"
             file="Source/GenericIIRFilter.cpp"/>
       <FILE id="ckzXg3" name="GenericIIRFilter.h" compile="0" resource="0"
@@ -84,6 +85,10 @@
       <FILE id="k7fQze" name="VAOscillator.cpp" compile="1" resource="0"
             file="Source/VAOscillator.cpp"/>
       <FILE id="zLJVya" name="VAOscillator.h" compile="0" resource="0" file="Source/VAOscillator.h"/>
+      <FILE id="S35ZyV" name="NoiseOscillator.cpp" compile="1" resource="0"
+            file="Source/NoiseOscillator.cpp"/>
+      <FILE id="S3BOZn" name="NoiseOscillator.h" compile="0" resource="0"
+            file="Source/NoiseOscillator.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

@@ -11,6 +11,8 @@
 #include "WaveGeneratorProcessor.h"
 #include "WaveGeneratorProcessorEditor.h"
 
+#include "Constants.h"
+
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
     .withOutput("Audio", AudioChannelSet::stereo())
@@ -22,11 +24,11 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   addParameter(volumeParam = new AudioParameterFloat("volume",
                                                        "Volume",
                                                        NormalisableRange<float>(0.0,1.0),
-                                                       0.5));
+                                                       0.2));
   
   addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(100.0,5000.0),
+                                                        NormalisableRange<float>(100.0, 5000.0, 0.01, 0.7, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -34,24 +36,30 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                                                    0,
                                                    6,
                                                    3)); // from -3 to 3
+  
   addParameter(semitonesParam = new AudioParameterInt("semitones",
                                                       "Semitones",
                                                       0,
                                                       24,
                                                       12)); // from -12 to 12
+  
   addParameter(centsParam = new AudioParameterInt("cents",
                                                   "Cents",
                                                   0,
                                                   200,
                                                   100)); // from -100 to 100
   
+  addParameter(waveformParam = new AudioParameterChoice("waveform",
+                                                        "Waveform",
+                                                        StringArray({"Sine","SawUp","SawDown","Square","Triangle"}),
+                                                        1) );
   
   
   
   addListener(this);
   
-  currentWaveform = sine;
-  
+  currentWaveform = sawUp;
+
   oscillator = new VAOscillator();
   
 }
@@ -84,10 +92,9 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
 {
   ignoreUnused(processor);
 
-  
-  if(parameterIndex != 0)
+  if(parameterIndex != 0 && parameterIndex != 5)
   {
-    oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()]);
+    oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()] );
   }
 }
 
@@ -96,19 +103,28 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   ignoreUnused(midiBuffer);
   
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
-  if(currentWaveform == sine)
+  if(waveformParam->getIndex() == 0)
   {
     oscillator->fillBufferSine(outBuffer);
-    outBuffer.applyGain(*volumeParam);
   }
-  else if(currentWaveform == saw)
+  else if(waveformParam->getIndex() == 1)
   {
     oscillator->fillBufferRisingSaw(outBuffer);
   }
-  else //waveform == square
+  else if(waveformParam->getIndex() == 2)
+  {
+    oscillator->fillBufferFallingSaw(outBuffer);
+  }
+  else if(waveformParam->getIndex() == 3)
   {
     oscillator->fillBufferSquarePulse(outBuffer);
   }
+  else // index == 4 => Triangle
+  {
+    oscillator->fillBufferTriangle(outBuffer);
+  }
+  
+  outBuffer.applyGain(volumeParam->get());
   
 }// End processBlock
 

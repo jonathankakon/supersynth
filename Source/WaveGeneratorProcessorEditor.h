@@ -41,9 +41,8 @@ private:
   ScopedPointer<Slider> octavesSlider;
   ScopedPointer<Slider> semitonesSlider;
   ScopedPointer<Slider> centsSlider;
-  
-  ScopedPointer<ComboBox> waveformBox;
-  
+  ScopedPointer<Slider> waveformSlider;
+  ScopedPointer<Slider> blepSlider;
   
   
   

@@ -3,7 +3,7 @@
 fs = 48000;
 fc = 18300;
 rlen = 10;
-ppiv = 4096;     %points per sampling interval
+ppiv = 256;     %points per sampling interval
 beta = 9.0;
 apof = 0.9;
 apobeta = 0.7;
@@ -22,28 +22,41 @@ g = w.*h';
 % apodization and normalization
 aw = 1 - apof * kaiser(pts, apobeta);
 g = aw.*g;
-g = g/max(g);
+g = g/max(g) ;
 
-csvwrite('bandlimited_step_function_48000.dat',g);
+figure(2)
+plot (x2/2,g)
+
+dlmwrite('bandlimited_step_function_48000.dat',g','precision',32);
+
+
 
 %g(501) = 0;
 %h = zeros(1001,1);
 %h(1) = g(1);
-for ii = 2:pts
+for ii = 2:length(g)
     g(ii) = g(ii-1) + g(ii);
 end
 
-for ii = ceil(pts/2):pts
-    g(ii) = g(ii) - g(pts);
+g = g/g(end) * 2;
+
+f = g;
+for ii = 1:1280
+    f(ii) = (g(1280 + ii) - 2) * (-1);
 end
 
-g = g/max(g);
-csvwrite('bandlimited_saw_difference_48000.dat',g);
+for ii = 1:1281
+    f(ii+1280) = g(ii) * (-1);
+
+end    
+dlmwrite('bandlimited_saw_difference_48000.dat',f' ,'precision', 32);
 % Plot
 
+
+    
 figure(1);
 subplot(1,2,1);
-plot(x2/2,g);
+plot(x2/2,f);
 axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); subplot(1,2,2);
 
 zpad = 20;
