@@ -51,7 +51,7 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float> &buffer)
 {
   float* const data = buffer.getWritePointer(0);
   
-  /*
+  
   if(buffer.getNumSamples() == 512)
   {
     ScopedPointer<AudioBuffer<float>> oversampled = new AudioBuffer<float>(1, 8 * buffer.getNumSamples());
@@ -60,7 +60,7 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float> &buffer)
   
     for(int sampleIndex = 0; sampleIndex < 4 * buffer.getNumSamples(); sampleIndex++)
     {
-      oversampledData[sampleIndex] = (2 * currentPhase) - 1;
+      oversampledData[sampleIndex] = (2 * currentPhase)/(2 * double_Pi) - 1;
     
       currentPhase += phaseInc;
     
@@ -74,11 +74,11 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float> &buffer)
   
     // Brickwall filter the transformed buffer
   
-    for(int sampleIndex = buffer.getNumSamples(); sampleIndex < 3 * buffer.getNumSamples(); sampleIndex++)
+    for(int sampleIndex = buffer.getNumSamples() + 2; sampleIndex < 4 * buffer.getNumSamples(); sampleIndex++)
     {
       oversampledData[sampleIndex] = 0;
       
-      oversampledData[5 * buffer.getNumSamples() + sampleIndex] = 0;
+      oversampledData[4 * buffer.getNumSamples() + sampleIndex] = 0;
     }
   
     transformer->performRealOnlyInverseTransform(oversampledData);
@@ -92,33 +92,73 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float> &buffer)
   {
     buffer.clear();
   }
-  */
+  
+  
+//  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+//  {
+//    
+//    data[sampleIndex] = (2 * currentPhase)/(2 * double_Pi) - 1;
+//    
+//    if(blepOn == 1)
+//    {
+//      
+//      //data[sampleIndex] += getPolyBlep(currentPhase, phaseInc);
+//      
+//      
+//      if(currentPhase <= twoPiHalfPulseLength * currentFrequency)
+//      {
+//        //start at mid point and then percentage
+//        data[sampleIndex] += blepData[(int)( (currentPhase/(2 * twoPiHalfPulseLength * currentFrequency)) * 2561 )];
+//      }
+//      else if(currentPhase >= 2 * double_Pi - twoPiHalfPulseLength * currentFrequency)
+//      {
+//        data[sampleIndex] += blepData[(int)( (currentPhase - (2 * double_Pi - twoPiHalfPulseLength * currentFrequency) )/(2 * twoPiHalfPulseLength * currentFrequency) * 2561 ) + 1280];
+//      }
+//      
+//      
+//    }
+//    
+//      
+//    //update the Phase
+//    phaseInc = (2 * double_Pi * (currentFrequency)/currentSampleRate);
+//    
+//    currentPhase += phaseInc;
+//    
+//    if(currentPhase > 2 * double_Pi)
+//    {
+//      currentPhase -= 2 * double_Pi;
+//    }
+//   
+//  }
+  
+}// end rising Saw
+
+void VAOscillator::fillBufferFallingSaw(AudioBuffer<float> &buffer)
+{
+  float* const data = buffer.getWritePointer(0);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     
-    data[sampleIndex] = (2 * currentPhase) -1;
+    data[sampleIndex] = -(2 * currentPhase)/(2 * double_Pi) + 1;
     
-    if(true)
+    
+    //mix In the BLEP
+    if(blepOn == 1)
     {
-      
-      data[sampleIndex] += getPolyBlep(currentPhase, phaseInc);
-      
+      //data[sampleIndex] += getPolyBlep(currentPhase, phaseInc);
       
       if(currentPhase <= twoPiHalfPulseLength * currentFrequency)
       {
         //start at mid point and then percentage
-        data[sampleIndex] += blepData[(int)( (currentPhase/(2 * twoPiHalfPulseLength * currentFrequency)) * 2561 )];
+        data[sampleIndex] += blepData[2561 - (int)( (currentPhase/(2 * twoPiHalfPulseLength * currentFrequency)) * 2561 )];
       }
       else if(currentPhase >= 2 * double_Pi - twoPiHalfPulseLength * currentFrequency)
       {
-        data[sampleIndex] += blepData[(int)( (currentPhase - (2 * double_Pi - twoPiHalfPulseLength * currentFrequency) )/(2 * twoPiHalfPulseLength * currentFrequency) * 2561 ) + 1280];
+        data[sampleIndex] += blepData[2561 - (int)( (currentPhase - (2 * double_Pi - twoPiHalfPulseLength * currentFrequency) )/(2 * twoPiHalfPulseLength * currentFrequency) * 2561 ) + 1280];
       }
-      
-      
     }
     
-      
     //update the Phase
     phaseInc = (2 * double_Pi * (currentFrequency)/currentSampleRate);
     
@@ -128,22 +168,61 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float> &buffer)
     {
       currentPhase -= 2 * double_Pi;
     }
-   
+    
   }
-   
-  
-}
-
-void VAOscillator::fillBufferFallingSaw(AudioBuffer<float> &buffer)
-{
-}
+}// end falling Saw
 
 void VAOscillator::fillBufferSquarePulse(AudioBuffer<float> &buffer)
 {
-}
+  float* const data = buffer.getWritePointer(0);
+  
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    if(currentPhase < double_Pi)
+    {
+      data[sampleIndex] = -1;
+    }
+    else
+    {
+      data[sampleIndex] = 1;
+    }
+  
+    //mix in the BLEP
+    //jump at phase==0 from -1 to 1
+    if(currentPhase <= twoPiHalfPulseLength * currentFrequency)
+    {
+      //start at mid point and then percentage
+      data[sampleIndex] += blepData[(int)( (currentPhase/(2 * twoPiHalfPulseLength * currentFrequency)) * 2561 )];
+    }
+    else if(currentPhase >= 2 * double_Pi - twoPiHalfPulseLength * currentFrequency)
+    {
+      data[sampleIndex] += blepData[(int)( (currentPhase - (2 * double_Pi - twoPiHalfPulseLength * currentFrequency) )/(2 * twoPiHalfPulseLength * currentFrequency) * 2561 ) + 1280];
+    }
+    //jump at phase==pi from 1 to -1
+    else if(currentPhase >= double_Pi && currentPhase < double_Pi + twoPiHalfPulseLength * currentFrequency)
+    {
+      //start at mid point and then percentage
+      data[sampleIndex] += blepData[2561 - (int)( ((currentPhase - double_Pi)/(2 * twoPiHalfPulseLength * currentFrequency)) * 2561)];
+    }
+    else if(currentPhase >= double_Pi - twoPiHalfPulseLength * currentFrequency)
+    {
+      data[sampleIndex] += blepData[2561 - (int)( ((currentPhase + double_Pi) - (2 * double_Pi - twoPiHalfPulseLength * currentFrequency) )/(2 * twoPiHalfPulseLength * currentFrequency) * 2561 ) + 1280];
+    }
+  
+    currentPhase += phaseInc;
+  
+    if(currentPhase > 2 * double_Pi)
+    {
+      currentPhase -= 2 * double_Pi;
+    }
+    
+  }
+}// end square pulse
 
 void VAOscillator::fillBufferTriangle(AudioBuffer<float> &buffer)
 {
+  
+  
 }
 
 
@@ -159,7 +238,7 @@ void VAOscillator::setSampleRate(double newSampleRate)
   currentSampleRate = newSampleRate;
   fourFoldSampleRate = 4 * newSampleRate;
   
-  twoPiHalfPulseLength = double_Pi * 6 * double_Pi/20000.0f;
+  twoPiHalfPulseLength = double_Pi * 6 * double_Pi/80000.0f;
   updatePhaseInc();
 }
 

@@ -33,6 +33,7 @@ public:
   void setSampleRate(double newSampleRate);
   
   double getFrequency();
+  void setFrequency(AudioParameterFloat* newFrequency);
   void setFrequency(double newFrequency);
   
   inline void setBlepOn(double on){blepOn = (int)on;}

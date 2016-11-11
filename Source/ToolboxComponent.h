@@ -12,7 +12,6 @@
 #define TOOLBOXCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "CollapseButton.h"
 
 //==============================================================================
 /*
@@ -20,31 +19,42 @@
 class ToolboxComponent : public Component, public ListBoxModel
 {
 public:
-	struct ModulesListElement
-	{
-		String name;
-		String iconPath;
-		int processorType;
-	};
 
-    ToolboxComponent();
-    ~ToolboxComponent();
+  class ModulesListElement : public ReferenceCountedObject
+  {
+  public:
+    ModulesListElement(String displayName, String icon, AudioProcessor* (*createFunction)()) : name(displayName), iconPath(icon), getInstance(createFunction){}
+    ModulesListElement(ModulesListElement& other) : name(other.name), iconPath(other.iconPath), getInstance(other.getInstance){}
+    ~ModulesListElement(){}
 
-    void paint (Graphics&) override;
-    void resized() override;
+    String name;
+    String iconPath;
+    AudioProcessor* (*getInstance)();
+  };
 
-	int getNumRows() override;
-	void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
-	var getDragSourceDescription(const SparseSet<int>& selectedrow) override;
+  ToolboxComponent();
+  ~ToolboxComponent();
+
+  void paint(Graphics&) override;
+  void resized() override;
+
+  int getNumRows() override;
+  void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
+  var getDragSourceDescription(const SparseSet<int>& selectedrow) override;
+
+
 
 private:
-	ScopedPointer<ListBox> moduleList;
-	ScopedPointer<ResizableBorderComponent> resizeBorder;
+  ScopedPointer<ListBox> moduleList;
+  ScopedPointer<ResizableBorderComponent> resizeBorder;
 
-	OwnedArray<ModulesListElement> modules;
+  OwnedArray<ModulesListElement> modules;
+
+  template<typename T>
+  static AudioProcessor * createInstance() { return new T; }
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToolboxComponent)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolboxComponent)
 };
 
 

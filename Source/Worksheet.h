@@ -12,6 +12,7 @@
 #define WORKSHEET_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Connection.h"
 
 //==============================================================================
 /*
@@ -19,27 +20,41 @@
 class Worksheet : public Component, public DragAndDropTarget
 {
 public:
-    Worksheet();
-    ~Worksheet();
+  Worksheet();
+  ~Worksheet();
 
-    void paint (Graphics&) override;
-    void resized() override;
+  void paint(Graphics&) override;
+  void resized() override;
 
-	bool isInterestedInDragSource(const SourceDetails& sourceDetails) override;
-	void itemDragEnter(const SourceDetails& sourceDetails) override;
-	void itemDragMove(const SourceDetails& sourceDetails) override;
-	void itemDragExit(const SourceDetails& sourceDetails) override;
-	void itemDropped(const SourceDetails& sourceDetails) override;
+  bool isInterestedInDragSource(const SourceDetails& sourceDetails) override;
+  void itemDragEnter(const SourceDetails& sourceDetails) override;
+  void itemDragMove(const SourceDetails& sourceDetails) override;
+  void itemDragExit(const SourceDetails& sourceDetails) override;
+  void itemDropped(const SourceDetails& sourceDetails) override;
 
-	void addEditor(Component* editor);
+  void addEditor(Component* editor);
+  void addEditor(Component* editor, double x, double y);
+
+  void beginConnectorDrag(int outputNodeId, int outputChannel, int inputNodeId, int inputChannel, const MouseEvent& e);
+  void dragConnector(const MouseEvent& e);
+  void endDraggingConnector(const MouseEvent& e);
+
+  void registerComponentListener(Connection* connection, int inputNodeId, int outputNodeId);
+  void clearEditorListeners(Connection* connection);
+
+  bool findConnectorAt(const bool isInput, const int x, const int y, Point<int>& outPosition, int& nodeId) const;
 
 private:
-	bool somethingIsBeingDraggedOver;
-	Point<int> dropPosition;
-	String message;
+  bool somethingIsBeingDraggedOver;
+  Point<int> dropPosition;
+  String message;
 
-	OwnedArray<Component> editors;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Worksheet)
+  OwnedArray<Component> editors;
+  OwnedArray<Connection> connections;
+
+  ScopedPointer<Connection> draggingConnection;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Worksheet)
 };
 
 

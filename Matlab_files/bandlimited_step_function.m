@@ -51,8 +51,6 @@ for ii = 1:1281
 end    
 dlmwrite('bandlimited_saw_difference_48000.dat',f' ,'precision', 32);
 % Plot
-
-
     
 figure(1);
 subplot(1,2,1);

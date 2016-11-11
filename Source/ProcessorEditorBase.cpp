@@ -11,24 +11,36 @@
 #include "ProcessorEditorBase.h"
 #include "PluginEditor.h"
 
-ProcessorEditorBase::ProcessorEditorBase(AudioProcessor* p, bool hasAudioInput, bool hasControlInput, bool hasGateInput)
-: AudioProcessorEditor (p), processor (*p), dragStop(new DragStopHelper(*this)),
-  takesAudioSignal(hasAudioInput), takesControlSignal(hasControlInput), takesGateSignal(hasGateInput),
-  inputConnector(new InputConnector()), outputConnector(new OutputConnector())
+
+ProcessorEditorBase::ProcessorEditorBase(AudioProcessor * p)
+  : AudioProcessorEditor(p), draggingEnabled(true), processor(*p), dragStop(new DragStopHelper(*this))
 {
-  // Make sure that before the constructor has finished, you've set the
-  // editor's size to whatever you need it to be.
-
-  registerImmobileObject(*inputConnector);
-  addAndMakeVisible(inputConnector);
-
-  registerImmobileObject(*outputConnector);
-  addAndMakeVisible(outputConnector);
 }
-
 
 ProcessorEditorBase::~ProcessorEditorBase()
 {
+}
+
+bool ProcessorEditorBase::findConnectorAt(const bool isInput, int x, int y, Point<int>& outPosition, int& nodeId)
+{
+    Component* componentAtPos = getComponentAt(x, y);
+    if(InputConnector* in = dynamic_cast<InputConnector*>(componentAtPos))
+    {
+      outPosition = in->getClosestConnector(x - in->getX(), y - in->getY());
+      outPosition.setX(outPosition.getX() + in->getX());
+      outPosition.setY(outPosition.getY() + in->getY());
+      nodeId = in->getNodeId();
+      return isInput; 
+    }
+    else if (OutputConnector* out = dynamic_cast<OutputConnector*>(componentAtPos))
+    {
+      outPosition = out->getClosestConnector(x - out->getX(), y - out->getY());
+      outPosition.setX(outPosition.getX() + out->getX());
+      outPosition.setY(outPosition.getY() + out->getY());
+      nodeId = out->getNodeId();
+      return !isInput;
+    }
+    return false;
 }
 
 void ProcessorEditorBase::mouseDown(const MouseEvent& e)
@@ -55,7 +67,7 @@ void ProcessorEditorBase::mouseDrag(const MouseEvent& e)
       int relativeX = getX() + e.x - x;
       int relativeY = getY() + e.y - y;
 
-      viewport->autoScroll(relativeX, relativeY, 50, 7);																																		  // ... based on the displayed area, paint just what's visible ... //
+      viewport->autoScroll(relativeX, relativeY, 50, 7);
     }
   }
 }
@@ -65,27 +77,26 @@ void ProcessorEditorBase::mouseUp(const MouseEvent&)
 	beginDragAutoRepeat(0);
 }
 
-void ProcessorEditorBase::setViewPortDragging(bool enableDragging)
+
+void ProcessorEditorBase::setViewPortDragging(bool enableDragging) const
 {
   findParentComponentOfClass<SupersynthAudioProcessorEditor>()->setViewPortDragScrolling(enableDragging);
 }
+
 
 void ProcessorEditorBase::setComponentDragging(bool enableDragging)
 {
   draggingEnabled = enableDragging;
 }
 
-void ProcessorEditorBase::registerImmobileObject(Component & component)
+int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const
 {
-  component.addMouseListener(dragStop, false);
+  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor, nodeIdToConnect, channelNumberToConnect);
 }
 
-void ProcessorEditorBase::setConnectors()
+void ProcessorEditorBase::registerImmobileObject(Component & component) const
 {
-  Rectangle<int> r(getLocalBounds());
-
-  inputConnector->setBounds(r.withWidth(20).withHeight(20).withY(r.getHeight() / 2 - 10));
-  outputConnector->setBounds(r.withWidth(20).withHeight(20).withX(r.getWidth() - 20).withY(r.getHeight() / 2 - 10));
+  component.addMouseListener(dragStop, false);
 }
 
 void ProcessorEditorBase::mouseExit(const MouseEvent&)
@@ -99,9 +110,7 @@ void ProcessorEditorBase::mouseEnter(const MouseEvent&)
 }
 
 
-
 //DragStopHelper to stop dragging of components in lower levels
-
 ProcessorEditorBase::DragStopHelper::DragStopHelper(ProcessorEditorBase& baseEditor) : owner(baseEditor)
 {
 }
@@ -112,6 +121,7 @@ ProcessorEditorBase::DragStopHelper::~DragStopHelper()
 
 void ProcessorEditorBase::DragStopHelper::mouseDown(const MouseEvent &)
 {
+  int i = 0;
 }
 
 void ProcessorEditorBase::DragStopHelper::mouseDrag(const MouseEvent &)
@@ -133,3 +143,4 @@ void ProcessorEditorBase::DragStopHelper::mouseExit(const MouseEvent &)
 void ProcessorEditorBase::DragStopHelper::mouseUp(const MouseEvent &)
 {
 }
+

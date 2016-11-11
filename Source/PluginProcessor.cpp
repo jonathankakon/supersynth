@@ -15,6 +15,7 @@
 //==============================================================================
 SupersynthAudioProcessor::SupersynthAudioProcessor()
 {
+
 }
 
 SupersynthAudioProcessor::~SupersynthAudioProcessor()

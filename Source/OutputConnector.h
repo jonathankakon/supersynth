@@ -12,21 +12,35 @@
 #define OUTPUTCONNECTOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Worksheet.h"
 
 //==============================================================================
 /*
 */
-class OutputConnector    : public Component
+class OutputConnector : public Component, public MouseListener
 {
 public:
-    OutputConnector();
-    ~OutputConnector();
+  OutputConnector(int processorNodeId);
+  ~OutputConnector();
 
-    void paint (Graphics&) override;
-    void resized() override;
+  void paint(Graphics&) override;
+  void resized() override;
+
+  void mouseDown(const MouseEvent& e) override { getWorksheet()->beginConnectorDrag(nodeId, 0, 0, 0, e); }
+  int getNodeId() const { return nodeId; };
+  static Point<int> getClosestConnector(const int x, const int y);
+  void mouseDrag(const MouseEvent& e) override { getWorksheet()->dragConnector(e); };
+  void mouseUp(const MouseEvent& e) override { getWorksheet()->endDraggingConnector(e); };
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OutputConnector)
+  Worksheet* getWorksheet() const noexcept
+  {
+    return findParentComponentOfClass<Worksheet>(); 
+  }
+
+  int nodeId;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OutputConnector)
 };
 
 

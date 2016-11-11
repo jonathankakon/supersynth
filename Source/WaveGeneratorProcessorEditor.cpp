@@ -13,8 +13,8 @@
 
 
 //==============================================================================
-WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcessor& p)
-: ProcessorEditorBase (&p, false, true, false), processor (p)
+WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcessor* p, ProcessorEditorBase* b)
+: AudioProcessorEditor (p), processor (*p), parent(*b)
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -29,7 +29,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   volumeSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   volumeSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(volumeParam)->getValue());
   volumeSlider->addListener(this);
-  registerImmobileObject(*volumeSlider);
+  parent.registerImmobileObject(*volumeSlider);
   addAndMakeVisible(volumeSlider);
   
   const AudioParameterFloat* frequencyParam = dynamic_cast<AudioParameterFloat*>(params[1]);
@@ -39,7 +39,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
   frequencySlider->addListener(this);
-  registerImmobileObject(*frequencySlider);
+  parent.registerImmobileObject(*frequencySlider);
   addAndMakeVisible(frequencySlider);
 
   const AudioParameterInt* octaveParam = dynamic_cast<AudioParameterInt*>(params[2]);
@@ -49,7 +49,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   octavesSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   octavesSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(octaveParam)->getValue());
   octavesSlider->addListener(this);
-  registerImmobileObject(*octavesSlider);
+  parent.registerImmobileObject(*octavesSlider);
   addAndMakeVisible(octavesSlider);
   
   const AudioParameterInt* semitoneParam = dynamic_cast<AudioParameterInt*>(params[3]);
@@ -59,7 +59,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   semitonesSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   semitonesSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(semitoneParam)->getValue());
   semitonesSlider->addListener(this);
-  registerImmobileObject(*semitonesSlider);
+  parent.registerImmobileObject(*semitonesSlider);
   addAndMakeVisible(semitonesSlider);
   
   const AudioParameterInt* centParam = dynamic_cast<AudioParameterInt*>(params[4]);
@@ -69,7 +69,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   centsSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   centsSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(centParam)->getValue());
   centsSlider->addListener(this);
-  registerImmobileObject(*centsSlider);
+  parent.registerImmobileObject(*centsSlider);
   addAndMakeVisible(centsSlider);
   
   const AudioParameterChoice* waveformParam = dynamic_cast<AudioParameterChoice*>(params[5]);

@@ -15,9 +15,10 @@
 
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
-    .withOutput("Audio", AudioChannelSet::stereo())
-    .withInput("FrequencyControl", AudioChannelSet::mono())
-    .withInput("VolumeControl", AudioChannelSet::mono()))
+  .withOutput("Audio", AudioChannelSet::mono())
+  .withInput("FrequencyControl", AudioChannelSet::mono())
+  .withInput("VolumeControl", AudioChannelSet::mono())),
+  oscillator(new VAOscillator())
 {
   
   // dont change the order of the parameters here, because the Editor depends on it!
@@ -59,8 +60,6 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   addListener(this);
   
   currentWaveform = sawUp;
-
-  oscillator = new VAOscillator();
   
 }
 
@@ -130,7 +129,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
 
 AudioProcessorEditor* WaveGeneratorProcessor::createEditor()
 {
-  return new WaveGeneratorProcessorEditor (*this);
+  return new ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGeneratorProcessorEditor>(this);
 }
 
 bool WaveGeneratorProcessor::hasEditor() const

@@ -12,11 +12,9 @@
 #include "OutputConnector.h"
 
 //==============================================================================
-OutputConnector::OutputConnector()
+OutputConnector::OutputConnector(int processorNodeId) : nodeId(processorNodeId)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-
+  setSize(32, 32);
 }
 
 OutputConnector::~OutputConnector()
@@ -25,14 +23,16 @@ OutputConnector::~OutputConnector()
 
 void OutputConnector::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
+  g.setColour(Colour(0x4F0F0F0F));
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), 10);
 
-       You should replace everything in this method with your own
-       drawing code..
-    */
+  Rectangle<float> r(getLocalBounds().withHeight(12).withWidth(12).toFloat());
 
-    g.fillAll (Colours::red);   // clear the background
+  r.setX(10);
+  r.setY(r.getY() + 10);
+
+  g.setColour(Colours::blue);
+  g.fillEllipse(r);
 }
 
 void OutputConnector::resized()
@@ -40,4 +40,9 @@ void OutputConnector::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
+}
+
+Point<int> OutputConnector::getClosestConnector(const int x, const int y)
+{
+  return Point<int>(16, 16);
 }

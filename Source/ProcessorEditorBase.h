@@ -15,10 +15,10 @@
 #include "InputConnector.h"
 #include "OutputConnector.h"
 
-class ProcessorEditorBase  : public AudioProcessorEditor
+class ProcessorEditorBase : public AudioProcessorEditor
 {
 public:
-  ProcessorEditorBase(AudioProcessor* processor, bool hasAudioInput, bool hasControlInput, bool hasGateInput);
+  ProcessorEditorBase(AudioProcessor* processor);
   ~ProcessorEditorBase();
 
   class DragStopHelper : public MouseListener
@@ -36,39 +36,35 @@ public:
     ProcessorEditorBase& owner;
   };
 
-  //==============================================================================
+  void registerImmobileObject(Component& component) const;
+
+  bool findConnectorAt(const bool isInput, int x, int y, Point<int>& outPosition, int& nodeId);
+
   void mouseDown(const MouseEvent& e) override;
   void mouseDrag(const MouseEvent& e) override;
   void mouseEnter(const MouseEvent& e) override;
   void mouseExit(const MouseEvent& e) override;
   void mouseUp(const MouseEvent& e) override;
 
-  void setViewPortDragging(bool enableDragging);
+  void setViewPortDragging(bool enableDragging) const;
   void setComponentDragging(bool enableDragging);
+  int addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const;
 
-  void registerImmobileObject(Component& component);
-  void setConnectors();
-  
+  virtual void setConnectors() {};
+  virtual void setNodeId(int id) {};
+  virtual void registerNodeConnectionListener(Connection* connection, int inputNodeId, int outputNodeId) {};
+  virtual bool hasInputWithId(int inputNodeId, int& x, int& y) { return false; };
+  virtual bool hasOutputWithId(int outputNodeId, int& x, int& y) { return false; };
+  virtual int getNodeId() { return 0; };
+  virtual int getMixerNodeId() { return 0; };
 
 private:
-  
-  // This reference is provided as a quick way for your editor to
-  // access the processor object that created it.
-  bool takesControlSignal;
-  bool takesGateSignal;
-  bool takesAudioSignal;
-
   bool draggingEnabled;
-	ComponentDragger dragger;
-	AudioProcessor& processor;
-  
+  ComponentDragger dragger;
+  AudioProcessor& processor;
+
   ScopedPointer<DragStopHelper> dragStop;
-  ScopedPointer<InputConnector> inputConnector;
-  ScopedPointer<OutputConnector> outputConnector;
-  
-  
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProcessorEditorBase)
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProcessorEditorBase);
 };
-
-
 #endif  // PROCESSOREDITORBASE_H_INCLUDED
