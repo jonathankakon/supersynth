@@ -16,9 +16,8 @@
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("FrequencyControl", AudioChannelSet::mono())
-  .withInput("VolumeControl", AudioChannelSet::mono())
-  .withInput("PhaseModulation", AudioChannelSet::mono())),
+  .withInput("PhaseModulation", AudioChannelSet::mono())
+  .withInput("VolumeModulation", AudioChannelSet::mono())),
   oscillator(new VAOscillator())
 {
   
@@ -30,7 +29,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(100.0, 5000.0, 0.01, 0.7, false),
+                                                        NormalisableRange<float>(1.0, 5000.0, 0.01, 0.7, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -109,11 +108,12 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   ignoreUnused(midiBuffer);
   
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
-  AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, false, 3);
+  AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
+  AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
   
   if(currentWaveform == sine)
   {
-    oscillator->fillBufferSine(outBuffer, phaseModBuffer);
+    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   else if(currentWaveform == sawUp)
   {

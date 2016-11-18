@@ -90,6 +90,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   blepSlider = new Slider();
   blepSlider->setRange(0, 1, 1);
   blepSlider->setSliderStyle(Slider::LinearVertical);
+  blepSlider->setValue(1);
   blepSlider->addListener(this);
   parent.registerImmobileObject(*blepSlider);
   addAndMakeVisible(blepSlider);

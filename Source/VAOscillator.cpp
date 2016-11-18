@@ -22,7 +22,7 @@ VAOscillator::VAOscillator()
   
   phaseInc = 0.0;
   
-  phaseModAmp = 2*double_Pi/10;
+  phaseModAmp = 2*double_Pi;
   
   postFilterState = 0.0;
 }
@@ -30,15 +30,16 @@ VAOscillator::VAOscillator()
   //==============================================================================
   // waveforms:
 
-void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)// add midi buffer and know channel with control Voltage
+void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)// add midi buffer and know channel with control Voltage
 {
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
+  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
 
-    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]);
+    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]) * volMod[sampleIndex];
     
     updateFrequency();
     currentPhase += phaseInc;
@@ -52,17 +53,48 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
 
 void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
-  float* const data = buffer.getWritePointer(0);
   
+// original without PM
+//  float* const data = buffer.getWritePointer(0);
+//  float const *phaseMod = phaseModBuffer.getReadPointer(0);
+//  
+//  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+//  {
+//    
+//    data[sampleIndex] = (2 * (currentPhase ))/(2 * double_Pi) - 1;
+//    
+//    if(blepOn == 1)
+//    {
+//      data[sampleIndex] += getBlep(currentPhase , currentFrequency);
+//    }
+//    
+//    updateFrequency();
+//    currentPhase += phaseInc;
+//    
+//    if(currentPhase > 2 * double_Pi)
+//    {
+//      currentPhase -= 2 * double_Pi;
+//    }
+//  }
+  
+  //With PM
+  float* const data = buffer.getWritePointer(0);
+  float const *phaseMod = phaseModBuffer.getReadPointer(0);
+  
+  //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    
-    data[sampleIndex] = (2 * currentPhase)/(2 * double_Pi) - 1;
-    
-    if(blepOn == 1)
+    double phase = currentPhase + phaseModAmp * phaseMod[sampleIndex];
+    while (phase < 0)
     {
-      data[sampleIndex] += getBlep(currentPhase, currentFrequency);
+      phase += 2 * double_Pi;
     }
+    while (phase > 2 * double_Pi)
+    {
+      phase -= 2 * double_Pi;
+    }
+    
+    data[sampleIndex] = phase;
     
     updateFrequency();
     currentPhase += phaseInc;
@@ -70,6 +102,19 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
     if(currentPhase > 2 * double_Pi)
     {
       currentPhase -= 2 * double_Pi;
+    }
+  }
+  
+  //use the phase values in buffer to calculate the waveform
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    double phase = data[sampleIndex];
+    
+    data[sampleIndex] = (2 * phase)/(2 * double_Pi) - 1;
+    
+    if(blepOn == 1)
+    {
+      data[sampleIndex] += getBlep(phase , currentFrequency);// i have to watch out here because actually currentFrequency is not valid for this calculation
     }
   }
   

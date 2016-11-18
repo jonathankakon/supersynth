@@ -23,7 +23,7 @@ public:
   
   VAOscillator();
   
-  void fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer);
+  void fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer);
   void fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer);
   void fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer);
   void fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer);
@@ -50,7 +50,7 @@ private:
   double phaseInc;
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
-  int blepOn = 0;
+  int blepOn = 1;
   
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;
@@ -62,6 +62,7 @@ private:
   double getTriRes(double phase, double frequency);
   
   double phaseModAmp;
+  ScopedPointer<Array<float>> phaseArray;
   
   //the post Filter is now in every VAoscillator but could eventually be moved to the one outputprocessor
   double postFilterState;
