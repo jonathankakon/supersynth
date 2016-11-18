@@ -5,6 +5,7 @@
     Created: 28 Oct 2016 4:18:36pm
     Author:  jonathan kakon
 
+    Heavily copied from JUCE Plugin Host example.
   ==============================================================================
 */
 
@@ -16,16 +17,16 @@
 #include "ProcessorEditorBase.h"
 
 Connection::Connection(int inId, int inChannel, int outId, int outChannel) : Component(),
-inputNodeId(inId), inputNodeChannel(inChannel), outputNodeId(outId), outputNodeChannel(outChannel), 
+inputNodeId(inId), inputNodeChannel(inChannel), outputNodeId(outId), outputNodeChannel(outChannel),
 draggingToInput(inId == 0), dragging(false), lastInputX(0),
-lastOutputX(0), lastOutputY(0), lastInputY(0)
+lastOutputX(0), lastOutputY(0), lastInputY(0), stopPathRedraw(false)
 {
   setAlwaysOnTop(false);
 }
 
 Connection::Connection(Connection& c) : Component(),
 inputNodeId(c.inputNodeId), inputNodeChannel(c.inputNodeChannel), outputNodeId(c.outputNodeId),
-outputNodeChannel(c.outputNodeChannel), draggingToInput(c.inputNodeId == 0), 
+outputNodeChannel(c.outputNodeChannel), draggingToInput(c.inputNodeId == 0), stopPathRedraw(c.getStopPathRedraw()),
 dragging(false), lastInputX(c.getX1()), lastOutputX(c.getX2()), lastOutputY(c.getY2()), lastInputY(c.getY1())
 {
   setAlwaysOnTop(false);
@@ -45,6 +46,11 @@ void Connection::paint (Graphics& g)
 
 void Connection::resized()
 {
+  if(stopPathRedraw)
+  {
+    stopPathRedraw = false;
+    return;
+  }
   float x1, y1, x2, y2;
   getPoints(x1, y1, x2, y2);
 
@@ -53,6 +59,10 @@ void Connection::resized()
   lastOutputX = x2;
   lastOutputY = y2;
 
+
+  stopPathRedraw = true;
+  setBounds(getX() - 100.0f, getY(), this->getWidth() + 200.0f, this->getHeight());
+
   x1 -= getX();
   y1 -= getY();
   x2 -= getX();
@@ -60,8 +70,8 @@ void Connection::resized()
 
   path.clear();
   path.startNewSubPath(x1, y1);
-  path.cubicTo(x1 - jmin(2*std::abs(x2-x1) , 100.0f), y1,
-               x2 + jmin(2*std::abs(x2 - x1), 100.0f), y2,
+  path.cubicTo(x1 - jmin(1.2f*std::abs(x2 - x1), 100.0f), y1,
+               x2 + jmin(1.2f*std::abs(x2 - x1), 100.0f), y2,
     x2, y2);
 
   PathStrokeType wideStroke(8.0f);
@@ -71,6 +81,7 @@ void Connection::resized()
   stroke.createStrokedPath(path, path);
 
   path.setUsingNonZeroWinding(true);
+
 }
 
 bool Connection::hitTest(int x, int y)

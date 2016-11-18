@@ -97,10 +97,6 @@
       <FILE id="k7fQze" name="VAOscillator.cpp" compile="1" resource="0"
             file="Source/VAOscillator.cpp"/>
       <FILE id="zLJVya" name="VAOscillator.h" compile="0" resource="0" file="Source/VAOscillator.h"/>
-      <FILE id="S35ZyV" name="NoiseOscillator.cpp" compile="1" resource="0"
-            file="Source/NoiseOscillator.cpp"/>
-      <FILE id="S3BOZn" name="NoiseOscillator.h" compile="0" resource="0"
-            file="Source/NoiseOscillator.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
