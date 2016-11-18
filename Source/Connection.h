@@ -48,6 +48,7 @@ public:
   float getX2() const { return lastOutputX; };
   float getY1() const { return lastInputY; };
   float getY2() const { return lastOutputY; };
+  bool getStopPathRedraw() const { return stopPathRedraw; };
 
   int inputNodeId;
   int inputNodeChannel;
@@ -64,6 +65,7 @@ private:
 
   Path path, hitPath;
   bool dragging;
+  bool stopPathRedraw;
 
   float lastInputX, lastOutputX, lastInputY, lastOutputY;
 

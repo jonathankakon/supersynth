@@ -36,27 +36,37 @@ ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::~ProcessorEditorW
 template<class AudioProcessorType, class EditorType>
 void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnectors()
 {
-  InputConnectorProcessor* inputMixer = new InputConnectorProcessor();
-  mixerNodeId = addProcessorToGraph(inputMixer, nodeId, 0);
-  InputConnector* input = new InputConnector(inputMixer, this, mixerNodeId);
-  inputConnectors.add(input);
-  outputConnector = new OutputConnector(nodeId);
-
-  registerImmobileObject(*input);
-  addAndMakeVisible(input);
-
-  registerImmobileObject(*outputConnector);
-  addAndMakeVisible(outputConnector);
+  int numInputs = processor.getBusCount(true);
+  int numOutputs = processor.getBusCount(false);
 
   Rectangle<int> r(getLocalBounds());
 
-  input->setBounds(r.withY(r.getHeight() / 2 - input->getHeight() / 2)
-                                  .withWidth(input->getWidth())
-                                  .withHeight(input->getHeight()));
-  outputConnector->setBounds(r.withX(r.getWidth() - 32)
-                              .withY(r.getHeight() / 2 - outputConnector->getHeight()/2)
-                              .withWidth(outputConnector->getWidth())
-                              .withHeight(outputConnector->getHeight()));
+  for (int i = 0; i < numInputs; ++i)
+  {
+    InputConnectorProcessor* inputMixer = new InputConnectorProcessor();
+    mixerNodeId = addProcessorToGraph(inputMixer, nodeId, i);
+    InputConnector* input = new InputConnector(inputMixer, this, mixerNodeId);
+    inputConnectors.add(input);
+    registerImmobileObject(*input);
+    addAndMakeVisible(input);
+
+    int totHeight = numInputs * input->getHeight();
+
+    input->setBounds(r.withY(r.getHeight() / 2 - totHeight / 2 + i*input->getHeight())
+      .withWidth(input->getWidth())
+      .withHeight(input->getHeight()));
+  }
+
+  if (numOutputs > 0)
+  {
+    outputConnector = new OutputConnector(nodeId);
+    registerImmobileObject(*outputConnector);
+    addAndMakeVisible(outputConnector);
+    outputConnector->setBounds(r.withX(r.getWidth() - 32)
+      .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
+      .withWidth(outputConnector->getWidth())
+      .withHeight(outputConnector->getHeight()));
+  }
 }
 
 template <class AudioProcessorType, class EditorType>
@@ -110,6 +120,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graph
 template<class AudioProcessorType, class EditorType>
 void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::resized()
 {
+  /*
   if (processorEditor != nullptr && inputConnectors.size() > 0 && outputConnector != nullptr)
   {
     Rectangle<int> r(static_cast<Component*>(processorEditor)->getBounds());
@@ -129,7 +140,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::resized()
       .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
       .withWidth(outputConnector->getWidth())
       .withHeight(outputConnector->getHeight()));
-  }
+  }*/
 }
 
 template class ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGeneratorProcessorEditor>;
