@@ -74,8 +74,6 @@ public:
     triangle
   };
   
-  void setWaveform(waveform newWaveform);
-  
   inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
   
   
@@ -93,6 +91,12 @@ private:
   double currentSampleRate;
   
   waveform currentWaveform;
+  waveform targetWaveform;
+  
+  bool waveformChanged;
+  
+  void setWaveform(waveform newWaveform);
+  void setWaveform(int index);
   
   ScopedPointer<VAOscillator> oscillator;
   

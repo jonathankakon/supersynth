@@ -18,7 +18,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (150, 80);
+  setSize (300, 100);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -83,13 +83,13 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   addAndMakeVisible(waveformSlider);
   
   
-  volumeSlider->addListener(this);
+  //setConnectors();
    
   //label
   
   blepSlider = new Slider();
   blepSlider->setRange(0, 1, 1);
-  blepSlider->setSliderStyle(Slider::LinearVertical);
+  blepSlider->setSliderStyle(Slider::LinearHorizontal);
   blepSlider->addListener(this);
   parent.registerImmobileObject(*blepSlider);
   addAndMakeVisible(blepSlider);
@@ -107,8 +107,11 @@ WaveGeneratorProcessorEditor::~WaveGeneratorProcessorEditor()
 void WaveGeneratorProcessorEditor::paint (Graphics& g)
 {
   g.fillAll (Colours::lightgreen);
+  g.setColour (Colours::black);
+  g.setFont (15.0f);
+  g.drawFittedText ("Wave Generator!", Rectangle<int>(200,15), Justification::centred, 1);
   
-  Rectangle<int> r(10, 5 , 30, 30);
+  Rectangle<int> r(30, 40 , 30, 30);
   volumeSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -117,8 +120,7 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   r.setX(r.getX() + 40);
   frequencySlider->setBounds(r);
   
-  r.setX(r.getX() - 80);
-  r.setY(r.getY() + 40);
+  r.setX(r.getX() + 40);
   octavesSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -127,8 +129,7 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   r.setX(r.getX() + 40);
   centsSlider->setBounds(r);
   
-  r.setX(r.getX() + 30);
-  r.setY(r.getY() - 20);
+  r.setX(r.getX() + 40);
   blepSlider->setBounds(r);
   
 }

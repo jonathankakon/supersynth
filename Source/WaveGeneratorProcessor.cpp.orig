@@ -17,8 +17,7 @@
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio", AudioChannelSet::mono())
   .withInput("FrequencyControl", AudioChannelSet::mono())
-  .withInput("VolumeControl", AudioChannelSet::mono())
-  .withInput("PhaseModulation", AudioChannelSet::mono())),
+  .withInput("VolumeControl", AudioChannelSet::mono())),
   oscillator(new VAOscillator())
 {
   
@@ -60,15 +59,19 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addListener(this);
   
+<<<<<<< HEAD
   currentWaveform = sawUp;
-  targetWaveform = sawUp;
-  
-  waveformChanged = true;//just so that there is a ramp when putting the wavegenerator in
+
+  oscillator = new VAOscillator();
+=======
+  currentWaveform = saw;
+>>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
   
 }
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
 {
+  
 }
 
 
@@ -98,10 +101,6 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
   {
     oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()] );
   }
-  if(parameterIndex == 5)
-  {
-    setWaveform(waveformParam->getIndex());
-  }
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
@@ -109,49 +108,31 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   ignoreUnused(midiBuffer);
   
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
-  AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, false, 3);
-  
-  if(currentWaveform == sine)
+  if(waveformParam->getIndex() == 0)
   {
-    oscillator->fillBufferSine(outBuffer, phaseModBuffer);
+    oscillator->fillBufferSine(outBuffer);
+<<<<<<< HEAD
+=======
+    outBuffer.applyGain(volumeParam->get());
+>>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
   }
-  else if(currentWaveform == sawUp)
+  else if(waveformParam->getIndex() == 1)
   {
-    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer);
+    oscillator->fillBufferRisingSaw(outBuffer);
+    outBuffer.applyGain(volumeParam->get());
   }
-  else if(currentWaveform == sawDown)
+  else if(waveformParam->getIndex() == 2)
   {
-    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer);
+    oscillator->fillBufferFallingSaw(outBuffer);
   }
-  else if(currentWaveform == square)
+  else if(waveformParam->getIndex() == 3)
   {
-    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer);
+    oscillator->fillBufferSquarePulse(outBuffer);
+    outBuffer.applyGain(volumeParam->get());
   }
   else // index == 4 => Triangle
   {
-    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer);
-  }
-  
-  
-  //smooth transitions when changing the waveform
-  if(waveformChanged)
-  {
-    float* const data = outBuffer.getWritePointer(0);
-    for(int sampleIndex = 1; sampleIndex <= 100; sampleIndex++)
-    {
-      data[sampleIndex] *= (sampleIndex - 1)/100.0f;
-    }
-    waveformChanged = false;
-  }
-  if(currentWaveform != targetWaveform)
-  {
-    float* const data = outBuffer.getWritePointer(0);
-    for(int sampleIndex = 100; sampleIndex > 0; sampleIndex--)
-    {
-      data[outBuffer.getNumSamples() - sampleIndex] *= (sampleIndex - 1)/100.0f;
-    }
-    currentWaveform = targetWaveform;
-    waveformChanged = true;
+    oscillator->fillBufferTriangle(outBuffer);
   }
   
   outBuffer.applyGain(volumeParam->get());
@@ -232,29 +213,5 @@ void WaveGeneratorProcessor::setStateInformation(const void* data, int sizeInByt
 
 void WaveGeneratorProcessor::setWaveform(waveform newWaveform)
 {
-  targetWaveform = newWaveform;
-}
-
-void WaveGeneratorProcessor::setWaveform(int index)
-{
-  if(index == 0)
-  {
-    targetWaveform = sine;
-  }
-  else if(index == 1)
-  {
-    targetWaveform = sawUp;
-  }
-  else if(index == 2)
-  {
-    targetWaveform = sawDown;
-  }
-  else if(index == 3)
-  {
-    targetWaveform = square;
-  }
-  else // index == 4 => Triangle
-  {
-    targetWaveform = triangle;
-  }
+  currentWaveform = newWaveform;
 }

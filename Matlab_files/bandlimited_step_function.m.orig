@@ -8,6 +8,7 @@ beta = 9.0;
 apof = 0.9;
 apobeta = 0.7;
 
+
 pts = ppiv * rlen + 1;  %impulse length in points
 
 x1 = 0:1:(pts-1);
@@ -23,9 +24,16 @@ aw = 1 - apof * kaiser(pts, apobeta);
 g = aw.*g;
 g = g/max(g) ;
 
-dlmwrite('bandlimited_step_impulse_48000.dat',g','precision',32);
+figure(2)
+plot (x2/2,g)
+
+dlmwrite('bandlimited_step_function_48000.dat',g','precision',32);
 
 
+<<<<<<< HEAD
+=======
+dlmwrite('bandlimited_step_function_48000.dat',g', 'precision', 32);
+>>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
 
 %g(501) = 0;
 %h = zeros(1001,1);
@@ -37,28 +45,34 @@ end
 g = g/g(end) * 2;
 
 f = g;
+for ii = 1:1280
+    f(ii) = (g(1280 + ii) - 2) * (-1);
+end
+
+<<<<<<< HEAD
 for ii = 1:1281
-    f(ii+1280) = f(ii+1280) -2;
+    f(ii+1280) = g(ii) * (-1);
 
-end
-
-
+end    
 dlmwrite('bandlimited_saw_difference_48000.dat',f' ,'precision', 32);
-
-for ii = 2:length(f)
-    f(ii) = f(ii-1) + f(ii);
-end
-
-f = f/max(f);
-
-dlmwrite('bandlimited_triangle_difference_48000.dat',f' ,'precision', 32);
-
+=======
+g = g/max(g);
+dlmwrite('bandlimited_saw_difference_48000.dat',g', 'precision', 32);
+>>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
 % Plot
+
+
     
 figure(1);
 subplot(1,2,1);
+<<<<<<< HEAD
 plot(x2/2,f);
 axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); subplot(1,2,2);
+=======
+plot(x2/2,g);
+axis([-rlen/2 rlen/2 -0.2 1.0001]); xlabel('Time in Sampling Intervals'); title('Bandlimited Impulse'); 
+subplot(1,2,2);
+>>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
 
 zpad = 20;
 g2 = [g ; zeros((zpad-1)*pts,1)];
@@ -74,3 +88,5 @@ grid;
 hold;
 plot([20 20], [0.00001 1], 'g'); plot([fs/1000-20 fs/1000-20], [0.00001 1], 'r'); plot([fs/1000 fs/1000], [0.00001 1], 'r');
 hold off;
+
+%}
