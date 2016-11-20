@@ -85,7 +85,8 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   
   volumeSlider->addListener(this);
    
-  //label
+  //labels
+  
   
   blepSlider = new Slider();
   blepSlider->setRange(0, 1, 1);
@@ -94,8 +95,6 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   blepSlider->addListener(this);
   parent.registerImmobileObject(*blepSlider);
   addAndMakeVisible(blepSlider);
-  
-  
   
 }
 
@@ -198,11 +197,10 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
     else
       param->setValue ((float) slider->getValue());
   }
-  else
+  else if (slider == blepSlider)
   {
     processor.setBlepOn(slider->getValue() );
   }
-  
   
 }
 

@@ -75,6 +75,7 @@ public:
   };
   
   inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
+  inline void setTriResCoef(double newCoef) {oscillator->setTriResCoef(newCoef);}
   
   
 

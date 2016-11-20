@@ -39,6 +39,7 @@ public:
   void setFrequency(double newFrequency);
   
   inline void setBlepOn(double on){blepOn = (int)on;}
+  inline void setTriResCoef(double newCoef){triResCoef = newCoef;}
   
 private:
   
@@ -51,6 +52,7 @@ private:
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
   int blepOn = 1;
+  double triResCoef = 0;
   
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;

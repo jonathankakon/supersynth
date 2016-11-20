@@ -39,7 +39,7 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
 
-    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]) * volMod[sampleIndex];
+    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]);// * volMod[sampleIndex];
     
     updateFrequency();
     currentPhase += phaseInc;
@@ -191,14 +191,15 @@ void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<fl
     
     if(blepOn == 1)
     {
-      data[sampleIndex] += currentFrequency * getTriRes(currentPhase, currentFrequency);
+      //the 0.000026 is kind of a magic number i didnt calculate it just found it by trying out
+      data[sampleIndex] += 0.000026 * currentFrequency * getTriRes(currentPhase, currentFrequency);
       if(currentPhase < double_Pi)
       {
-        data[sampleIndex] -= currentFrequency * getTriRes(currentPhase + double_Pi, currentFrequency);
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase + double_Pi, currentFrequency);
       }
-      if(currentPhase > double_Pi)
+      else if(currentPhase >= double_Pi)
       {
-        data[sampleIndex] -= currentFrequency * getTriRes(currentPhase - double_Pi, currentFrequency);
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase - double_Pi, currentFrequency);
       }
     }
     
