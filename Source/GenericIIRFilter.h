@@ -22,10 +22,12 @@ public:
   
   GenericIIRFilter(float frequency, float q, float gain)
   {
-    cutoffFrequency = frequency;
+    targetCutoffFrequency = frequency;
     qParameter = q;
     gainParameter = gain;
 
+    currentCutoffFrequency = targetCutoffFrequency;
+    
     resetFirstOrderState();
     resetSecondOrderState();
     resetCanonicalState();
@@ -61,7 +63,7 @@ public:
   
   void setCutoff(float frequency)
   {
-    cutoffFrequency = frequency;
+    targetCutoffFrequency = frequency;
   }
   
   void setQ(float q)
@@ -81,6 +83,12 @@ private:
   float qParameter;
   float gainParameter;
   float h0;
+  
+  float targetCutoffFrequency;    //changed by the slider
+  float currentCutoffFrequency;   //internal current cutoff frequency
+  float stepsize = 1.0/500.0;     //current cutoff frequency changes towards targeted
+                                  //frequency with stepsize*currentCutoffFrequency
+  
 
   double sampleRate;
   double oneOverSampleRate;

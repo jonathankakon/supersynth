@@ -71,6 +71,12 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   cutoffFreqBand3->setSkewFactor(0.5);
   cutoffFreqBand4->setSkewFactor(0.5);
   
+  qParamBand1->setSkewFactor(0.5);
+  qParamBand2->setSkewFactor(0.5);
+  qParamBand3->setSkewFactor(0.5);
+  qParamBand4->setSkewFactor(0.5);
+  
+  
   
   //BUTTONS initialising, setting radio groups and adding listeners
   buttonLowCut1 = new ToggleButton("1st Lowcut");

@@ -191,13 +191,14 @@ void GenericIIRFilter::updateCoefficientsPeak(float frequency)
   {
     double k = tan(double_Pi * frequency / sampleRate);
     float q = qParameter;
-    double oneOverDenom = 1.0/(k*k*q + k + q);
+    double oneOverDenom = 1.0/(k*k*q + k/(h0+1) + q);
+    
     
     canonicalState.b0 = (q + k + q*k*k)*oneOverDenom;
     canonicalState.b1 = (2*q*(k*k - 1))*oneOverDenom;
     canonicalState.b2 = (q - k + q*k*k)*oneOverDenom;
     
-    canonicalState.a1 = canonicalState.b1;
+    canonicalState.a2 = (q - (h0+1)*k + q*k*k)*oneOverDenom;
     canonicalState.a2 = (q - (h0+1)*k + q*k*k)*oneOverDenom;
   }
 }
@@ -409,7 +410,35 @@ void GenericIIRFilter::peak(AudioBuffer<float> &buffer)
 
 float GenericIIRFilter::computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer)
 {
-  return cutoffFrequency;
+  if(std::abs(targetCutoffFrequency - currentCutoffFrequency) < stepsize*currentCutoffFrequency)
+    
+  {
+    
+    return targetCutoffFrequency;
+    
+  }
+  
+  else if (currentCutoffFrequency < targetCutoffFrequency)
+    
+  {
+    
+    currentCutoffFrequency += stepsize*currentCutoffFrequency;
+    
+    return currentCutoffFrequency;
+    
+  }
+  
+  else if(currentCutoffFrequency > targetCutoffFrequency)
+    
+  {
+    
+    currentCutoffFrequency -= stepsize*currentCutoffFrequency;
+    
+    return currentCutoffFrequency;
+    
+  }
+  
+  return targetCutoffFrequency;
 }
 
 

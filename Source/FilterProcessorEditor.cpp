@@ -17,7 +17,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize(400, 150);
+  setSize(240, 100);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -42,6 +42,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   qSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
   //qSlider->setPopupDisplayEnabled(true, this);
   qSlider->setValue(0.72);
+  qSlider->setSkewFactor(0.5);
   qSlider->addListener(this);
   parent.registerImmobileObject(*qSlider);
   addAndMakeVisible(qSlider);
@@ -168,13 +169,14 @@ void FilterProcessorEditor::paint (Graphics& g)
   g.fillAll (Colours::lightblue);
   g.setColour (Colours::black);
   g.setFont (15.0f);
-  g.drawFittedText ("Filter!", Rectangle<int>(200,15), Justification::centred, 1);
-  
+  g.drawFittedText ("      Filter!", Rectangle<int>(200,15), Justification::centredLeft, 1);
+
   
   Rectangle<int> r(getLocalBounds());
   r.reduce(20,20);
   int offset = r.getWidth()/5;
   int yoffset = r.getHeight()/numButtons;
+  
   
   //filterTypeSlider->setBounds(r.withWidth(offset).withX(offset));
   frequencySlider->setBounds(r.withWidth(offset).withX(r.getX()+2*offset));
