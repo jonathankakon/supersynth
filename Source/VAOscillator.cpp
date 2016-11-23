@@ -51,7 +51,7 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
   }
 }// end sine
 
-void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
+void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer,AudioBuffer<float>& volumeModBuffer)
 {
   
 // original without PM
@@ -80,6 +80,7 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
   //With PM
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
+  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
@@ -110,20 +111,20 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
   {
     double phase = data[sampleIndex];
     
-    data[sampleIndex] = (2 * phase)/(2 * double_Pi) - 1;
+    data[sampleIndex] = ((2 * phase)/(2 * double_Pi) - 1)* std::abs(0.5*(volMod[sampleIndex]+1));
     
     if(blepOn == 1)
     {
-      data[sampleIndex] += getBlep(phase , currentFrequency);// i have to watch out here because actually currentFrequency is not valid for this calculation
+      data[sampleIndex] += getBlep(phase , currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));// i have to watch out here because actually currentFrequency is not valid for this calculation
     }
   }
   
   //postFilter(buffer);
 }// end rising Saw
 
-void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
+void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
 {
-  fillBufferRisingSaw(buffer, phaseModBuffer);
+  fillBufferRisingSaw(buffer, phaseModBuffer, volumeModBuffer);
   
   float* const data = buffer.getWritePointer(0);
   
@@ -134,31 +135,32 @@ void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<
   
 }// end falling Saw
 
-void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
+void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
+  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     if(currentPhase < double_Pi)
     {
-      data[sampleIndex] = -1;
+      data[sampleIndex] = -1* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     else
     {
-      data[sampleIndex] = 1;
+      data[sampleIndex] = 1* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     
     if(blepOn == 1)
     {
-    data[sampleIndex] += getBlep(currentPhase, currentFrequency);
+    data[sampleIndex] += getBlep(currentPhase, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
     if(currentPhase < double_Pi)
     {
-      data[sampleIndex] -= getBlep(currentPhase + double_Pi, currentFrequency);
+      data[sampleIndex] -= getBlep(currentPhase + double_Pi, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     if(currentPhase > double_Pi)
     {
-      data[sampleIndex] -= getBlep(currentPhase - double_Pi, currentFrequency);
+      data[sampleIndex] -= getBlep(currentPhase - double_Pi, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     }
   
@@ -174,32 +176,33 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
   
 }// end square pulse
 
-void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
+void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
+  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     if(currentPhase < double_Pi)
     {
-      data[sampleIndex] = (2 * currentPhase)/double_Pi - 1;
+      data[sampleIndex] = ((2 * currentPhase)/double_Pi - 1)* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     else
     {
-      data[sampleIndex] = 3 - 2 * currentPhase/double_Pi;
+      data[sampleIndex] = (3 - 2 * currentPhase/double_Pi)* std::abs(0.5*(volMod[sampleIndex]+1));
     }
     
     if(blepOn == 1)
     {
       //the 0.000026 is kind of a magic number i didnt calculate it just found it by trying out
-      data[sampleIndex] += 0.000026 * currentFrequency * getTriRes(currentPhase, currentFrequency);
+      data[sampleIndex] += 0.000026 * currentFrequency * getTriRes(currentPhase, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
       if(currentPhase < double_Pi)
       {
-        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase + double_Pi, currentFrequency);
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase + double_Pi, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
       }
       else if(currentPhase >= double_Pi)
       {
-        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase - double_Pi, currentFrequency);
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase - double_Pi, currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));
       }
     }
     
