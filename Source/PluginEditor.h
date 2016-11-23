@@ -45,7 +45,7 @@ public:
   void addAudioProcessor(ToolboxComponent::ModulesListElement*) const;
   int addAudioProcessor(AudioProcessor*, int, int) const;
 
-  void addIOComponents() const;
+  void addIOComponents();
   void enableAllInternalBuses(int outNode, int inNode) const;
   void addConnection(Connection* connection) const;
   void removeConnection(Connection& connection) const;
@@ -53,7 +53,8 @@ public:
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
-  int addInternalProcessor(InternalIOProcessor* p, int x, int y) const;
+  int addInternalProcessor(InternalIOProcessor* p, int x, int y, bool addToWorksheet) const;
+  int midiInID = 0;
 
   ScopedPointer<ToolboxComponent> toolbox;
   ScopedPointer<CollapseButton> collapseButton;

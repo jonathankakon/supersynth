@@ -104,12 +104,11 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
-{
-  ignoreUnused(midiBuffer);
-  
-  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
+{  
+  ignoreUnused(midiBuffer);  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
   AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
+
   
   if(currentWaveform == sine)
   {
