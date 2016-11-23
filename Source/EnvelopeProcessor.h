@@ -57,6 +57,8 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     struct EnvelopeState
     {
         float lastSample; int numSamplesSinceLastMidi; bool wasNoteOn;
+      int attackDecayCounter, releaseCounter;
+      float initialReleaseValue;
       };
     
     EnvelopeState state;
@@ -66,12 +68,16 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
         state.lastSample = 0.0;
         state.numSamplesSinceLastMidi = 0.0;
         state.wasNoteOn = true;
+        state.attackDecayCounter = 0;
+        state.releaseCounter = 0;
+        state.initialReleaseValue = 0;
       }
     
     void updateEnvelopeState(float sample, int sinceLastMidi, bool noteOn){
         state.lastSample = sample;
         state.numSamplesSinceLastMidi = sinceLastMidi;
         state.wasNoteOn = noteOn;
+      
       }
     
     AudioParameterFloat* attackParameter;
