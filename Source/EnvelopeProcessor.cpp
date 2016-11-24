@@ -12,17 +12,17 @@
 #include "ProcessorEditorWithConnectors.h"
 #include "EnvelopeProcessorEditor.h"
 
-EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withInput("midi", AudioChannelSet::mono()).withOutput("Envelope", AudioChannelSet::mono()))
+EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOutput("Envelope", AudioChannelSet::mono()))
 {
-  addParameter(attackParameter = new AudioParameterFloat("Attack", "Attack",0, 10, 0.05));
-  addParameter(decayParameter= new AudioParameterFloat("Decay", "Decay", 0, 10, 0.05));
-  addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0));
-  addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 10, 0.05));
-  
-  *attackParameter = 0.1;
-  *decayParameter = 1;
-  *sustainParameter =0.5;
-  *releaseParameter = 3.0;
+  addParameter(attackParameter = new AudioParameterFloat("Attack", "Attack",0, 1, 0.001));
+  addParameter(decayParameter= new AudioParameterFloat("Decay", "Decay", 0, 1, 0.001));
+  addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.9));
+  addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 1, 0.001));
+
+//  *attackParameter = 0.1;
+//  *decayParameter = 1;
+//  *sustainParameter =0.5;
+//  *releaseParameter = 3.0;
   
   resetEnvelopeState();
   state.wasNoteOn = false;
@@ -208,10 +208,11 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
           {
             int attackLength = *attackParameter * currentSampleRate;
             int decayLength = *decayParameter * currentSampleRate;
-            float attackGradient = (1.0)/((float)attackLength);
+            float attackGradient = (1.0-state.lastSample)/((float)attackLength - state.attackDecayCounter);
             float decayGradient = (1.0 - *sustainParameter)/((float)decayLength);
-            
+          
             state.releaseCounter = 0;
+            state.attackDecayCounter = 0;
             
             //there is a next midi message after the current one
             if(iterator->getNextEvent(message2, samplePosition2))
@@ -259,7 +260,7 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
                     if(state.attackDecayCounter - decayLength < attackLength)
                     {
                       //attack
-                      DBG("first attack " << audioData[index]);
+                      //DBG("first attack " << audioData[index]);
                       audioData[index] = audioData[index-1] + attackGradient;
                       state.attackDecayCounter++;
                       

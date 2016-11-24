@@ -37,7 +37,16 @@ class EnvelopeProcessorEditor: public AudioProcessorEditor, Slider::Listener
     ScopedPointer<Slider> decaySlider;
     ScopedPointer<Slider> sustainSlider;
     ScopedPointer<Slider> releaseSlider;
-    
+  
+  Label attackLabel;
+  Label decayLabel;
+  Label sustainLabel;
+  Label releaseLabel;
+  
+  
+  void initialiseSlider(juce::Slider *slider, juce::AudioParameterFloat *param, double min, double max, double stepSize, double initialValue);
+  
+  
     
   };
 
