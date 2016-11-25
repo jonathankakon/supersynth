@@ -17,6 +17,8 @@
 #include "FilterProcessorEditor.h"
 #include "EQFourProcessor.h"
 #include "EQFourProcessorEditor.h"
+#include "EnvelopeProcessor.h"
+#include "EnvelopeProcessorEditor.h"
 
 #include "InputConnector.h"
 #include "OutputConnector.h"

@@ -14,9 +14,12 @@
 #include "EQFourProcessorEditor.h"
 
 EQFourProcessor::EQFourProcessor() : AudioProcessor(BusesProperties()
-                                                    .withInput("Control", AudioChannelSet::mono())
+                                                    .withInput("Audio", AudioChannelSet::mono())
                                                     .withOutput("Audio", AudioChannelSet::mono())
-                                                    .withInput("Audio", AudioChannelSet::mono()))
+                                                    .withInput("Control1", AudioChannelSet::mono())
+                                                    .withInput("Control2", AudioChannelSet::mono())
+                                                    .withInput("Control3", AudioChannelSet::mono())
+                                                    .withInput("Control4", AudioChannelSet::mono()))
 {
   addParameter(cutoffFreq1 = new AudioParameterFloat("Cutoff Frequency 1", "Cutoff", 50, 10000, 50));
   addParameter(cutoffFreq2 = new AudioParameterFloat("Cutoff Frequency 2", "Cutoff", 50, 10000, 1000));
@@ -73,18 +76,23 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
 {
   ignoreUnused(midiBuffer);
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
+  AudioBuffer<float> modBuffer1 = getBusBuffer(buffer, true, 1);
+  AudioBuffer<float> modBuffer2 = getBusBuffer(buffer, true, 2);
+  AudioBuffer<float> modBuffer3 = getBusBuffer(buffer, true, 3);
+  AudioBuffer<float> modBuffer4 = getBusBuffer(buffer, true, 4);
+  
   
   switch (filterTypeBand1->getIndex()) {
     case 0:
-      filterBand1->firstOrderHighPass(outBuffer);
+      filterBand1->firstOrderHighPass(outBuffer, modBuffer1);
       break;
       
     case 1:
-      filterBand1->secondOrderHighPass(outBuffer);
+      filterBand1->secondOrderHighPass(outBuffer, modBuffer1);
       break;
       
     case 2:
-      filterBand1->lowShelf(outBuffer);
+      filterBand1->lowShelf(outBuffer, modBuffer1);
       break;
       
     default:
@@ -93,12 +101,12 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   
   switch (filterTypeBand2->getIndex()) {
     case 0:
-      filterBand2->peak(outBuffer);
-      //applyEQBand(outBuffer, filterBand2, gainParam2);
+      filterBand2->peak(outBuffer, modBuffer2);
+      //applyEQBand(outBuffer, filterBand2, gainParam2, modBuffer);
       break;
       
     case 1:
-      filterBand2->canonicalBandstop(outBuffer);
+      filterBand2->canonicalBandstop(outBuffer, modBuffer2);
       break;
       
     default:
@@ -107,12 +115,12 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   
   switch (filterTypeBand3->getIndex()) {
     case 0:
-      filterBand3->peak(outBuffer);
-      //applyEQBand(outBuffer, filterBand3, gainParam3);
+      filterBand3->peak(outBuffer, modBuffer3);
+      //applyEQBand(outBuffer, filterBand3, gainParam3, modBuffer);
       break;
       
     case 1:
-      filterBand3->canonicalBandstop(outBuffer);
+      filterBand3->canonicalBandstop(outBuffer, modBuffer3);
       break;
       
     default:
@@ -121,15 +129,15 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   
   switch (filterTypeBand4->getIndex()) {
     case 0:
-      filterBand4->firstOrderLowPass(outBuffer);
+      filterBand4->firstOrderLowPass(outBuffer, modBuffer4);
       break;
       
     case 1:
-      filterBand4->secondOrderLowPass(outBuffer);
+      filterBand4->secondOrderLowPass(outBuffer, modBuffer4);
       break;
       
     case 2:
-      filterBand4->highShelf(outBuffer);
+      filterBand4->highShelf(outBuffer, modBuffer4);
       break;
       
     default:
@@ -139,30 +147,7 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   
 }
 
-void EQFourProcessor::applyEQBand(AudioBuffer<float> &buffer, GenericIIRFilter* filter, AudioParameterFloat* gain)
-{
-  ScopedPointer<AudioBuffer<float>> filtered = new AudioBuffer<float>();
-  filtered->makeCopyOf(buffer);
-  filter->canonicalBandPass(buffer);
-  
-  float* filterPointer = filtered->getWritePointer(0);
-  
-  if(filter == filterBand2)
-  {
-  for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
-  {
-    *pointer = *pointer + ((*gainParam2)*(*filterPointer));
-    filterPointer++;
-  }
-  }
-  if (filter == filterBand3) {
-    for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
-    {
-      *pointer = *pointer + ((*gainParam3)*(*filterPointer));
-      filterPointer++;
-    }
-  }
-}
+
 
 void EQFourProcessor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue)
 {

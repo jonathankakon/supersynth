@@ -31,29 +31,30 @@ public:
     resetFirstOrderState();
     resetSecondOrderState();
     resetCanonicalState();
+    
   }
   
-  void firstOrderAllPass(AudioBuffer<float>& buffer); //If we want to support double precision in the FilterProcessor we must implement double versions of all these functions!!!!!!
-  void secondOrderAllPass(AudioBuffer<float>& buffer);
-  void allpassForHighShelf(AudioBuffer<float>& buffer);
-  void allpassForLowShelf(AudioBuffer<float>& buffer);
+  void firstOrderAllPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer); //If we want to support double precision in the FilterProcessor we must implement double versions of all these functions!!!!!!
+  void secondOrderAllPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void allpassForHighShelf(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void allpassForLowShelf(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void firstOrderLowPass(AudioBuffer<float>& buffer);
-  void firstOrderHighPass(AudioBuffer<float>& buffer);
+  void firstOrderLowPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void firstOrderHighPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void bandpass(AudioBuffer<float>& buffer);
-  void bandstop(AudioBuffer<float>& buffer);
+  void bandpass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void bandstop(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void secondOrderLowPass(AudioBuffer<float>& buffer);
-  void secondOrderHighPass(AudioBuffer<float>& buffer);
+  void secondOrderLowPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void secondOrderHighPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void canonicalBandPass(AudioBuffer<float>& buffer);
-  void canonicalBandstop(AudioBuffer<float>& buffer);
+  void canonicalBandPass(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void canonicalBandstop(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void highShelf(AudioBuffer<float>& buffer);
-  void lowShelf(AudioBuffer<float>& buffer);
+  void highShelf(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
+  void lowShelf(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
-  void peak(AudioBuffer<float>& buffer);
+  void peak(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer);
   
   void updateSampleRate(double newSampleRate)
   {
@@ -138,7 +139,7 @@ private:
   void updateCoefficientsLowShelf(float frequency);
   void updateCoefficientsPeak(float frequency);
   
-  float computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer);
+  float computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer, float* modPointer);
   
   
 //==============================================================================

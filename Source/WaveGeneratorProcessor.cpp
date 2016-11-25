@@ -117,19 +117,19 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   }
   else if(currentWaveform == sawUp)
   {
-    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer);
+    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   else if(currentWaveform == sawDown)
   {
-    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer);
+    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   else if(currentWaveform == square)
   {
-    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer);
+    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   else // index == 4 => Triangle
   {
-    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer);
+    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   
   

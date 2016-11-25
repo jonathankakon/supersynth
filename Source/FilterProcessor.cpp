@@ -13,9 +13,9 @@
 #include "GenericIIRFilter.h"
 
 FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
-  .withInput("Control", AudioChannelSet::mono())
+  .withInput("Audio", AudioChannelSet::mono())
   .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("Audio", AudioChannelSet::mono())), types(new StringArray)
+  .withInput("Control", AudioChannelSet::mono())), types(new StringArray)
 {
   addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 50, 15000, 100));
   addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
@@ -75,6 +75,8 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   
   ignoreUnused(midiBuffer);
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
+  AudioBuffer<float> modBuffer = getBusBuffer(buffer, true, 1);
+  
   
   //*filterType = 2;
   
@@ -83,43 +85,43 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
       break;
       
     case 1:
-      filterIIR->firstOrderLowPass(outBuffer);
+      filterIIR->firstOrderLowPass(outBuffer, modBuffer);
       break;
       
     case 2:
-      filterIIR->firstOrderHighPass(outBuffer);
+      filterIIR->firstOrderHighPass(outBuffer, modBuffer);
       break;
       
     case 3:
-      filterIIR->bandpass(outBuffer);
+      filterIIR->bandpass(outBuffer, modBuffer);
       break;
       
     case 4:
-      filterIIR->bandstop(outBuffer);
+      filterIIR->bandstop(outBuffer, modBuffer);
       break;
       
     case 5:
-      filterIIR->secondOrderLowPass(outBuffer);
+      filterIIR->secondOrderLowPass(outBuffer, modBuffer);
       break;
       
     case 6:
-      filterIIR->secondOrderHighPass(outBuffer);
+      filterIIR->secondOrderHighPass(outBuffer, modBuffer);
       break;
       
     case 7:
-      filterIIR->canonicalBandPass(outBuffer);
+      filterIIR->canonicalBandPass(outBuffer, modBuffer);
       break;
       
     case 8:
-      filterIIR->canonicalBandstop(outBuffer);
+      filterIIR->canonicalBandstop(outBuffer, modBuffer);
       break;
       
     case 9:
-      filterIIR->lowShelf(outBuffer);
+      filterIIR->lowShelf(outBuffer, modBuffer);
       break;
       
     case 10:
-      filterIIR->highShelf(outBuffer);
+      filterIIR->highShelf(outBuffer, modBuffer);
       break;
       
     default:

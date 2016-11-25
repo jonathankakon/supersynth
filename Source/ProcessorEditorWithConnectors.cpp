@@ -147,3 +147,5 @@ template class ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGenerat
 template class ProcessorEditorWithConnectors<FilterProcessor, FilterProcessorEditor>;
 template class ProcessorEditorWithConnectors<InternalIOProcessor, IOEditor>;
 template class ProcessorEditorWithConnectors<EQFourProcessor, EQFourProcessorEditor>;
+template class ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>;
+
