@@ -29,7 +29,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(1.0, 5000.0, 0.01, 0.7, false),
+                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,1, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -92,9 +92,9 @@ void WaveGeneratorProcessor::releaseResources()
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
 {
   ignoreUnused(processor);
-
   if(parameterIndex != 0 && parameterIndex != 5)
   {
+    DBG("current freq: " << 15000*newValue);
     oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()] );
   }
   if(parameterIndex == 5)
@@ -104,11 +104,23 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
-{  
-  ignoreUnused(midiBuffer);  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
+{
+  
+  AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
   AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
 
+  if(!midiBuffer.isEmpty())
+  {
+    MidiMessage& message1 = *new MidiMessage();
+    ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
+    int i = 0;
+    iterator->getNextEvent(message1, i);
+    if(int pos = message1.getNoteNumber())
+    {
+      frequencyParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+    }
+  }
   
   if(currentWaveform == sine)
   {

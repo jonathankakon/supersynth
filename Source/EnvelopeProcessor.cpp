@@ -12,6 +12,7 @@
 #include "ProcessorEditorWithConnectors.h"
 #include "EnvelopeProcessorEditor.h"
 
+
 EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOutput("Envelope", AudioChannelSet::mono()))
 {
   addParameter(attackParameter = new AudioParameterFloat("Attack", "Attack",0, 1, 0.001));
@@ -68,7 +69,7 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
         float decayGradient = (1.0 - *sustainParameter)/((float)decayLength);
         
         
-        //there is another sample in the buffer -> first index > 0
+        //there is another sample in the buffer -> first index > gsa0
         if(firstIndex > 0 )
         {
           
