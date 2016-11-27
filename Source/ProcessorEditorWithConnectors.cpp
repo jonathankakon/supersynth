@@ -148,4 +148,5 @@ template class ProcessorEditorWithConnectors<FilterProcessor, FilterProcessorEdi
 template class ProcessorEditorWithConnectors<InternalIOProcessor, IOEditor>;
 template class ProcessorEditorWithConnectors<EQFourProcessor, EQFourProcessorEditor>;
 template class ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>;
+template class ProcessorEditorWithConnectors<NoiseGeneratorProcessor, NoiseGeneratorProcessorEditor>;
 

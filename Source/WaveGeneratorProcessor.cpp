@@ -29,7 +29,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addParameter(targetFreqParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,1, false),
+                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,0.3, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -71,6 +71,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
 {
+  
 }
 
 
