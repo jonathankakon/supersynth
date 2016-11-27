@@ -16,8 +16,8 @@
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("FrequencyControl", AudioChannelSet::mono())
-  .withInput("VolumeControl", AudioChannelSet::mono())),
+  .withInput("PhaseModulation", AudioChannelSet::mono())
+  .withInput("VolumeModulation", AudioChannelSet::mono())),
   oscillator(new VAOscillator())
 {
   
@@ -27,9 +27,9 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.2));
   
-  addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
+  addParameter(targetFreqParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(100.0, 5000.0, 0.01, 0.7, false),
+                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,1, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -59,19 +59,18 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addListener(this);
   
-<<<<<<< HEAD
+  currentFrequency = 440.0;
+  targetFrequency = 440.0;
+  
   currentWaveform = sawUp;
-
-  oscillator = new VAOscillator();
-=======
-  currentWaveform = saw;
->>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
+  targetWaveform = sawUp;
+  
+  waveformChanged = true;//just so that there is a ramp when putting the wavegenerator in
   
 }
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
 {
-  
 }
 
 
@@ -96,46 +95,87 @@ void WaveGeneratorProcessor::releaseResources()
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float newValue)
 {
   ignoreUnused(processor);
-
   if(parameterIndex != 0 && parameterIndex != 5)
   {
+<<<<<<< HEAD
+    targetFrequency = targetFreqParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()];
+=======
+    DBG("current freq: " << 15000*newValue);
     oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()] );
+>>>>>>> dd31515b69ad93d03bf1e85b7b13b2bae36a48f7
+  }
+  if(parameterIndex == 5)
+  {
+    setWaveform(waveformParam->getIndex());
   }
 }
 
 void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiBuffer) //fills channels 1 and 0
 {
-  ignoreUnused(midiBuffer);
   
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
-  if(waveformParam->getIndex() == 0)
+  AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
+  AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
+
+  if(!midiBuffer.isEmpty())
   {
-    oscillator->fillBufferSine(outBuffer);
-<<<<<<< HEAD
-=======
-    outBuffer.applyGain(volumeParam->get());
->>>>>>> 02a875849f4675657d0551c42b6fe44f265f7d0d
+    MidiMessage& message1 = *new MidiMessage();
+    ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
+    int i = 0;
+    iterator->getNextEvent(message1, i);
+    if(int pos = message1.getNoteNumber())
+    {
+      frequencyParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+    }
   }
-  else if(waveformParam->getIndex() == 1)
+  
+  if(currentWaveform == sine)
   {
-    oscillator->fillBufferRisingSaw(outBuffer);
-    outBuffer.applyGain(volumeParam->get());
+    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer);
   }
-  else if(waveformParam->getIndex() == 2)
+  else if(currentWaveform == sawUp)
   {
-    oscillator->fillBufferFallingSaw(outBuffer);
+    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
   }
-  else if(waveformParam->getIndex() == 3)
+  else if(currentWaveform == sawDown)
   {
-    oscillator->fillBufferSquarePulse(outBuffer);
-    outBuffer.applyGain(volumeParam->get());
+    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
+  }
+  else if(currentWaveform == square)
+  {
+    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer, volumeModBuffer);
   }
   else // index == 4 => Triangle
   {
-    oscillator->fillBufferTriangle(outBuffer);
+    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer, volumeModBuffer);
+  }
+  
+  
+  //smooth transitions when changing the waveform
+  if(waveformChanged)
+  {
+    float* const data = outBuffer.getWritePointer(0);
+    for(int sampleIndex = 1; sampleIndex <= 100; sampleIndex++)
+    {
+      data[sampleIndex] *= (sampleIndex - 1)/100.0f;
+    }
+    waveformChanged = false;
+  }
+  if(currentWaveform != targetWaveform)
+  {
+    float* const data = outBuffer.getWritePointer(0);
+    for(int sampleIndex = 100; sampleIndex > 0; sampleIndex--)
+    {
+      data[outBuffer.getNumSamples() - sampleIndex] *= (sampleIndex - 1)/100.0f;
+    }
+    currentWaveform = targetWaveform;
+    waveformChanged = true;
   }
   
   outBuffer.applyGain(volumeParam->get());
+  
+  //update parameters
+    updateFrequency();
   
 }// End processBlock
 
@@ -213,5 +253,48 @@ void WaveGeneratorProcessor::setStateInformation(const void* data, int sizeInByt
 
 void WaveGeneratorProcessor::setWaveform(waveform newWaveform)
 {
-  currentWaveform = newWaveform;
+  targetWaveform = newWaveform;
+}
+
+void WaveGeneratorProcessor::setWaveform(int index)
+{
+  if(index == 0)
+  {
+    targetWaveform = sine;
+  }
+  else if(index == 1)
+  {
+    targetWaveform = sawUp;
+  }
+  else if(index == 2)
+  {
+    targetWaveform = sawDown;
+  }
+  else if(index == 3)
+  {
+    targetWaveform = square;
+  }
+  else // index == 4 => Triangle
+  {
+    targetWaveform = triangle;
+  }
+}
+
+void WaveGeneratorProcessor::updateFrequency()
+{
+  //max step size == 1/500 * currentfrequency
+  if(std::abs(currentFrequency - targetFrequency) < 0.05 * currentFrequency) // important change the std::abs to something crossplatform
+  {
+    currentFrequency = targetFrequency;
+  }
+  else if(currentFrequency < targetFrequency)
+  {
+    currentFrequency += 0.05 * currentFrequency;
+  }
+  else
+  {
+    currentFrequency -= 0.05 * currentFrequency;
+  }
+  
+  oscillator->setFrequency(currentFrequency);
 }

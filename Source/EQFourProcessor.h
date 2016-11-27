@@ -56,7 +56,7 @@ public:
   void setStateInformation (const void* data, int sizeInBytes) override;
   
   double currentSampleRate;
-  void applyEQBand(AudioBuffer<float>& buffer, GenericIIRFilter* filter, AudioParameterFloat* gain);
+
 
   void changeFilterTypeBand1(int newIndex);
   void changeFilterTypeBand2(int newIndex);

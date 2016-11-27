@@ -14,6 +14,8 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="poqYif" name="EnvelopeProcessorEditor.h" compile="0" resource="0"
+                file="Source/EnvelopeProcessorEditor.h"/>
           <FILE id="LrK78v" name="EQFourProcessorEditor.cpp" compile="1" resource="0"
                 file="Source/EQFourProcessorEditor.cpp"/>
           <FILE id="qbxhrZ" name="EQFourProcessorEditor.h" compile="0" resource="0"
@@ -22,6 +24,8 @@
                 file="Source/FilterProcessorEditor.cpp"/>
           <FILE id="cESYm8" name="FilterProcessorEditor.h" compile="0" resource="0"
                 file="Source/FilterProcessorEditor.h"/>
+          <FILE id="IKCeSd" name="EnvelopeProcessorEditor.cpp" compile="1" resource="0"
+                file="Source/EnvelopeProcessorEditor.cpp"/>
           <FILE id="hbytox" name="IOEditor.cpp" compile="1" resource="0" file="Source/IOEditor.cpp"/>
           <FILE id="MRTBHW" name="IOEditor.h" compile="0" resource="0" file="Source/IOEditor.h"/>
           <FILE id="Ueg5Hu" name="ProcessorEditorBase.cpp" compile="1" resource="0"
@@ -64,6 +68,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="lMBPmf" name="EnvelopeProcessor.cpp" compile="1" resource="0"
+              file="Source/EnvelopeProcessor.cpp"/>
+        <FILE id="M9J1o1" name="EnvelopeProcessor.h" compile="0" resource="0"
+              file="Source/EnvelopeProcessor.h"/>
         <FILE id="a0BAzy" name="EQFourProcessor.h" compile="0" resource="0"
               file="Source/EQFourProcessor.h"/>
         <FILE id="AnEhdg" name="EQFourProcessor.cpp" compile="1" resource="0"
@@ -90,6 +98,8 @@
               file="Source/PluginProcessor.h"/>
       </GROUP>
       <FILE id="cnLiw4" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
+      <FILE id="WJ4kvk" name="FIRFilter.cpp" compile="1" resource="0" file="Source/FIRFilter.cpp"/>
+      <FILE id="H5VoMC" name="FIRFilter.h" compile="0" resource="0" file="Source/FIRFilter.h"/>
       <FILE id="E22bAe" name="GenericIIRFilter.cpp" compile="1" resource="0"
             file="Source/GenericIIRFilter.cpp"/>
       <FILE id="ckzXg3" name="GenericIIRFilter.h" compile="0" resource="0"

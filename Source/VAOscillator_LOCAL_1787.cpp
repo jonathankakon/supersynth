@@ -38,7 +38,7 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
 
-    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]) * std::abs(0.5*(volMod[sampleIndex]+1));
+    data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]);// * volMod[sampleIndex];
     
     currentPhase += phaseInc;
     
@@ -49,7 +49,7 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
   }
 }// end sine
 
-void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer,AudioBuffer<float>& volumeModBuffer)
+void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
   
 // original without PM
@@ -78,7 +78,6 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
   //With PM
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
-  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
@@ -99,11 +98,11 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
       currentPhase -= 2 * double_Pi;
     }
     
-    data[sampleIndex] = ((2 * phase)/(2 * double_Pi) - 1)* std::abs(0.5*(volMod[sampleIndex]+1));
+    data[sampleIndex] = (2 * phase)/(2 * double_Pi) - 1;
     
     if(blepOn == 1)
     {
-      data[sampleIndex] += getBlep(phase , currentFrequency)* std::abs(0.5*(volMod[sampleIndex]+1));// i have to watch out here because actually currentFrequency is not valid for this calculation
+      data[sampleIndex] += getBlep(phase , currentFrequency);// i have to watch out here because actually currentFrequency is not valid for this calculation
     }
     
     currentPhase += phaseInc;
@@ -116,9 +115,9 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
   //postFilter(buffer);
 }// end rising Saw
 
-void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
+void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
-  fillBufferRisingSaw(buffer, phaseModBuffer, volumeModBuffer);
+  fillBufferRisingSaw(buffer, phaseModBuffer);
   
   float* const data = buffer.getWritePointer(0);
   
@@ -129,11 +128,10 @@ void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<
   
 }// end falling Saw
 
-void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
+void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
-  float const *volMod = volumeModBuffer.getReadPointer(0);
   
   //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
@@ -162,7 +160,7 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
     }
     else
     {
-      data[sampleIndex] = 1* std::abs(0.5*(volMod[sampleIndex]+1));
+      data[sampleIndex] = 1;
     }
     
     if(blepOn == 1)
@@ -181,12 +179,12 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
   
 }// end square pulse
 
-void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)
+void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
-  float const *volMod = volumeModBuffer.getReadPointer(0);
-  
+
+  //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     double phase = currentPhase + phaseModAmp * phaseMod[sampleIndex];
@@ -213,7 +211,7 @@ void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<fl
     }
     else
     {
-      data[sampleIndex] = (3 - 2 * currentPhase/double_Pi)* std::abs(0.5*(volMod[sampleIndex]+1));
+      data[sampleIndex] = 3 - 2 * phase/double_Pi;
     }
     
     if(blepOn == 1)
