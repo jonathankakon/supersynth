@@ -14,7 +14,16 @@
 NoiseGeneratorProcessor::NoiseGeneratorProcessor(): AudioProcessor(BusesProperties()
                                                                    .withOutput("Audio", AudioChannelSet::mono()))
 {
+  // dont change the order of the parameters here, because the Editor depends on it!
+  addParameter(volumeParam = new AudioParameterFloat("volume",
+                                                     "Volume",
+                                                     NormalisableRange<float>(0.0,1.0),
+                                                     0.2));
   
+  addParameter(noisetypeParam = new AudioParameterChoice("noisetype",
+               "Noisetype",
+               StringArray({"White","Pink"}),
+               0) );
 }
 
 NoiseGeneratorProcessor::~NoiseGeneratorProcessor()
@@ -42,6 +51,8 @@ void NoiseGeneratorProcessor::processBlock(AudioSampleBuffer &buffer, juce::Midi
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   
   fillBufferWhiteNoise(outBuffer);
+  
+  outBuffer.applyGain(volumeParam->get());
 }
 
 AudioProcessorEditor* NoiseGeneratorProcessor::createEditor()

@@ -67,6 +67,9 @@ public:
   
 private:
   
+  AudioParameterFloat* volumeParam;
+  AudioParameterChoice* noisetypeParam;
+  
   Random rand;
   
   void fillBufferWhiteNoise(AudioBuffer<float> &buffer);
