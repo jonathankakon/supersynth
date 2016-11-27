@@ -15,7 +15,6 @@
 VAOscillator::VAOscillator()
 {
   currentSampleRate = 0;
-  targetFrequency = 440.0;
   currentFrequency = 440.0;
   
   currentPhase = 0.0;
@@ -41,7 +40,6 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
 
     data[sampleIndex] = sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]);// * volMod[sampleIndex];
     
-    updateFrequency();
     currentPhase += phaseInc;
     
     if(currentPhase > 2 * double_Pi)
@@ -85,6 +83,7 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     double phase = currentPhase + phaseModAmp * phaseMod[sampleIndex];
+    
     while (phase < 0)
     {
       phase += 2 * double_Pi;
@@ -94,27 +93,22 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
       phase -= 2 * double_Pi;
     }
     
-    data[sampleIndex] = phase;
-    
-    updateFrequency();
-    currentPhase += phaseInc;
-    
     if(currentPhase > 2 * double_Pi)
     {
       currentPhase -= 2 * double_Pi;
     }
-  }
-  
-  //use the phase values in buffer to calculate the waveform
-  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
-  {
-    double phase = data[sampleIndex];
     
     data[sampleIndex] = (2 * phase)/(2 * double_Pi) - 1;
     
     if(blepOn == 1)
     {
       data[sampleIndex] += getBlep(phase , currentFrequency);// i have to watch out here because actually currentFrequency is not valid for this calculation
+    }
+    
+    currentPhase += phaseInc;
+    if(currentPhase > 2 * double_Pi)
+    {
+      currentPhase -= 2 * double_Pi;
     }
   }
   
@@ -137,10 +131,30 @@ void VAOscillator::fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<
 void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
+  float const *phaseMod = phaseModBuffer.getReadPointer(0);
   
+  //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    if(currentPhase < double_Pi)
+    double phase = currentPhase + phaseModAmp * phaseMod[sampleIndex];
+    
+    while (phase < 0)
+    {
+      phase += 2 * double_Pi;
+    }
+    while (phase > 2 * double_Pi)
+    {
+      phase -= 2 * double_Pi;
+    }
+    
+    currentPhase += phaseInc;
+    
+    if(currentPhase > 2 * double_Pi)
+    {
+      currentPhase -= 2 * double_Pi;
+    }
+    
+    if(phase < double_Pi)
     {
       data[sampleIndex] = -1;
     }
@@ -151,24 +165,15 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
     
     if(blepOn == 1)
     {
-    data[sampleIndex] += getBlep(currentPhase, currentFrequency);
-    if(currentPhase < double_Pi)
+    data[sampleIndex] += getBlep(phase, currentFrequency);
+    if(phase < double_Pi)
     {
-      data[sampleIndex] -= getBlep(currentPhase + double_Pi, currentFrequency);
+      data[sampleIndex] -= getBlep(phase + double_Pi, currentFrequency);
     }
-    if(currentPhase > double_Pi)
+    if(phase > double_Pi)
     {
-      data[sampleIndex] -= getBlep(currentPhase - double_Pi, currentFrequency);
+      data[sampleIndex] -= getBlep(phase - double_Pi, currentFrequency);
     }
-    }
-  
-    
-    updateFrequency();
-    currentPhase += phaseInc;
-    
-    if(currentPhase > 2 * double_Pi)
-    {
-      currentPhase -= 2 * double_Pi;
     }
   }
   
@@ -177,38 +182,50 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
 void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer)
 {
   float* const data = buffer.getWritePointer(0);
-  
+  float const *phaseMod = phaseModBuffer.getReadPointer(0);
+
+  //write momentary phase values into the buffer
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    if(currentPhase < double_Pi)
-    {
-      data[sampleIndex] = (2 * currentPhase)/double_Pi - 1;
-    }
-    else
-    {
-      data[sampleIndex] = 3 - 2 * currentPhase/double_Pi;
-    }
+    double phase = currentPhase + phaseModAmp * phaseMod[sampleIndex];
     
-    if(blepOn == 1)
+    while (phase < 0)
     {
-      //the 0.000026 is kind of a magic number i didnt calculate it just found it by trying out
-      data[sampleIndex] += 0.000026 * currentFrequency * getTriRes(currentPhase, currentFrequency);
-      if(currentPhase < double_Pi)
-      {
-        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase + double_Pi, currentFrequency);
-      }
-      else if(currentPhase >= double_Pi)
-      {
-        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(currentPhase - double_Pi, currentFrequency);
-      }
+      phase += 2 * double_Pi;
     }
-    
-    updateFrequency();
+    while (phase > 2 * double_Pi)
+    {
+      phase -= 2 * double_Pi;
+    }
+        
     currentPhase += phaseInc;
     
     if(currentPhase > 2 * double_Pi)
     {
       currentPhase -= 2 * double_Pi;
+    }
+  
+    if(phase < double_Pi)
+    {
+      data[sampleIndex] = (2 * phase)/double_Pi - 1;
+    }
+    else
+    {
+      data[sampleIndex] = 3 - 2 * phase/double_Pi;
+    }
+    
+    if(blepOn == 1)
+    {
+      //the 0.000026 is kind of a magic number i didnt calculate it just found it by trying out
+      data[sampleIndex] += 0.000026 * currentFrequency * getTriRes(phase, currentFrequency);
+      if(phase < double_Pi)
+      {
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(phase + double_Pi, currentFrequency);
+      }
+      else if(phase >= double_Pi)
+      {
+        data[sampleIndex] -= 0.000026 * currentFrequency * getTriRes(phase - double_Pi, currentFrequency);
+      }
     }
     
   }
@@ -240,32 +257,13 @@ double VAOscillator::getFrequency()
 
 void VAOscillator::setFrequency(double newFrequency)
 {
-  targetFrequency = newFrequency;
+  currentFrequency = newFrequency;
+  updatePhaseInc();
 }
 
 
   //==============================================================================
   // Privates:
-
-
-void VAOscillator::updateFrequency()
-{
-  //max step size == 1/500 * currentfrequency
-  if(std::abs(currentFrequency - targetFrequency) < 0.0005 * currentFrequency) // import change the std::abs to something crossplatform
-  {
-    currentFrequency = targetFrequency;
-  }
-  else if(currentFrequency < targetFrequency)
-  {
-    currentFrequency += 0.0005 * currentFrequency;
-  }
-  else
-  {
-    currentFrequency -= 0.0005 * currentFrequency;
-  }
-  
-  updatePhaseInc();
-}
 
 void VAOscillator::updatePhaseInc()
 {

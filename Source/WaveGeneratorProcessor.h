@@ -75,13 +75,10 @@ public:
   };
   
   inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
-  inline void setTriResCoef(double newCoef) {oscillator->setTriResCoef(newCoef);}
-  
-  
 
 private:
   
-  AudioParameterFloat* frequencyParam;
+  AudioParameterFloat* targetFreqParam;
   AudioParameterFloat* volumeParam;
   AudioParameterChoice* waveformParam;
   
@@ -91,6 +88,9 @@ private:
   
   double currentSampleRate;
   
+  double currentFrequency;
+  double targetFrequency;
+  
   waveform currentWaveform;
   waveform targetWaveform;
   
@@ -98,6 +98,7 @@ private:
   
   void setWaveform(waveform newWaveform);
   void setWaveform(int index);
+  void updateFrequency();
   
   ScopedPointer<VAOscillator> oscillator;
   
