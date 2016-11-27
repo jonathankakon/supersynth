@@ -120,7 +120,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     iterator->getNextEvent(message1, i);
     if(int pos = message1.getNoteNumber())
     {
-      frequencyParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+      targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
     }
   }
   
