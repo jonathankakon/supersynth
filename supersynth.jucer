@@ -14,6 +14,10 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="fBFRdS" name="NoiseGeneratorProcessorEditor.cpp" compile="1"
+                resource="0" file="Source/NoiseGeneratorProcessorEditor.cpp"/>
+          <FILE id="iuYeuw" name="NoiseGeneratorProcessorEditor.h" compile="0"
+                resource="0" file="Source/NoiseGeneratorProcessorEditor.h"/>
           <FILE id="poqYif" name="EnvelopeProcessorEditor.h" compile="0" resource="0"
                 file="Source/EnvelopeProcessorEditor.h"/>
           <FILE id="LrK78v" name="EQFourProcessorEditor.cpp" compile="1" resource="0"
@@ -68,6 +72,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="wanSwG" name="NoiseGeneratorProcessor.cpp" compile="1" resource="0"
+              file="Source/NoiseGeneratorProcessor.cpp"/>
+        <FILE id="gO9Bqq" name="NoiseGeneratorProcessor.h" compile="0" resource="0"
+              file="Source/NoiseGeneratorProcessor.h"/>
         <FILE id="lMBPmf" name="EnvelopeProcessor.cpp" compile="1" resource="0"
               file="Source/EnvelopeProcessor.cpp"/>
         <FILE id="M9J1o1" name="EnvelopeProcessor.h" compile="0" resource="0"

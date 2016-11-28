@@ -27,9 +27,9 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                                                        NormalisableRange<float>(0.0,1.0),
                                                        0.2));
   
-  addParameter(frequencyParam = new AudioParameterFloat("currentFrequency",
+  addParameter(targetFreqParam = new AudioParameterFloat("currentFrequency",
                                                         "Frequency",
-                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,1, false),
+                                                        NormalisableRange<float>(1.0, 15000.0, 0.001,0.3, false),
                                                         440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
@@ -59,6 +59,9 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addListener(this);
   
+  currentFrequency = 440.0;
+  targetFrequency = 440.0;
+  
   currentWaveform = sawUp;
   targetWaveform = sawUp;
   
@@ -68,6 +71,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
 {
+  
 }
 
 
@@ -94,8 +98,7 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
   ignoreUnused(processor);
   if(parameterIndex != 0 && parameterIndex != 5)
   {
-    DBG("current freq: " << 15000*newValue);
-    oscillator->setFrequency(frequencyParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()] );
+    targetFrequency = targetFreqParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()];
   }
   if(parameterIndex == 5)
   {
@@ -118,7 +121,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     iterator->getNextEvent(message1, i);
     if(int pos = message1.getNoteNumber())
     {
-      frequencyParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+      targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
     }
   }
   
@@ -166,6 +169,9 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   }
   
   outBuffer.applyGain(volumeParam->get());
+  
+  //update parameters
+    updateFrequency();
   
 }// End processBlock
 
@@ -268,4 +274,23 @@ void WaveGeneratorProcessor::setWaveform(int index)
   {
     targetWaveform = triangle;
   }
+}
+
+void WaveGeneratorProcessor::updateFrequency()
+{
+  //max step size == 1/500 * currentfrequency
+  if(std::abs(currentFrequency - targetFrequency) < 0.05 * currentFrequency) // important change the std::abs to something crossplatform
+  {
+    currentFrequency = targetFrequency;
+  }
+  else if(currentFrequency < targetFrequency)
+  {
+    currentFrequency += 0.05 * currentFrequency;
+  }
+  else
+  {
+    currentFrequency -= 0.05 * currentFrequency;
+  }
+  
+  oscillator->setFrequency(currentFrequency);
 }

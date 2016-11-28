@@ -141,7 +141,7 @@ void WaveGeneratorProcessorEditor::resized()
 
 
 // copied from juce demo project GenericEditor.h
-void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
+void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
 {
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
