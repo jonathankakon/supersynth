@@ -15,6 +15,7 @@
 #include "FilterProcessor.h"
 #include "EQFourProcessorEditor.h"
 #include "EnvelopeProcessor.h"
+#include "NoiseGeneratorProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -58,6 +59,7 @@ ToolboxComponent::ToolboxComponent() :
   modules.add(new ModulesListElement("IIR Filter", "filter.png", &createInstance<FilterProcessor>));
   modules.add(new ModulesListElement("Equalizer", "eq.png", &createInstance<EQFourProcessor>));
   modules.add(new ModulesListElement("Envelope", "envelope.png", &createInstance<EnvelopeProcessor>));
+  modules.add(new ModulesListElement("NoiseGenerator", "noise.png", &createInstance<NoiseGeneratorProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());

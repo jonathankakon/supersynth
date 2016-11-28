@@ -13,13 +13,16 @@
 
 
 //==============================================================================
-SupersynthAudioProcessor::SupersynthAudioProcessor()
+SupersynthAudioProcessor::SupersynthAudioProcessor() : AudioProcessor(BusesProperties()
+    .withInput("AudioIn", AudioChannelSet::mono(), true)
+    .withOutput("AudioOut", AudioChannelSet::mono(), true)),
+  graph(new AudioProcessorGraph())
 {
-
 }
 
 SupersynthAudioProcessor::~SupersynthAudioProcessor()
 {
+  graph = nullptr;
 }
 
 bool SupersynthAudioProcessor::hasEditor() const
@@ -27,9 +30,22 @@ bool SupersynthAudioProcessor::hasEditor() const
     return true; // (change this to false if you choose to not supply an editor)
 }
 
+void SupersynthAudioProcessor::getStateInformation(MemoryBlock& destData)
+{
+  if (stateInformation != nullptr)
+  {
+    copyXmlToBinary(*stateInformation, destData);
+  }
+}
+
+void SupersynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
+{
+  stateInformation = getXmlFromBinary(data, sizeInBytes);
+}
+
 AudioProcessorEditor* SupersynthAudioProcessor::createEditor()
 {
-    return new SupersynthAudioProcessorEditor (*this);
+  return new SupersynthAudioProcessorEditor(*this);
 }
 
 //==============================================================================

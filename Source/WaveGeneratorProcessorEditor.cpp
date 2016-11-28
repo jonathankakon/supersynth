@@ -36,6 +36,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   frequencySlider = new Slider(frequencyParam->name);
   frequencySlider->setRange(0, 1, 0.000001);
   frequencySlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  frequencySlider->setSkewFactor(0.3);
   frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
   frequencySlider->setValue(dynamic_cast<const AudioProcessorParameter*>(frequencyParam)->getValue());
   frequencySlider->addListener(this);
@@ -141,7 +142,7 @@ void WaveGeneratorProcessorEditor::resized()
 
 
 // copied from juce demo project GenericEditor.h
-void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
+void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
 {
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
@@ -149,7 +150,6 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
   
   if (slider == volumeSlider)
   {
-    DBG("volume 222: " << volumeSlider->getValue());
     AudioProcessorParameter* param = params[0];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
@@ -158,7 +158,6 @@ void WaveGeneratorProcessorEditor::sliderValueChanged (Slider* slider)
   }
   else if (slider == frequencySlider)
   {
-    DBG("freq 222: " << frequencySlider->getValue());
     AudioProcessorParameter* param = params[1];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost (slider->getValue());

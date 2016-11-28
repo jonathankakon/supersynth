@@ -57,8 +57,8 @@ void GenericIIRFilter::secondOrderAllPass(AudioBuffer<float>& buffer, AudioBuffe
 
 void GenericIIRFilter::allpassForLowShelf(AudioBuffer<float>& buffer, AudioBuffer<float>& modBuffer)
 {
-  float* modBufferPointer = modBuffer.getWritePointer(0);
   
+  float* modBufferPointer = modBuffer.getWritePointer(0);
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
     updateCoefficientsLowShelf(computeCurrentFrequency(pointer, buffer, modBufferPointer));
@@ -74,8 +74,7 @@ void GenericIIRFilter::allpassForLowShelf(AudioBuffer<float>& buffer, AudioBuffe
 
 void GenericIIRFilter::allpassForHighShelf(AudioBuffer<float> &buffer, AudioBuffer<float>& modBuffer)
 {
-  
-  float* modBufferPointer = modBuffer.getWritePointer(0);
+  float* modBufferPointer  = modBuffer.getWritePointer(0);
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
     updateCoefficientsHighShelf(computeCurrentFrequency(pointer, buffer, modBufferPointer));
@@ -320,7 +319,6 @@ void GenericIIRFilter::secondOrderLowPass(AudioBuffer<float> &buffer, AudioBuffe
 
 void GenericIIRFilter::secondOrderHighPass(AudioBuffer<float> &buffer, AudioBuffer<float>& modBuffer)
 {
-  
   float* modBufferPointer = modBuffer.getWritePointer(0);
   for (float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++) {
     
@@ -341,8 +339,7 @@ void GenericIIRFilter::secondOrderHighPass(AudioBuffer<float> &buffer, AudioBuff
 
 void GenericIIRFilter::canonicalBandPass(AudioBuffer<float> &buffer, AudioBuffer<float>& modBuffer)
 {
-  float* modBufferPointer = modBuffer.getWritePointer(0);
-  
+  float* modBufferPointer = modBuffer.getWritePointer(0);  
   for (float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++) {
     
     updateCanonicalCoefficientsBandpass(computeCurrentFrequency(pointer, buffer, modBufferPointer));
@@ -432,11 +429,11 @@ void GenericIIRFilter::peak(AudioBuffer<float> &buffer, AudioBuffer<float>& modB
 float GenericIIRFilter::computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer, float* modPointer)
 {
   
-  double modulationAmount;
-  if(*modPointer>0)
-     modulationAmount = 2*currentCutoffFrequency;
-  else
-     modulationAmount = 0.5*currentCutoffFrequency;
+  double modulationAmount = 1;
+    if (*modPointer > 0)
+      modulationAmount = 2 * currentCutoffFrequency;
+    else
+      modulationAmount = 0.5*currentCutoffFrequency;
   
   double outFrequency;
   
@@ -449,7 +446,7 @@ float GenericIIRFilter::computeCurrentFrequency(float* pointer, AudioBuffer<floa
   
   if(std::abs(targetCutoffFrequency - currentCutoffFrequency) < stepsize*currentCutoffFrequency)
     
-  {
+  {  
     outFrequency = targetCutoffFrequency + *modPointer * modulationAmount;
     if(outFrequency <= 0)
       return 0;

@@ -16,11 +16,11 @@
 #include "ProcessorEditorBase.h"
 
 //==============================================================================
-Worksheet::Worksheet()
+Worksheet::Worksheet(int width, int height)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-	setSize(1000, 1000);
+	setSize(width, height);
 }
 
 Worksheet::~Worksheet()
@@ -65,11 +65,7 @@ void Worksheet::resized()
 bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
   return true;
-  if (dragSourceDetails.description.hasSameTypeAs(new var(new ToolboxComponent::ModulesListElement("", "", nullptr))));
-	{
-		return true;
-	}
-	return false;
+  return true;
 }
 
 void Worksheet::itemDragEnter(const SourceDetails& dragSourceDetails)
@@ -111,6 +107,16 @@ void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 	somethingIsBeingDraggedOver = false;
 	beginDragAutoRepeat(0);
 	repaint();
+}
+
+void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
+{
+  if(event.mods.isCtrlDown() || event.mods.isCommandDown())
+  {
+    zoomFactor *= (wheel.deltaY > 0) ? 1.2: 0.8;
+    setTransform(AffineTransform().scaled(zoomFactor, zoomFactor));
+    repaint();
+  }
 }
 
 void Worksheet::addEditor(Component* editor)
@@ -204,12 +210,12 @@ void Worksheet::endDraggingConnector(const MouseEvent& e)
     addAndMakeVisible(newConnection);
     registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addConnection(newConnection);
-    draggingConnection = nullptr;
+    draggingConnection.deleteAndZero();
   } else
   {
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeConnection(*draggingConnection);
     connections.removeObject(draggingConnection, false);
-    draggingConnection = nullptr;
+    draggingConnection.deleteAndZero();
   }
 }
 
@@ -225,6 +231,42 @@ bool Worksheet::findConnectorAt(const bool isInput, const int x, const int y, Po
     }
   }  
   return false;
+}
+
+void Worksheet::removeEditor(int nodeId)
+{
+  for(int i = editors.size() -1; i >= 0; --i )
+  {
+    if(dynamic_cast<ProcessorEditorBase*>(editors[i])->getNodeId() == nodeId)
+    {
+      editors.remove(i, true);
+    }
+  }
+}
+
+void Worksheet::removeConnections(int nodeId, int mixerNodeId)
+{
+  for (int i = connections.size()-1; i >= 0; --i)
+  {
+    if (connections[i]->inputNodeId == nodeId || connections[i]->outputNodeId == nodeId 
+      || connections[i]->inputNodeId == mixerNodeId || connections[i]->outputNodeId == mixerNodeId)
+    {
+      clearEditorListeners(connections[i]);
+      connections.remove(i, true);
+    }
+  }
+}
+
+void Worksheet::setZoomFactor(float zoom)
+{
+  zoomFactor = zoom;
+  setTransform(AffineTransform().scaled(zoomFactor, zoomFactor));
+  repaint();
+}
+
+float Worksheet::getZoomFactor() const
+{
+  return zoomFactor;
 }
 
 void Worksheet::clearEditorListeners(Connection* connection)

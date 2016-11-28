@@ -17,18 +17,51 @@
 //==============================================================================
 /**
 */
-class SupersynthAudioProcessor : public AudioProcessorGraph
+class SupersynthAudioProcessor : public AudioProcessor
 {
 public:
-    //==============================================================================
-    SupersynthAudioProcessor();
-    ~SupersynthAudioProcessor();
+  //==============================================================================
+  SupersynthAudioProcessor();
+  ~SupersynthAudioProcessor();
 
-    AudioProcessorEditor* createEditor() override;
-    bool hasEditor() const override;
+  AudioProcessorEditor* createEditor() override;
+  bool hasEditor() const override;
 
+  //==============================================================================
+  void prepareToPlay(double sampleRate, int samplesPerBlock) override {
+    setPlayConfigDetails(1, 1, sampleRate, samplesPerBlock);
+    graph->setPlayConfigDetails(1, 1, sampleRate, samplesPerBlock);
+    graph->prepareToPlay(sampleRate, samplesPerBlock);
+  };
+  void releaseResources() override { return; };
+
+  void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override { graph->processBlock(audioBuffer, midiBuffer); };
+
+  //==============================================================================
+
+  const String getName() const override { return "Supersynth"; };
+  bool supportsDoublePrecisionProcessing() const override { return false; };
+
+  bool acceptsMidi() const override { return true; };
+  bool producesMidi() const override { return false; };
+  double getTailLengthSeconds() const override { return 0; };
+
+  //==============================================================================
+  int getNumPrograms() override { return 0; };
+  int getCurrentProgram() override { return 0; };
+  void setCurrentProgram(int index) override { return; };
+  const String getProgramName(int index) override { return "Supersynth"; };
+  void changeProgramName(int index, const String& newName) override { return; };
+
+  //==============================================================================
+  void getStateInformation(MemoryBlock& destData) override;
+  void setStateInformation(const void* data, int sizeInBytes) override;
+
+  ScopedPointer<AudioProcessorGraph> graph;
+  ScopedPointer<XmlElement> stateInformation;
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SupersynthAudioProcessor)
+  AudioProcessorEditor* editor;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SupersynthAudioProcessor)
 };
 
 

@@ -49,6 +49,7 @@ public:
   void setViewPortDragging(bool enableDragging) const;
   void setComponentDragging(bool enableDragging);
   int addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const;
+  void removeProcessor(int nodeId, Array<int> mixerNodeIds) const;
 
   virtual void setConnectors() {};
   virtual void setNodeId(int id) {};
@@ -56,7 +57,7 @@ public:
   virtual bool hasInputWithId(int inputNodeId, int& x, int& y) { return false; };
   virtual bool hasOutputWithId(int outputNodeId, int& x, int& y) { return false; };
   virtual int getNodeId() { return 0; };
-  virtual int getMixerNodeId() { return 0; };
+  virtual Array<int> getMixerNodeIds() { return Array<int>(); };
 
 private:
   bool draggingEnabled;

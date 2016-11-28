@@ -20,7 +20,7 @@
 class Worksheet : public Component, public DragAndDropTarget
 {
 public:
-  Worksheet();
+  Worksheet(int, int);
   ~Worksheet();
 
   void paint(Graphics&) override;
@@ -31,6 +31,8 @@ public:
   void itemDragMove(const SourceDetails& sourceDetails) override;
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
+
+  void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
 
   void addEditor(Component* editor);
   void addEditor(Component* editor, double x, double y);
@@ -43,16 +45,20 @@ public:
   void clearEditorListeners(Connection* connection);
 
   bool findConnectorAt(const bool isInput, const int x, const int y, Point<int>& outPosition, int& nodeId) const;
-
+  void removeEditor(int nodeId);
+  void removeConnections(int nodeId, int mixerNodeId);
+  void setZoomFactor(float zoomFactor);
+  float getZoomFactor() const;
 private:
   bool somethingIsBeingDraggedOver;
+  float zoomFactor = 1;
   Point<int> dropPosition;
   String message;
 
   OwnedArray<Component> editors;
   OwnedArray<Connection> connections;
 
-  ScopedPointer<Connection> draggingConnection;
+  SafePointer<Connection> draggingConnection;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Worksheet)
 };

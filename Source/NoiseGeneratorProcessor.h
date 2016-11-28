@@ -1,38 +1,37 @@
 /*
   ==============================================================================
 
-    WaveGeneratorProcessor.h
-    Created: 7 Oct 2016 3:42:56pm
+    NoiseGeneratorProcessor.h
+    Created: 27 Nov 2016 8:03:55pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#ifndef WAVEGENERATORPROCESSOR_H_INCLUDED
-#define WAVEGENERATORPROCESSOR_H_INCLUDED
+#ifndef NOISEGENERATORPROCESSOR_H_INCLUDED
+#define NOISEGENERATORPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "VAOscillator.h"
 
-class WaveGeneratorProcessor: public AudioProcessor, AudioProcessorListener
+class NoiseGeneratorProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
-  WaveGeneratorProcessor();
-  ~WaveGeneratorProcessor();
+  NoiseGeneratorProcessor();
+  ~NoiseGeneratorProcessor();
   
   //==============================================================================
   void prepareToPlay (double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
- 
+  
   /*
-#ifndef JucePlugin_PreferredChannelConfigurations
-  bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
-#endif
-  */
-
+   #ifndef JucePlugin_PreferredChannelConfigurations
+   bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
+   #endif
+   */
+  
   void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
-  void audioProcessorChanged(AudioProcessor *) override { return; }
+  inline void audioProcessorChanged(AudioProcessor *) override { return; }
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   
@@ -43,7 +42,7 @@ public:
   //==============================================================================
   
   bool supportsDoublePrecisionProcessing() const override;
-
+  
   //==============================================================================
   const String getName() const override;
   
@@ -65,47 +64,18 @@ public:
   
   //==============================================================================
   
-  enum waveform
-  {
-    sine,
-    sawUp,
-    sawDown,
-    square,
-    triangle
-  };
   
-  inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
-
 private:
   
-  AudioParameterFloat* targetFreqParam;
   AudioParameterFloat* volumeParam;
-  AudioParameterChoice* waveformParam;
+  AudioParameterChoice* noisetypeParam;
   
-  AudioParameterInt* octaveParam;
-  AudioParameterInt* semitonesParam;
-  AudioParameterInt* centsParam;
+  Random rand;
   
-  double currentSampleRate;
-  
-  double currentFrequency;
-  double targetFrequency;
-  
-  waveform currentWaveform;
-  waveform targetWaveform;
-  
-  bool waveformChanged;
-  
-  void setWaveform(waveform newWaveform);
-  void setWaveform(int index);
-  void updateFrequency();
-  
-  ScopedPointer<VAOscillator> oscillator;
+  void fillBufferWhiteNoise(AudioBuffer<float> &buffer);
   
   //==============================================================================
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseGeneratorProcessor);
 };
 
-
-
-#endif  // WAVEGENERATORPROCESSOR_H_INCLUDED
+#endif  // NOISEGENERATORPROCESSOR_H_INCLUDED

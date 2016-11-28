@@ -18,8 +18,6 @@
 #include "Worksheet.h"
 #include "CollapseButton.h"
 
-#include "EQFourProcessor.h"
-
 class InternalIOProcessor;
 
 //==============================================================================
@@ -44,12 +42,15 @@ public:
   void setViewPortDragScrolling(bool allow) const;
   void addAudioProcessor(ToolboxComponent::ModulesListElement*) const;
   int addAudioProcessor(AudioProcessor*, int, int) const;
+  void removeAudioProcessor(int, Array<int>) const;
 
   void addIOComponents();
   void enableAllInternalBuses(int outNode, int inNode) const;
   void addConnection(Connection* connection) const;
   void removeConnection(Connection& connection) const;
   bool testConnection(Connection& connection, int dest_id) const;
+
+  void setUIStateInformation() const;
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.

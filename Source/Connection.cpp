@@ -118,15 +118,11 @@ void Connection::mouseDrag(const MouseEvent& e)
     getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);
 
     draggingToInput = (distanceFromStart < distanceFromEnd);
-    DBG("dragging to Input: " << (int)draggingToInput);
 
     getWorksheet()->beginConnectorDrag(outputNodeId, outputNodeChannel, inputNodeId, inputNodeChannel, e);
 
     inputNodeId = (draggingToInput ? 0 : inputNodeId);
     outputNodeId = (draggingToInput ? outputNodeId : 0);
-
-    DBG("outNodeId: " << outputNodeId);
-    DBG("inNodeId: " << inputNodeId);
   }
 }
 
