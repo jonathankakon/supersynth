@@ -11,6 +11,7 @@
 #include "FilterProcessor.h"
 #include "FilterProcessorEditor.h"
 #include "GenericIIRFilter.h"
+#include "Constants.h"
 
 FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withInput("Audio", AudioChannelSet::mono())
@@ -21,6 +22,13 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
   addParameter(gainParameter = new AudioParameterFloat("gainParameter2", "Gain", -12, 12, 0));
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
+  
+  
+  int size = sizeof(raisedCosine)/sizeof(*raisedCosine);
+  
+  filterFIR = new FIRFilter(raisedCosine, size);
+  
+  
   
   types->add("bypass");
   types->add("lowpass");
@@ -33,6 +41,7 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   types->add("canonical bandstop");
   types->add("lowshelf");
   types->add("highshelf");
+  types->add("FIR");
   
   
   addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
@@ -123,6 +132,9 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
     case 10:
       filterIIR->highShelf(outBuffer, modBuffer);
       break;
+      
+    case 11:
+      filterFIR->applyFIRFilter(outBuffer);
       
     default:
       break;

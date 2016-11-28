@@ -70,7 +70,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   
   //COMBOBOX
   dropdownMenuFilterTypes = new ComboBox("dropdownMenuFilterType");
-  dropdownMenuFilterTypes->addItemList({"Bypass","1st Lowpass", "1st Highpass", "Bandpass", "Bandstop", "2nd Lowpass",  "2nd Highpass", "Can. Bandpass", "Can. Bandstop", "1st Lowshelf", "1st Highshelf"}, 1);
+  dropdownMenuFilterTypes->addItemList({"Bypass","1st Lowpass", "1st Highpass", "Bandpass", "Bandstop", "2nd Lowpass",  "2nd Highpass", "Can. Bandpass", "Can. Bandstop", "1st Lowshelf", "1st Highshelf", "FIR"}, 1);
   dropdownMenuFilterTypes->addListener(this);
   dropdownMenuFilterTypes->setSelectedId(1);
   parent.registerImmobileObject(*dropdownMenuFilterTypes);
@@ -352,6 +352,10 @@ void FilterProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChang
       
     case 11:
       processor.changeFilterType(10);
+      break;
+      
+    case 12:
+      processor.changeFilterType(11);
       break;
       
     default:

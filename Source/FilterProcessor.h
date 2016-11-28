@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GenericIIRFilter.h"
+#include "FIRFilter.h"
 
 class FilterProcessor: public AudioProcessor, AudioProcessorListener
 {
@@ -72,6 +73,7 @@ private:
   double currentSampleRate;
   
   ScopedPointer<GenericIIRFilter> filterIIR;
+  ScopedPointer<FIRFilter> filterFIR;
 
 };
 
