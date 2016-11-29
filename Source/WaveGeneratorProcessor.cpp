@@ -118,9 +118,11 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
     int i = 0;
     iterator->getNextEvent(message1, i);
-    if(int pos = message1.getNoteNumber())
-    {
-      targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+    if(message1.isNoteOn()){
+      if(int pos = message1.getNoteNumber())
+      {
+        targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0);
+      }
     }
   }
   

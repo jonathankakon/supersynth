@@ -17,7 +17,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize(240, 100);
+  setSize(150, 100);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -26,8 +26,8 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   frequencySlider->setRange(50, 15000, 0.0001);
   frequencySlider->setSkewFactor(0.5);
   frequencySlider->setSliderStyle(Slider::RotaryVerticalDrag);
-  frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
-  //frequencySlider->setPopupDisplayEnabled(true, this);
+  frequencySlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
+  frequencySlider->setPopupDisplayEnabled(true, this);
   frequencySlider->setValue(50);
   frequencySlider->addListener(this);
   frequencySlider->setTextValueSuffix(" Hz");
@@ -39,8 +39,8 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   qSlider->setRange(0.1, 6.0, 0.0001);
   //qSlider->setDoubleClickReturnValue(true, 0.72);
   qSlider->setSliderStyle(Slider::RotaryVerticalDrag);
-  qSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
-  //qSlider->setPopupDisplayEnabled(true, this);
+  qSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
+  qSlider->setPopupDisplayEnabled(true, this);
   qSlider->setValue(0.72);
   qSlider->setSkewFactor(0.5);
   qSlider->addListener(this);
@@ -51,7 +51,8 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   gainSlider = new Slider(gainParam->name);
   gainSlider->setRange(-12, 12,0.001);
   gainSlider->setSliderStyle(Slider::RotaryVerticalDrag);
-  gainSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
+  gainSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
+  gainSlider->setPopupDisplayEnabled(true, this);
   gainSlider->setValue(0);
   gainSlider->addListener(this);
   parent.registerImmobileObject(*gainSlider);
@@ -82,7 +83,7 @@ FilterProcessorEditor::FilterProcessorEditor (FilterProcessor* p, ProcessorEdito
   addAndMakeVisible(qLabel);
   addAndMakeVisible(gainLabel);
   
-  frequencyLabel.setText("Frequency", juce::dontSendNotification);
+  frequencyLabel.setText("Freq.", juce::dontSendNotification);
   qLabel.setText("Q", juce::dontSendNotification);
   gainLabel.setText("Gain", juce::dontSendNotification);
   
@@ -169,21 +170,21 @@ void FilterProcessorEditor::paint (Graphics& g)
   g.fillAll (Colours::lightblue);
   g.setColour (Colours::black);
   g.setFont (15.0f);
-  g.drawFittedText ("      Filter!", Rectangle<int>(200,15), Justification::centredLeft, 1);
+  //g.drawFittedText ("      Filter!", Rectangle<int>(200,15), Justification::centredLeft, 1);
 
   
   Rectangle<int> r(getLocalBounds());
   r.reduce(20,20);
-  int offset = r.getWidth()/5;
-  int yoffset = r.getHeight()/numButtons;
+  int offset = r.getWidth()/3;
+  int yoffset = r.getHeight()/2;
   
   
   //filterTypeSlider->setBounds(r.withWidth(offset).withX(offset));
-  frequencySlider->setBounds(r.withWidth(offset).withX(r.getX()+2*offset));
-  qSlider->setBounds(r.withWidth(offset).withX(r.getX()+3*offset));
-  gainSlider->setBounds(r.withWidth(offset).withX(r.getX()+4*offset));
+  frequencySlider->setBounds(r.withWidth(offset).withX(r.getX()+0*offset).withHeight(yoffset));
+  qSlider->setBounds(r.withWidth(offset).withX(r.getX()+1*offset).withHeight(yoffset));
+  gainSlider->setBounds(r.withWidth(offset).withX(r.getX()+2*offset).withHeight(yoffset));
   
-  dropdownMenuFilterTypes->setBounds(r.withWidth(1.8*offset).withHeight(r.getHeight()/3).withY(r.getY()+r.getHeight()/6));
+  dropdownMenuFilterTypes->setBounds(r.withWidth(3*offset).withHeight(r.getHeight()/3).withY(r.getY()+1.4*yoffset));
   
 //  buttonOnOff->setBounds(r.withWidth(1.8*offset).withHeight(yoffset));
 //  button0->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(1*yoffset));

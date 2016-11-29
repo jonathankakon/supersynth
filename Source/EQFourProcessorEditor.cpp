@@ -15,7 +15,7 @@
 EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEditorBase* b)
 : AudioProcessorEditor(p) , processor (*p), parent(*b)
 {
-  setSize(500, 300);
+  setSize(350, 250);
   
   //SLIDERS initialising and setting skew factors for frequency sliders
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
@@ -144,7 +144,7 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   addAndMakeVisible(qLabel);
   addAndMakeVisible(gainLabel);
   
-  frequencyLabel.setText("Frequency", juce::dontSendNotification);
+  frequencyLabel.setText("Freq.", juce::dontSendNotification);
   qLabel.setText("Q", juce::dontSendNotification);
   gainLabel.setText("Gain", juce::dontSendNotification);
   
@@ -219,7 +219,8 @@ void EQFourProcessorEditor::initialiseSlider(juce::Slider *slider, juce::AudioPa
 {
   slider->setRange(min, max, stepSize);
   slider->setSliderStyle(Slider::RotaryVerticalDrag);
-  slider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
+  slider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
+  slider->setPopupDisplayEnabled(true, this);
   slider->setValue(dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   slider->addListener(this);
   slider->setValue(initialValue);
