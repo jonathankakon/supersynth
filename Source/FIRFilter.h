@@ -27,15 +27,14 @@ public:
   
 private:
   ScopedPointer<AudioBuffer<float>> filterBuffer;
-  ScopedPointer<float> filterBufferPointer;
+  float* filterBufferPointer;
   int index;
   int tapsLength;
   ScopedPointer<AudioBuffer<float>> taps;
-  ScopedPointer<float> tapsPointer;
+  float* tapsPointer;
   bool isInitialised;
   
   void convolute(float* audioDataPointer, int audioDataIndex);
-  
 };
 
 

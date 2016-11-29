@@ -160,7 +160,7 @@ void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
   {
     AudioProcessorParameter* param = params[1];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost (slider->getValue());
+      param->setValueNotifyingHost ((float)slider->getValue());
     else
       param->setValue ((float) slider->getValue());
   }

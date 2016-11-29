@@ -47,11 +47,11 @@ void CollapseButton::paintButton (Graphics& g, bool isMouseOver, bool isButtonDo
 
 	if (!this->getToggleState())
 	{
-		line = Line<float>(r.getRight(), r.getBottom() / 2, r.getX() + 5, r.getBottom() / 2);
+		line = Line<float>((float)r.getRight(), r.getBottom() / 2.0f, r.getX() + 5.0f, r.getBottom() / 2.0f);
 	}
 	else
 	{
-		line = Line<float>(r.getX(), r.getBottom() / 2, r.getRight() - 5, r.getBottom() / 2);
+		line = Line<float>((float)r.getX(), r.getBottom() / 2.0f, r.getRight() - 5.0f, r.getBottom() / 2.0f);
 	}
 
 	g.drawArrow(line, 0, 10, 10);

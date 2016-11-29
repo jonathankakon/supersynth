@@ -52,10 +52,10 @@ public:
   void removeProcessor(int nodeId, Array<int> mixerNodeIds) const;
 
   virtual void setConnectors() {};
-  virtual void setNodeId(int id) {};
-  virtual void registerNodeConnectionListener(Connection* connection, int inputNodeId, int outputNodeId) {};
-  virtual bool hasInputWithId(int inputNodeId, int& x, int& y) { return false; };
-  virtual bool hasOutputWithId(int outputNodeId, int& x, int& y) { return false; };
+  virtual void setNodeId(int) {};
+  virtual void registerNodeConnectionListener(Connection*, int, int) {};
+  virtual bool hasInputWithId(int, int&, int&) { return false; };
+  virtual bool hasOutputWithId(int, int&, int&) { return false; };
   virtual int getNodeId() { return 0; };
   virtual Array<int> getMixerNodeIds() { return Array<int>(); };
 

@@ -60,7 +60,7 @@ void InputConnector::resized()
 
 }
 
-void InputConnector::sliderValueChanged(Slider* slider)
+void InputConnector::sliderValueChanged(Slider* /*slider*/)
 {
 }
 
@@ -69,7 +69,7 @@ void InputConnector::mouseDown(const MouseEvent & e)
   getWorksheet()->beginConnectorDrag(0, 0, nodeId, 0, e);
 }
 
-Point<int> InputConnector::getClosestConnector(const int x, const int y)
+Point<int> InputConnector::getClosestConnector(const int /*x*/, const int y)
 {
   return Point<int>(6, y - (y % 32) + 16);
 }

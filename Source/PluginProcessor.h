@@ -49,9 +49,9 @@ public:
   //==============================================================================
   int getNumPrograms() override { return 0; };
   int getCurrentProgram() override { return 0; };
-  void setCurrentProgram(int index) override { return; };
-  const String getProgramName(int index) override { return "Supersynth"; };
-  void changeProgramName(int index, const String& newName) override { return; };
+  void setCurrentProgram(int) override { return; };
+  const String getProgramName(int) override { return "Supersynth"; };
+  void changeProgramName(int, const String& ) override { return; };
 
   //==============================================================================
   void getStateInformation(MemoryBlock& destData) override;

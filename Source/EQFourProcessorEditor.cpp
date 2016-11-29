@@ -198,19 +198,19 @@ void EQFourProcessorEditor::paint (Graphics& g)
   
   
   //BUTTONS
-  buttonLowCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+0));
-  buttonLowCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+1*yoffset12));
-  buttonLowShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+2*yoffset12));
+  buttonLowCut1->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 0));
+  buttonLowCut2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
+  buttonLowShelf->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 2 * yoffset12));
   
-  buttonBandpass2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonNotch2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonBandpass2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonNotch2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
   
-  buttonBandpass3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonNotch3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonBandpass3->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 2 * xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonNotch3->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 2 * xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
   
-  buttonHighCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonHighCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
-  buttonHighShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+2*yoffset12));
+  buttonHighCut1->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonHighCut2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
+  buttonHighShelf->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 2 * yoffset12));
   
   
 }
@@ -382,7 +382,7 @@ void EQFourProcessorEditor::buttonClicked(Button* button)
   
 }
 
-void EQFourProcessorEditor::buttonStateChanged(Button *button)
+void EQFourProcessorEditor::buttonStateChanged(Button* /*button*/)
 {
   
 }

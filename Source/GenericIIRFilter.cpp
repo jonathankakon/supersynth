@@ -17,8 +17,8 @@ void GenericIIRFilter::firstOrderAllPass(AudioBuffer<float>& buffer, AudioBuffer
   {
     updateFirstOrderCoefficients(computeCurrentFrequency(pointer, buffer, modBufferPointer));
     
-    firstOrderState.stateXh0 = *pointer - (firstOrderState.c0) * firstOrderState.stateXh1;
-    *pointer = firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1;
+    firstOrderState.stateXh0 = static_cast<float>(*pointer - (firstOrderState.c0) * firstOrderState.stateXh1);
+    *pointer =static_cast<float>(firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1);
     
     firstOrderState.stateXh2 = firstOrderState.stateXh1;
     firstOrderState.stateXh1 = firstOrderState.stateXh0;
@@ -46,7 +46,7 @@ void GenericIIRFilter::secondOrderAllPass(AudioBuffer<float>& buffer, AudioBuffe
       DBG("Error in states");
     }
     
-    *pointer = (-(secondOrderState.c0) * secondOrderState.stateXh0) + (secondOrderState.c1 * (1 - secondOrderState.c0) * secondOrderState.stateXh1) + secondOrderState.stateXh2;
+    *pointer = (float)((-(secondOrderState.c0) * secondOrderState.stateXh0) + (secondOrderState.c1 * (1 - secondOrderState.c0) * secondOrderState.stateXh1) + secondOrderState.stateXh2);
     
     secondOrderState.stateXh2 = secondOrderState.stateXh1;
     secondOrderState.stateXh1 = secondOrderState.stateXh0;
@@ -64,7 +64,7 @@ void GenericIIRFilter::allpassForLowShelf(AudioBuffer<float>& buffer, AudioBuffe
     updateCoefficientsLowShelf(computeCurrentFrequency(pointer, buffer, modBufferPointer));
     
     firstOrderState.stateXh0 = *pointer - (firstOrderState.c0) * firstOrderState.stateXh1;
-    *pointer = firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1;
+    *pointer = (float)(firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1);
     
     firstOrderState.stateXh2 = firstOrderState.stateXh1;
     firstOrderState.stateXh1 = firstOrderState.stateXh0;
@@ -80,7 +80,7 @@ void GenericIIRFilter::allpassForHighShelf(AudioBuffer<float> &buffer, AudioBuff
     updateCoefficientsHighShelf(computeCurrentFrequency(pointer, buffer, modBufferPointer));
     
     firstOrderState.stateXh0 = *pointer - (firstOrderState.c0) * firstOrderState.stateXh1;
-    *pointer = firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1;
+    *pointer = (float)(firstOrderState.c0 * firstOrderState.stateXh0 + firstOrderState.stateXh1);
     
     firstOrderState.stateXh2 = firstOrderState.stateXh1;
     firstOrderState.stateXh1 = firstOrderState.stateXh0;
@@ -225,7 +225,7 @@ void GenericIIRFilter::firstOrderLowPass(AudioBuffer<float>& buffer, AudioBuffer
   
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
-    *pointer = 0.5 * (*pointer + *filterPointer);
+    *pointer = 0.5f * (*pointer + *filterPointer);
     filterPointer++;
   }
   /*
@@ -264,7 +264,7 @@ void GenericIIRFilter::firstOrderHighPass(AudioBuffer<float>& buffer, AudioBuffe
   
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
-    *pointer =  0.5 * (*pointer - *filterPointer);
+    *pointer =  0.5f * (*pointer - *filterPointer);
     filterPointer++;
   }
 }
@@ -278,7 +278,7 @@ void GenericIIRFilter::bandpass(AudioBuffer<float>& buffer, AudioBuffer<float>& 
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    buffer.setSample(0, sampleIndex, 0.5 * (buffer.getSample(0, sampleIndex) - (filtered->getSample(0, sampleIndex))));
+    buffer.setSample(0, sampleIndex, 0.5f * (buffer.getSample(0, sampleIndex) - (filtered->getSample(0, sampleIndex))));
   }
 }
 
@@ -291,7 +291,7 @@ void GenericIIRFilter::bandstop(AudioBuffer<float>& buffer, AudioBuffer<float>& 
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    buffer.setSample(0, sampleIndex, 0.5 * (buffer.getSample(0, sampleIndex) + filtered->getSample(0, sampleIndex)));
+    buffer.setSample(0, sampleIndex, 0.5f * (buffer.getSample(0, sampleIndex) + filtered->getSample(0, sampleIndex)));
   }
 }
 
@@ -305,9 +305,9 @@ void GenericIIRFilter::secondOrderLowPass(AudioBuffer<float> &buffer, AudioBuffe
     
     canonicalState.stateXh0 = *pointer - canonicalState.a1 * canonicalState.stateXh1
                               - canonicalState.a2 * canonicalState.stateXh2;
-    *pointer = canonicalState.b0 * canonicalState.stateXh0
-               + canonicalState.b1 * canonicalState.stateXh1
-               + canonicalState.b2 * canonicalState.stateXh2;
+    *pointer = static_cast<float>(canonicalState.b0 * canonicalState.stateXh0
+      + canonicalState.b1 * canonicalState.stateXh1
+      + canonicalState.b2 * canonicalState.stateXh2);
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
@@ -326,9 +326,9 @@ void GenericIIRFilter::secondOrderHighPass(AudioBuffer<float> &buffer, AudioBuff
     
     canonicalState.stateXh0 = *pointer - canonicalState.a1 * canonicalState.stateXh1
                               - canonicalState.a2 * canonicalState.stateXh2;
-    *pointer = canonicalState.b0 * canonicalState.stateXh0
-               + canonicalState.b1 * canonicalState.stateXh1
-               + canonicalState.b2 * canonicalState.stateXh2;
+    *pointer = static_cast<float>(canonicalState.b0 * canonicalState.stateXh0
+      + canonicalState.b1 * canonicalState.stateXh1
+      + canonicalState.b2 * canonicalState.stateXh2);
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
@@ -346,9 +346,9 @@ void GenericIIRFilter::canonicalBandPass(AudioBuffer<float> &buffer, AudioBuffer
     
     canonicalState.stateXh0 = *pointer - canonicalState.a1 * canonicalState.stateXh1
                               - canonicalState.a2 * canonicalState.stateXh2;
-    *pointer = canonicalState.b0 * canonicalState.stateXh0
-               + canonicalState.b1 * canonicalState.stateXh1
-               + canonicalState.b2 * canonicalState.stateXh2;
+    *pointer = static_cast<float>(canonicalState.b0 * canonicalState.stateXh0
+      + canonicalState.b1 * canonicalState.stateXh1
+      + canonicalState.b2 * canonicalState.stateXh2);
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
@@ -366,9 +366,9 @@ void GenericIIRFilter::canonicalBandstop(AudioBuffer<float> &buffer, AudioBuffer
     
     canonicalState.stateXh0 = *pointer - canonicalState.a1 * canonicalState.stateXh1
                               - canonicalState.a2 * canonicalState.stateXh2;
-    *pointer = canonicalState.b0 * canonicalState.stateXh0
-               + canonicalState.b1 * canonicalState.stateXh1
-               + canonicalState.b2 * canonicalState.stateXh2;
+    *pointer = static_cast<float>(canonicalState.b0 * canonicalState.stateXh0
+      + canonicalState.b1 * canonicalState.stateXh1
+      + canonicalState.b2 * canonicalState.stateXh2);
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
@@ -386,7 +386,7 @@ void GenericIIRFilter::lowShelf(AudioBuffer<float> &buffer, AudioBuffer<float>& 
   
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
-    *pointer = *pointer + 0.5 * h0* (*pointer + *filterPointer);
+    *pointer = *pointer + 0.5f * h0* (*pointer + *filterPointer);
     filterPointer++;
   }
 }
@@ -401,7 +401,7 @@ void GenericIIRFilter::highShelf(AudioBuffer<float> &buffer, AudioBuffer<float>&
   
   for(float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++)
   {
-    *pointer = *pointer + 0.5 * h0* (*pointer - *filterPointer);
+    *pointer = *pointer + 0.5f * h0* (*pointer - *filterPointer);
     filterPointer++;
   }
 }
@@ -415,9 +415,9 @@ void GenericIIRFilter::peak(AudioBuffer<float> &buffer, AudioBuffer<float>& modB
     
     canonicalState.stateXh0 = *pointer - canonicalState.a1 * canonicalState.stateXh1
     - canonicalState.a2 * canonicalState.stateXh2;
-    *pointer = canonicalState.b0 * canonicalState.stateXh0
-    + canonicalState.b1 * canonicalState.stateXh1
-    + canonicalState.b2 * canonicalState.stateXh2;
+    *pointer = static_cast<float>(canonicalState.b0 * canonicalState.stateXh0
+      + canonicalState.b1 * canonicalState.stateXh1
+      + canonicalState.b2 * canonicalState.stateXh2);
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
@@ -426,16 +426,16 @@ void GenericIIRFilter::peak(AudioBuffer<float> &buffer, AudioBuffer<float>& modB
 }
 
 
-float GenericIIRFilter::computeCurrentFrequency(float* pointer, AudioBuffer<float>& buffer, float* modPointer)
+float GenericIIRFilter::computeCurrentFrequency(float* /*pointer*/, AudioBuffer<float>& /*buffer*/, float* modPointer)
 {
   
-  double modulationAmount = 1;
+  float modulationAmount = 1;
     if (*modPointer > 0)
-      modulationAmount = 2 * currentCutoffFrequency;
+      modulationAmount = 2.0f * currentCutoffFrequency;
     else
-      modulationAmount = 0.5*currentCutoffFrequency;
+      modulationAmount = 0.5f*currentCutoffFrequency;
   
-  double outFrequency;
+  float outFrequency;
   
 //  for (int i = 0; i < buffer.getNumSamples(); i = i+128) {
 //    

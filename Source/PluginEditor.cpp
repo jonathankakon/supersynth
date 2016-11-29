@@ -14,7 +14,6 @@
 #include "ToolboxComponent.h"
 #include "InternalIOProcessor.h"
 #include "ProcessorEditorBase.h"
-#include "WaveGeneratorProcessor.h"
 
 
 //==============================================================================
@@ -52,7 +51,7 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
     int height = graphElement->getIntAttribute("height");
     int scrollx = graphElement->getIntAttribute("scrollX");
     int scrolly = graphElement->getIntAttribute("scrollY");
-    float zoomFactor = graphElement->getDoubleAttribute("zoomFactor", 1);
+    float zoomFactor = static_cast<float>(graphElement->getDoubleAttribute("zoomFactor", 1));
 
     viewport = new Viewport();
     worksheet = new Worksheet(width, height);
@@ -195,12 +194,10 @@ void SupersynthAudioProcessorEditor::resized()
   setUIStateInformation();
 }
 
-void SupersynthAudioProcessorEditor::componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized)
+void SupersynthAudioProcessorEditor::componentMovedOrResized(Component&	component, bool /*wasMoved*/, bool /*wasResized*/)
 {
 	if (&component == worksheet)
 	{
-    DBG("viewpoert: " << viewport->getWidth() + viewport->getViewPositionX());
-    DBG("worksheet: " << (worksheet->getWidth() - 50) * worksheet->getZoomFactor());
 		if (viewport->getWidth() + viewport->getViewPositionX() >= (worksheet->getWidth() - 50) * worksheet->getZoomFactor())
 			worksheet->setSize(worksheet->getWidth() + 30, worksheet->getHeight());
 		

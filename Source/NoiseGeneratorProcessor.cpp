@@ -17,8 +17,8 @@ NoiseGeneratorProcessor::NoiseGeneratorProcessor(): AudioProcessor(BusesProperti
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(volumeParam = new AudioParameterFloat("volume",
                                                      "Volume",
-                                                     NormalisableRange<float>(0.0,1.0),
-                                                     0.2));
+                                                     NormalisableRange<float>(0.0,1),
+                                                     0.2f));
   
   addParameter(noisetypeParam = new AudioParameterChoice("noisetype",
                "Noisetype",
@@ -31,7 +31,7 @@ NoiseGeneratorProcessor::~NoiseGeneratorProcessor()
   
 }
 
-void NoiseGeneratorProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void NoiseGeneratorProcessor::prepareToPlay(double /*sampleRate*/, int /*samplesPerBlock*/)
 {
   
 }
@@ -41,12 +41,12 @@ void NoiseGeneratorProcessor::releaseResources()
   
 }
 
-void NoiseGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue)
+void NoiseGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*/, int /*parameterIndex*/, float /*newValue*/)
 {
   
 }
 
-void NoiseGeneratorProcessor::processBlock(AudioSampleBuffer &buffer, juce::MidiBuffer &midiBuffer)
+void NoiseGeneratorProcessor::processBlock(AudioSampleBuffer &buffer, juce::MidiBuffer &/*midiBuffer*/)
 {
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   
@@ -100,27 +100,27 @@ int NoiseGeneratorProcessor::getCurrentProgram()
   return 0;
 }
 
-void NoiseGeneratorProcessor::setCurrentProgram(int index)
+void NoiseGeneratorProcessor::setCurrentProgram(int /*index*/)
 {
   
 }
 
-const String NoiseGeneratorProcessor::getProgramName(int index)
+const String NoiseGeneratorProcessor::getProgramName(int /*index*/)
 {
   return String();
 }
 
-void NoiseGeneratorProcessor::changeProgramName(int index, const juce::String &newName)
+void NoiseGeneratorProcessor::changeProgramName(int /*index*/, const juce::String &/*newName*/)
 {
   
 }
 
-void NoiseGeneratorProcessor::getStateInformation(juce::MemoryBlock &destData)
+void NoiseGeneratorProcessor::getStateInformation(juce::MemoryBlock &/*destData*/)
 {
   
 }
 
-void NoiseGeneratorProcessor::setStateInformation(const void *data, int sizeInBytes)
+void NoiseGeneratorProcessor::setStateInformation(const void* /*data*/, int /*sizeInBytes*/)
 {
   
 }

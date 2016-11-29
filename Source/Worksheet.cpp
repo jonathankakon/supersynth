@@ -62,9 +62,8 @@ void Worksheet::resized()
 
 }
 
-bool Worksheet::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+bool Worksheet::isInterestedInDragSource(const SourceDetails& /*dragSourceDetails*/)
 {
-  return true;
   return true;
 }
 
@@ -113,7 +112,7 @@ void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails&
 {
   if(event.mods.isCtrlDown() || event.mods.isCommandDown())
   {
-    zoomFactor *= (wheel.deltaY > 0) ? 1.2: 0.8;
+    zoomFactor *= (wheel.deltaY > 0) ? 1.1f: 0.9f;
     setTransform(AffineTransform().scaled(zoomFactor, zoomFactor));
     repaint();
   }
@@ -128,7 +127,7 @@ void Worksheet::addEditor(Component* editor, double x, double y)
 {
   editors.add(editor);
   addAndMakeVisible(editor);
-  Rectangle<int>r(x - editor->getWidth() / 2, y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
+  Rectangle<int>r((int)x - editor->getWidth() / 2, (int)y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
   editor->setBounds(r);
 }
 

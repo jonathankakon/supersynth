@@ -32,10 +32,10 @@ public:
   
   // getters and setters
   
-  double getSampleRate();
+  double getSampleRate() const;
   void setSampleRate(double newSampleRate);
   
-  double getFrequency();
+  double getFrequency() const;
   void setFrequency(double newFrequency);
   
   inline void setBlepOn(double on){blepOn = (int)on;}
@@ -56,8 +56,8 @@ private:
   
   void updatePhaseInc();
   
-  double getBlep(double phase, double frequency);
-  double getTriRes(double phase, double frequency);
+  float getBlep(double phase, double frequency) const;
+  float getTriRes(double phase, double frequency) const;
   
   double phaseModAmp;
   ScopedPointer<Array<float>> phaseArray;

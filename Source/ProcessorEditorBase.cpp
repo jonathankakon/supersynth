@@ -89,9 +89,9 @@ void ProcessorEditorBase::setComponentDragging(bool enableDragging)
   draggingEnabled = enableDragging;
 }
 
-int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const
+int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* p, int nodeIdToConnect, int channelNumberToConnect) const
 {
-  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor, nodeIdToConnect, channelNumberToConnect);
+  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(p, nodeIdToConnect, channelNumberToConnect);
 }
 
 void ProcessorEditorBase::removeProcessor(int nodeId, Array<int> mixerNodeIds) const

@@ -15,10 +15,10 @@
 
 EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOutput("Envelope", AudioChannelSet::mono()))
 {
-  addParameter(attackParameter = new AudioParameterFloat("Attack", "Attack",0, 1, 0.001));
-  addParameter(decayParameter= new AudioParameterFloat("Decay", "Decay", 0, 1, 0.001));
-  addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.9));
-  addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 1, 0.001));
+  addParameter(attackParameter = new AudioParameterFloat("Attack", "Attack",0, 1, 0.001f));
+  addParameter(decayParameter= new AudioParameterFloat("Decay", "Decay", 0, 1, 0.001f));
+  addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.9f));
+  addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 1, 0.001f));
 
 //  *attackParameter = 0.1;
 //  *decayParameter = 1;
@@ -261,16 +261,16 @@ void EnvelopeProcessor::initialiseFirstSample(float* audioData){
 
 void EnvelopeProcessor::calculateLenghtAndGradient(){
   //calculate attack parameters
-  attackLength = *attackParameter * currentSampleRate - (int)(state.lastSample/attackGradient);
-  attackGradient = (1.0-state.lastSample)/((float)attackLength);
+  attackLength = (int)(*attackParameter * currentSampleRate) - static_cast<int>(state.lastSample / attackGradient);
+  attackGradient = (1.0f-state.lastSample)/static_cast<float>(attackLength);
   
   //calculate decay parameters
-  decayLength = *decayParameter * currentSampleRate;
-  decayGradient = (1.0 - *sustainParameter)/((float)decayLength);
+  decayLength = (int)(*decayParameter * currentSampleRate);
+  decayGradient = (1.0f - *sustainParameter)/static_cast<float>(decayLength);
   
   //calculate release parameters
-  releaseLength = *releaseParameter * currentSampleRate;
-  releaseGradient = state.initialReleaseValue/((float)releaseLength); //maybe releaseLength - state.releaseCounter
+  releaseLength = (int)(*releaseParameter * currentSampleRate);
+  releaseGradient = state.initialReleaseValue/static_cast<float>(releaseLength); //maybe releaseLength - state.releaseCounter
 }
 
 void EnvelopeProcessor::computeAttackDecaySustain(float *audioData, int lastIndexForLoop){
@@ -315,7 +315,7 @@ void EnvelopeProcessor::releaseResources()
 {
   }
 
-void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor *processor, int parameterIndex, float newValue)
+void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int /*parameterIndex*/, float /*newValue*/)
 {
   }
 

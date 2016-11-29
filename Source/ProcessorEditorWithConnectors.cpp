@@ -142,7 +142,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::buttonClicke
 }
 
 template<class AudioProcessorType, class EditorType>
-void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graphics& g)
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graphics& /*g*/)
 {
 }
 

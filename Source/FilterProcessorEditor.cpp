@@ -184,7 +184,7 @@ void FilterProcessorEditor::paint (Graphics& g)
   qSlider->setBounds(r.withWidth(offset).withX(r.getX()+1*offset).withHeight(yoffset));
   gainSlider->setBounds(r.withWidth(offset).withX(r.getX()+2*offset).withHeight(yoffset));
   
-  dropdownMenuFilterTypes->setBounds(r.withWidth(3*offset).withHeight(r.getHeight()/3).withY(r.getY()+1.4*yoffset));
+  dropdownMenuFilterTypes->setBounds(r.withWidth(3*offset).withHeight(r.getHeight()/3).withY((int)(r.getY()+1.4*yoffset)));
   
 //  buttonOnOff->setBounds(r.withWidth(1.8*offset).withHeight(yoffset));
 //  button0->setBounds(r.withWidth(1.8*offset).withHeight(yoffset).withY(1*yoffset));
@@ -304,7 +304,7 @@ void FilterProcessorEditor::buttonClicked(Button* button)
 
 }
 
-void FilterProcessorEditor::buttonStateChanged(Button *button)
+void FilterProcessorEditor::buttonStateChanged(Button* /*button*/)
 {
 }
 

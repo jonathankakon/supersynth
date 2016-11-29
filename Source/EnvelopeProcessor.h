@@ -28,7 +28,7 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
     
     void audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue) override;
-    void audioProcessorChanged(AudioProcessor* processor) override {return;}
+    void audioProcessorChanged(AudioProcessor*) override {return;}
     
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -66,7 +66,7 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     void resetEnvelopeState()
     {
         state.lastSample = 0.0;
-        state.numSamplesSinceLastMidi = 0.0;
+        state.numSamplesSinceLastMidi = 0;
         state.wasNoteOn = true;
         state.attackDecayCounter = 0;
         state.releaseCounter = 0;
