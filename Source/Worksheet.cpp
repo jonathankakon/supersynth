@@ -209,12 +209,12 @@ void Worksheet::endDraggingConnector(const MouseEvent& e)
     addAndMakeVisible(newConnection);
     registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addConnection(newConnection);
-    draggingConnection.deleteAndZero();
+    draggingConnection = nullptr;
   } else
   {
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeConnection(*draggingConnection);
     connections.removeObject(draggingConnection, false);
-    draggingConnection.deleteAndZero();
+    draggingConnection = nullptr;
   }
 }
 

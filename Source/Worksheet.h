@@ -58,7 +58,7 @@ private:
   OwnedArray<Component> editors;
   OwnedArray<Connection> connections;
 
-  SafePointer<Connection> draggingConnection;
+  ScopedPointer<Connection> draggingConnection;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Worksheet)
 };

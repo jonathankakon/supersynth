@@ -77,10 +77,6 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
   toolbox->setBounds(r.withWidth(180));
   collapseButton->setBounds(r.withWidth(200).withTrimmedLeft(180));
   setResizeLimits(800, 500, 10000, 10000);
-
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-	
 }
 
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
@@ -166,8 +162,6 @@ void SupersynthAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (Colour(0xFFC8C8C8));
     g.setColour (Colour(0xFFD955A9));
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
 }
 
 void SupersynthAudioProcessorEditor::resized()
