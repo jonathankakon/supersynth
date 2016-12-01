@@ -19,7 +19,7 @@
 //==============================================================================
 /**
  */
-class WaveGeneratorProcessorEditor  : public AudioProcessorEditor, Slider::Listener
+class WaveGeneratorProcessorEditor  : public AudioProcessorEditor, Slider::Listener, Button::Listener
 {
 public:
   WaveGeneratorProcessorEditor (WaveGeneratorProcessor* p, ProcessorEditorBase* b);
@@ -30,6 +30,7 @@ public:
   void resized() override;
   
   void sliderValueChanged(Slider* slider) override;
+  void buttonClicked(Button* button) override;
   
 private:
   // This reference is provided as a quick way for your editor to
@@ -43,7 +44,9 @@ private:
   ScopedPointer<Slider> semitonesSlider;
   ScopedPointer<Slider> centsSlider;
   ScopedPointer<Slider> waveformSlider;
-  ScopedPointer<Slider> blepSlider;
+
+  ScopedPointer<ToggleButton> blepToggle;
+  ScopedPointer<ToggleButton> midiToggle;
   
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)

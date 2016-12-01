@@ -38,8 +38,7 @@ public:
   double getFrequency() const;
   void setFrequency(double newFrequency);
   
-  inline void setBlepOn(double on){blepOn = (int)on;}
-  
+  void setBlepOn(bool on) { blepOn = on; };
 private:
   
   double currentSampleRate;
@@ -49,7 +48,7 @@ private:
   double phaseInc;
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
-  int blepOn = 1;
+  bool blepOn = true;
   
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;

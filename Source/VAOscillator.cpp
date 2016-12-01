@@ -36,7 +36,6 @@ void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-
     data[sampleIndex] = static_cast<float>(sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]) * std::abs(0.5 * (volMod[sampleIndex] + 1)));
     
     currentPhase += phaseInc;
@@ -236,7 +235,6 @@ void VAOscillator::setFrequency(double newFrequency)
   currentFrequency = newFrequency;
   updatePhaseInc();
 }
-
 
   //==============================================================================
   // Privates:

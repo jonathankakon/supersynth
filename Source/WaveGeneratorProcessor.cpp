@@ -54,12 +54,11 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                                                         "Waveform",
                                                         StringArray({"Sine","SawUp","SawDown","Square","Triangle"}),
                                                         1) );
+
+
+  AudioProcessor::addListener(this);
   
-  
-  
-  addListener(this);
-  
-  currentFrequency = 440.0;
+  currentFrequency = 439.9;
   targetFrequency = 440.0;
   
   currentWaveform = sawUp;
@@ -80,7 +79,7 @@ void WaveGeneratorProcessor::prepareToPlay (double sampleRate, int samplesPerBlo
 {
   // we must set the sample rate of the oscillator object here
   
-  ignoreUnused(samplesPerBlock);
+  blockSize = samplesPerBlock;
 
   currentSampleRate = sampleRate;
   
@@ -100,7 +99,7 @@ void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * pro
   {
     targetFrequency = targetFreqParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()];
   }
-  if(parameterIndex == 5)
+  else if(parameterIndex == 5)
   {
     setWaveform(waveformParam->getIndex());
   }
@@ -112,7 +111,8 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
   AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
 
-  if(!midiBuffer.isEmpty())
+
+  if(takesMidi && !midiBuffer.isEmpty())
   {
     MidiMessage& message1 = *new MidiMessage();
     ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
@@ -125,6 +125,8 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
       }
     }
   }
+
+  updateFrequency();
   
   if(currentWaveform == sine)
   {
@@ -172,7 +174,6 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   outBuffer.applyGain(volumeParam->get());
   
   //update parameters
-    updateFrequency();
   
 }// End processBlock
 
@@ -280,17 +281,13 @@ void WaveGeneratorProcessor::setWaveform(int index)
 void WaveGeneratorProcessor::updateFrequency()
 {
   //max step size == 1/500 * currentfrequency
-  if(std::abs(currentFrequency - targetFrequency) < 0.05 * currentFrequency) // important change the std::abs to something crossplatform
+  if(takesMidi || std::abs(currentFrequency - targetFrequency) < 0.05 * targetFrequency) 
   {
     currentFrequency = targetFrequency;
   }
-  else if(currentFrequency < targetFrequency)
-  {
-    currentFrequency += 0.05 * currentFrequency;
-  }
   else
   {
-    currentFrequency -= 0.05 * currentFrequency;
+    currentFrequency += 0.05*targetFrequency * ((currentFrequency - targetFrequency) > 0 ? -1 : 1);
   }
   
   oscillator->setFrequency(currentFrequency);

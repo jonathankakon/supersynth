@@ -18,7 +18,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (150, 80);
+  setSize (200, 80);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -83,20 +83,20 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   parent.registerImmobileObject(*waveformSlider);
   addAndMakeVisible(waveformSlider);
   
-  
   volumeSlider->addListener(this);
    
   //labels
   
   
-  blepSlider = new Slider();
-  blepSlider->setRange(0, 1, 1);
-  blepSlider->setSliderStyle(Slider::LinearVertical);
-  blepSlider->setValue(1);
-  blepSlider->addListener(this);
-  parent.registerImmobileObject(*blepSlider);
-  addAndMakeVisible(blepSlider);
-  
+  blepToggle = new ToggleButton("BLEP");
+  blepToggle->addListener(this);
+  parent.registerImmobileObject(*blepToggle);
+  addAndMakeVisible(blepToggle);
+
+  midiToggle = new ToggleButton("MIDI");
+  midiToggle->addListener(this);
+  parent.registerImmobileObject(*midiToggle);
+  addAndMakeVisible(midiToggle);
 }
 
 WaveGeneratorProcessorEditor::~WaveGeneratorProcessorEditor()
@@ -129,8 +129,12 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   centsSlider->setBounds(r);
   
   r.setX(r.getX() + 30);
+  r.setY(r.getY() - 25);
+  r.setWidth(60);
+  blepToggle->setBounds(r);
+
   r.setY(r.getY() - 20);
-  blepSlider->setBounds(r);
+  midiToggle->setBounds(r);
   
 }
 
@@ -192,15 +196,21 @@ void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
   {
     AudioProcessorParameter* param = params[5];
     if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost ((float) waveformSlider->getValue());
+      param->setValueNotifyingHost ((float) slider->getValue());
     else
       param->setValue ((float) slider->getValue());
   }
-  else if (slider == blepSlider)
-  {
-    processor.setBlepOn(slider->getValue() );
-  }
-  
 }
 
+void WaveGeneratorProcessorEditor::buttonClicked(Button* button)
+{
+  if(button == blepToggle)
+  {
+    processor.setBlepOn(blepToggle->getToggleState());
+  }
+  else if (button == midiToggle)
+  {
+    processor.setMidiOn(midiToggle->getToggleState());
+  }
+}
 
