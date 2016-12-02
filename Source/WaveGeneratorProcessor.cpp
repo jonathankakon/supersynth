@@ -24,7 +24,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(volumeParam = new AudioParameterFloat("volume",
                                                        "Volume",
-                                                       NormalisableRange<float>(0.0,1),
+                                                       NormalisableRange<float>(0.0,1,0.001,0.5, false),
                                                        0.2f));
   
   addParameter(targetFreqParam = new AudioParameterFloat("currentFrequency",

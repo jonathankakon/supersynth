@@ -64,6 +64,10 @@ public:
   
   //==============================================================================
   
+  void changeNoiseType(int newIndex) const
+  {
+    *noisetypeParam = newIndex;
+  };
   
 private:
   
@@ -73,6 +77,37 @@ private:
   Random rand;
   
   void fillBufferWhiteNoise(AudioBuffer<float> &buffer);
+  void applyPinkNoiseFilter(AudioBuffer<float> &buffer);
+  
+  struct filterCoefficients{
+    float a1, a2, a3, b1, b2, b3;
+  };
+  
+  struct filterState{
+    float xn0, xn1, xn2, xn3;
+  };
+  
+  filterState state;
+  filterCoefficients coefficients;
+  
+  void setFilterCoefficients()
+  {
+    coefficients.a1 = -2.47931;
+    coefficients.a2 = 1.98501;
+    coefficients.a3 = -0.5056;
+    coefficients.b1 = -1.89404;
+    coefficients.b2 = 0.958565;
+    coefficients.b3 = -0.0621323;
+  };
+  
+  void resetFilterState()
+  {
+    state.xn0 = 0;
+    state.xn1 = 0;
+    state.xn2 = 0;
+    state.xn3 = 0;
+  }
+  
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseGeneratorProcessor);

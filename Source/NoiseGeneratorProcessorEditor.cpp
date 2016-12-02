@@ -16,7 +16,7 @@ NoiseGeneratorProcessorEditor::NoiseGeneratorProcessorEditor (NoiseGeneratorProc
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (100, 50);
+  setSize (150, 50);
 
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -40,6 +40,14 @@ NoiseGeneratorProcessorEditor::NoiseGeneratorProcessorEditor (NoiseGeneratorProc
   parent.registerImmobileObject(*noisetypeSlider);
   addAndMakeVisible(noisetypeSlider);
   
+  //COMBOBOX
+  dropdownMenuNoiseTypes = new ComboBox("dropdownMenuNoiseType");
+  dropdownMenuNoiseTypes->addItemList({"White", "Pink"}, 1);
+  dropdownMenuNoiseTypes->addListener(this);
+  dropdownMenuNoiseTypes->setSelectedId(1);
+  parent.registerImmobileObject(*dropdownMenuNoiseTypes);
+  addAndMakeVisible(dropdownMenuNoiseTypes);
+  
 }
 
 NoiseGeneratorProcessorEditor::~NoiseGeneratorProcessorEditor()
@@ -51,11 +59,12 @@ void NoiseGeneratorProcessorEditor::paint(juce::Graphics &g)
 {
   g.fillAll (Colours::lightgreen);
   
-  Rectangle<int> r(10, 5 , 30, 30);
+  Rectangle<int> r(10, 10 , 30, 30);
   volumeSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
-  noisetypeSlider->setBounds(r);
+  r.setWidth(80);
+  dropdownMenuNoiseTypes->setBounds(r);
 }
 
 void NoiseGeneratorProcessorEditor::resized()
@@ -86,4 +95,20 @@ void NoiseGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
       param->setValue ((float) slider->getValue());
   }
 
+}
+
+void NoiseGeneratorProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
+{
+  switch (comboBoxThatHasChanged->getSelectedId()) {
+    case 1:
+      processor.changeNoiseType(0);
+      break;
+      
+    case 2:
+      processor.changeNoiseType(1);
+      break;
+      
+      default:
+      break;
+  }
 }

@@ -15,7 +15,7 @@
 #include "NoiseGeneratorProcessor.h"
 #include "ProcessorEditorWithConnectors.h"
 
-class NoiseGeneratorProcessorEditor  : public AudioProcessorEditor, SliderListener
+class NoiseGeneratorProcessorEditor  : public AudioProcessorEditor, SliderListener, ComboBox::Listener
 {
 public:
   
@@ -27,6 +27,7 @@ public:
   void resized() override;
   
   void sliderValueChanged(Slider* slider) override;
+  void comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged) override;
 
 private:
   // This reference is provided as a quick way for your editor to
@@ -36,6 +37,7 @@ private:
   
   ScopedPointer<Slider> volumeSlider;
   ScopedPointer<Slider> noisetypeSlider;
+  ScopedPointer<ComboBox> dropdownMenuNoiseTypes;
 
   
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseGeneratorProcessorEditor)

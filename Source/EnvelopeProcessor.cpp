@@ -19,11 +19,6 @@ EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOu
   addParameter(decayParameter= new AudioParameterFloat("Decay", "Decay", 0, 1, 0.001f));
   addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.9f));
   addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 1, 0.001f));
-
-//  *attackParameter = 0.1;
-//  *decayParameter = 1;
-//  *sustainParameter =0.5;
-//  *releaseParameter = 3.0;
   
   resetEnvelopeState();
   state.wasNoteOn = false;
@@ -44,6 +39,7 @@ void EnvelopeProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::MidiBuffer & midiBuffer)
 {
     audioBuffer.clear();
+  DBG("last sample " << state.lastSample);
   
     float* const audioData = audioBuffer.getWritePointer(0);
     
@@ -194,9 +190,12 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
         //NOTE OFF as in RELEASE
         else if(message1.isNoteOff() && state.lastNote == message1.getNoteNumber())
           {
-            calculateLenghtAndGradient();
             
             state.initialReleaseValue = state.lastSample;
+            
+            calculateLenghtAndGradient();
+            
+            
             state.releaseCounter = 0;
             state.attackDecayCounter = 0;
             
@@ -261,7 +260,12 @@ void EnvelopeProcessor::initialiseFirstSample(float* audioData){
 
 void EnvelopeProcessor::calculateLenghtAndGradient(){
   //calculate attack parameters
+  if(attackGradient > 0){
   attackLength = (int)(*attackParameter * currentSampleRate) - static_cast<int>(state.lastSample / attackGradient);
+  }
+  else{
+    attackLength = (int)(*attackParameter * currentSampleRate);
+  }
   attackGradient = (1.0f-state.lastSample)/static_cast<float>(attackLength);
   
   //calculate decay parameters
@@ -298,7 +302,13 @@ void EnvelopeProcessor::computeAttackDecaySustain(float *audioData, int lastInde
 
 void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBuffer)
 {
+  
+  
   float * pointer = audioBuffer.getWritePointer(0);
+  
+  FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
+  //FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
+  
   //DBG("second sample" << pointer[1]);
   for (int i = 0; i < audioBuffer.getNumSamples(); i++)
   {

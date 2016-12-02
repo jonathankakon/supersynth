@@ -31,10 +31,13 @@ private:
   int index;
   int tapsLength;
   ScopedPointer<AudioBuffer<float>> taps;
+  ScopedPointer<AudioBuffer<float>> result;
+  float* resultPointer;
   float* tapsPointer;
   bool isInitialised;
   
   void convolute(float* audioDataPointer, int audioDataIndex);
+  void fastConvolution(float* audioDataPointer, int audioDataIndex);
 };
 
 
