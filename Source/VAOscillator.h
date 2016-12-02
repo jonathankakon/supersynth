@@ -32,14 +32,13 @@ public:
   
   // getters and setters
   
-  double getSampleRate();
+  double getSampleRate() const;
   void setSampleRate(double newSampleRate);
   
-  double getFrequency();
+  double getFrequency() const;
   void setFrequency(double newFrequency);
   
-  inline void setBlepOn(double on){blepOn = (int)on;}
-  
+  void setBlepOn(bool on) { blepOn = on; };
 private:
   
   double currentSampleRate;
@@ -49,15 +48,15 @@ private:
   double phaseInc;
   double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
-  int blepOn = 1;
+  bool blepOn = true;
   
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;
   
   void updatePhaseInc();
   
-  double getBlep(double phase, double frequency);
-  double getTriRes(double phase, double frequency);
+  float getBlep(double phase, double frequency) const;
+  float getTriRes(double phase, double frequency) const;
   
   double phaseModAmp;
   ScopedPointer<Array<float>> phaseArray;

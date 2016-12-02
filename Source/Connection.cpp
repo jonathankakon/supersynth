@@ -61,7 +61,7 @@ void Connection::resized()
 
 
   stopPathRedraw = true;
-  setBounds(getX() - 100.0f, getY(), this->getWidth() + 200.0f, this->getHeight());
+  setBounds(getX() - 100, getY(), this->getWidth() + 200, this->getHeight());
 
   x1 -= getX();
   y1 -= getY();
@@ -118,15 +118,11 @@ void Connection::mouseDrag(const MouseEvent& e)
     getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);
 
     draggingToInput = (distanceFromStart < distanceFromEnd);
-    DBG("dragging to Input: " << (int)draggingToInput);
 
     getWorksheet()->beginConnectorDrag(outputNodeId, outputNodeChannel, inputNodeId, inputNodeChannel, e);
 
     inputNodeId = (draggingToInput ? 0 : inputNodeId);
     outputNodeId = (draggingToInput ? outputNodeId : 0);
-
-    DBG("outNodeId: " << outputNodeId);
-    DBG("inNodeId: " << inputNodeId);
   }
 }
 
@@ -136,7 +132,7 @@ void Connection::mouseUp(const MouseEvent& e)
     getWorksheet()->endDraggingConnector(e);
 }
 
-void Connection::componentMovedOrResized(Component& component, bool wasMoved, bool wasResized)
+void Connection::componentMovedOrResized(Component& component, bool /*wasMoved*/, bool /*wasResized*/)
 {
   if (ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(&component))
   {
@@ -145,13 +141,13 @@ void Connection::componentMovedOrResized(Component& component, bool wasMoved, bo
 
     if(editor->hasInputWithId(inputNodeId, x, y))
     {
-      lastInputX = x + editor->getX();
-      lastInputY = y + editor->getY();
+      lastInputX = (float)(x + editor->getX());
+      lastInputY = (float)(y + editor->getY());
     }
     else if (editor->hasOutputWithId(outputNodeId, x, y))
     {
-      lastOutputX = x + editor->getX();
-      lastOutputY = y + editor->getY();
+      lastOutputX = (float)(x + editor->getX());
+      lastOutputY = (float)(y + editor->getY());
     }
   }
   resizeToFit();

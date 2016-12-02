@@ -10,23 +10,24 @@
 
 #include "FIRFilter.h"
 
-FIRFilter::FIRFilter(AudioBuffer<float> &buffer,const Array<float> tapsArray){
+FIRFilter::FIRFilter(const float* tapsArray, int size){
   
-  //INITIALISE FILTERBUFFER
-  tapsLength = tapsArray.size();
+  tapsLength = size;
   
   filterBuffer = new AudioBuffer<float>(1, tapsLength);
   filterBufferPointer = filterBuffer->getWritePointer(0);
-  float* audioDataPointer = buffer.getWritePointer(0);
   
-  for(int index = 0; index < tapsLength; index++)
-  {
-    filterBufferPointer[index] = audioDataPointer[index];
+  isInitialised = false;
+  
+//initialis taps buffer
+  taps = new AudioBuffer<float>(1, tapsLength);
+  tapsPointer = taps->getWritePointer(0);
+  
+  for (int i = 0; i < tapsLength; i++) {
+    tapsPointer[i] = tapsArray[i];
   }
   
   index = 0;
-  
-  
   
 }
 
@@ -35,22 +36,38 @@ FIRFilter::~FIRFilter()
   
 }
 
-void FIRFilter::applyFIRFilter(AudioBuffer<float> &buffer, const Array<float> taps)
+void FIRFilter::applyFIRFilter(AudioBuffer<float> &buffer)
 {
+  
   float* audioDataPointer = buffer.getWritePointer(0);
+  
+  //initialise filterBuffer
+//  if(!isInitialised){
+//  for(int index = 0; index < tapsLength; index++)
+//  {
+//    filterBufferPointer[index] = audioDataPointer[index];
+//  }
+//    isInitialised = true;
+//  }
+  
+  
   for (int i = 0; i < buffer.getNumSamples(); i++) {
     filterBufferPointer[index] = audioDataPointer[i];
-    
+    convolute(audioDataPointer, i);
+    //update index
+    index++;
+    if(!(index % tapsLength))
+      index = 0;
   }
-  
-  
-  
+
 }
 
-void FIRFilter::convolute(float* audioDataPointer, const Array<float> taps)
+void FIRFilter::convolute(float* audioDataPointer, int audioDataIndex)
 {
-  
-  
-  
+  float result = 0;
+  for (int i = 0; i < tapsLength; i++) {
+    result += tapsPointer[i] * filterBufferPointer[(index + tapsLength - i) % tapsLength];
+  }
+  audioDataPointer[audioDataIndex] = result;
   
 }

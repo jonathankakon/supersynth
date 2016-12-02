@@ -14,39 +14,73 @@
 #include "ToolboxComponent.h"
 #include "InternalIOProcessor.h"
 #include "ProcessorEditorBase.h"
-#include "WaveGeneratorProcessor.h"
 
 
 //==============================================================================
 SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p),
 	toolbox(new ToolboxComponent()), 
-	collapseButton(new CollapseButton()),
-	viewport(new Viewport()),
-	worksheet(new Worksheet())
+	collapseButton(new CollapseButton())
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-	setResizable(true, true);
-	setResizeLimits(800, 500, 10000, 10000);
+  setResizable(true, true);
+  if(processor.stateInformation == nullptr)
+  {
+    viewport = new Viewport();
+    worksheet = new Worksheet(1200,1200);
+    viewport->setScrollOnDragEnabled(true);
+    viewport->setScrollBarsShown(true, true);
+    viewport->setViewedComponent(worksheet);
 
-	addAndMakeVisible(toolbox);
-	Rectangle<int> r(getLocalBounds());
-	toolbox->setBounds(r.withWidth(180));
+    processor.stateInformation = new XmlElement("SuperSynthAudioProcessor");
+    XmlElement* graphElement = new XmlElement("Graph");
+    processor.stateInformation->prependChildElement(graphElement);
 
-	addAndMakeVisible(collapseButton);
-	collapseButton->setBounds(r.withWidth(200).withTrimmedLeft(180));
-	collapseButton->addListener(this);
+    processor.stateInformation->setAttribute("width", this->getWidth());
+    processor.stateInformation->setAttribute("height", this->getHeight());
 
-	addAndMakeVisible(viewport);
-	viewport->setBounds(r.withTrimmedLeft(200));
-	viewport->setScrollOnDragEnabled(true);
-	viewport->setScrollBarsShown(true, true);
-	viewport->setViewedComponent(worksheet);
+    graphElement->setAttribute("width", worksheet->getWidth());
+    graphElement->setAttribute("height", worksheet->getHeight());
+    graphElement->setAttribute("zoomFactor", worksheet->getZoomFactor());
+    graphElement->setAttribute("scrollX", viewport->getViewPositionX());
+    graphElement->setAttribute("scrollY", viewport->getViewPositionY());
+  }
+  else
+  {
+    XmlElement* graphElement = processor.stateInformation->getChildByName("Graph");
+    int width = graphElement->getIntAttribute("width");
+    int height = graphElement->getIntAttribute("height");
+    int scrollx = graphElement->getIntAttribute("scrollX");
+    int scrolly = graphElement->getIntAttribute("scrollY");
+    float zoomFactor = static_cast<float>(graphElement->getDoubleAttribute("zoomFactor", 1));
 
-	worksheet->addComponentListener(this);
+    viewport = new Viewport();
+    worksheet = new Worksheet(width, height);
+    worksheet->setZoomFactor(zoomFactor);
+    viewport->setScrollOnDragEnabled(true);
+    viewport->setScrollBarsShown(true, true);
+    viewport->setViewedComponent(worksheet);
+    viewport->setViewPosition(scrollx, scrolly);
+    setSize(processor.stateInformation->getIntAttribute("width", 800), processor.stateInformation->getIntAttribute("height", 500));
+  }
+
+  addAndMakeVisible(toolbox);
+  addAndMakeVisible(collapseButton);
+  addAndMakeVisible(viewport);
+
+  collapseButton->addListener(this);
+  worksheet->addComponentListener(this);
 
   addIOComponents();
+
+  Rectangle<int> r(getLocalBounds());
+  viewport->setBounds(r.withTrimmedLeft(200));
+  toolbox->setBounds(r.withWidth(180));
+  collapseButton->setBounds(r.withWidth(200).withTrimmedLeft(180));
+  setResizeLimits(800, 500, 10000, 10000);
+
+    // Make sure that before the constructor has finished, you've set the
+    // editor's size to whatever you need it to be.
+	
 }
 
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
@@ -72,26 +106,19 @@ void SupersynthAudioProcessorEditor::addIOComponents()
 
 void SupersynthAudioProcessorEditor::enableAllInternalBuses(int outNode, int inNode) const
 {
-  processor.getNodeForId(outNode)->getProcessor()->enableAllBuses();
-  processor.getNodeForId(inNode)->getProcessor()->enableAllBuses();
+  processor.graph->getNodeForId(outNode)->getProcessor()->enableAllBuses();
+  processor.graph->getNodeForId(inNode)->getProcessor()->enableAllBuses();
 }
 
 void SupersynthAudioProcessorEditor::addConnection(Connection* connection) const
 {
   enableAllInternalBuses(connection->outputNodeId, connection->inputNodeId);
-  int a = processor.addConnection(connection->outputNodeId, connection->outputNodeChannel, connection->inputNodeId, connection->inputNodeChannel);
-  
-  /*DBG("creating connection from: " << connection->outputNodeId);
-  DBG(" to " << connection->inputNodeId);
-  DBG("success: " << a);*/
+  processor.graph->addConnection(connection->outputNodeId, connection->outputNodeChannel, connection->inputNodeId, connection->inputNodeChannel);
 }
 
 void SupersynthAudioProcessorEditor::removeConnection(Connection& connection) const
 {
-  int a = processor.removeConnection(connection.outputNodeId, connection.outputNodeChannel, connection.inputNodeId, connection.inputNodeChannel);
-  /*DBG("deleting connection from: " << connection.outputNodeId);
-  DBG(" to " << connection.inputNodeId);
-  DBG("success: " << a);*/
+  processor.graph->removeConnection(connection.outputNodeId, connection.outputNodeChannel, connection.inputNodeId, connection.inputNodeChannel);
 }
 
 bool SupersynthAudioProcessorEditor::testConnection(Connection& connection, int dest_id) const
@@ -100,12 +127,28 @@ bool SupersynthAudioProcessorEditor::testConnection(Connection& connection, int 
   int inputNodeId = connection.draggingToInput ? dest_id : connection.inputNodeId;
 
   enableAllInternalBuses(outputNodeId, inputNodeId);
-  return processor.canConnect(outputNodeId, connection.outputNodeChannel, inputNodeId, connection.inputNodeChannel);
+  return processor.graph->canConnect(outputNodeId, connection.outputNodeChannel, inputNodeId, connection.inputNodeChannel);
+}
+
+void SupersynthAudioProcessorEditor::setUIStateInformation() const
+{
+  if (processor.stateInformation != nullptr)
+  {
+    processor.stateInformation->setAttribute("width", this->getWidth());
+    processor.stateInformation->setAttribute("height", this->getHeight());
+
+    XmlElement* graphElement = processor.stateInformation->getChildByName("Graph");
+    graphElement->setAttribute("width", worksheet->getWidth());
+    graphElement->setAttribute("height", worksheet->getHeight());
+    graphElement->setAttribute("zoomFactor", worksheet->getZoomFactor());
+    graphElement->setAttribute("scrollX", viewport->getViewPositionX());
+    graphElement->setAttribute("scrollY", viewport->getViewPositionY());
+  }
 }
 
 int SupersynthAudioProcessorEditor::addInternalProcessor(InternalIOProcessor* p, int x, int y, bool addToWorksheet) const
 {
-  AudioProcessorGraph::Node* node = processor.addNode(p);
+  AudioProcessorGraph::Node* node = processor.graph->addNode(p);
   if (addToWorksheet)
   {
     ProcessorEditorBase* editor = static_cast<ProcessorEditorBase*>(p->createEditor());
@@ -113,7 +156,7 @@ int SupersynthAudioProcessorEditor::addInternalProcessor(InternalIOProcessor* p,
     editor->setNodeId(node->nodeId);
     editor->setConnectors();
     p->enableAllBuses();
-    processor.addConnection(editor->getMixerNodeId(), 0, node->nodeId, 0);
+    processor.graph->addConnection(editor->getMixerNodeIds().getFirst(), 0, node->nodeId, 0);
   }
   return node->nodeId;
 }
@@ -135,12 +178,12 @@ void SupersynthAudioProcessorEditor::resized()
 	collapseButton->setBounds(r.withWidth(20).withX(toolsBounds.getRight()));
 	viewport->setBounds(r.withTrimmedLeft(toolsBounds.getWidth() + toolsBounds.getX() + 20));
 
-	if(viewport->getViewWidth() >= worksheet->getWidth())
+	if(viewport->getViewWidth() / worksheet->getZoomFactor()>= worksheet->getWidth())
 	{
 		worksheet->setSize(viewport->getViewWidth() + 100, worksheet->getHeight());
 	}
 
-	if (viewport->getViewHeight() >= worksheet->getHeight())
+	if (viewport->getViewHeight() / worksheet->getZoomFactor() >= worksheet->getHeight())
 	{
 		worksheet->setSize(worksheet->getWidth(), viewport->getViewHeight() + 100);
 	}
@@ -148,20 +191,23 @@ void SupersynthAudioProcessorEditor::resized()
 
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+  setUIStateInformation();
 }
 
-void SupersynthAudioProcessorEditor::componentMovedOrResized(Component&	component, bool wasMoved, bool wasResized)
+void SupersynthAudioProcessorEditor::componentMovedOrResized(Component&	component, bool /*wasMoved*/, bool /*wasResized*/)
 {
-	if (&component == worksheet && wasMoved && !wasResized)
+	if (&component == worksheet)
 	{
-		if (viewport->getWidth() + viewport->getViewPositionX() >= worksheet->getWidth() - 30)
-			worksheet->setSize(worksheet->getWidth() + 50, worksheet->getHeight());
+		if (viewport->getWidth() + viewport->getViewPositionX() >= (worksheet->getWidth() - 50) * worksheet->getZoomFactor())
+			worksheet->setSize(worksheet->getWidth() + 30, worksheet->getHeight());
 		
-		if (viewport->getHeight() + viewport->getViewPositionY() >= worksheet->getHeight() - 30)
-			worksheet->setSize(worksheet->getWidth(), worksheet->getHeight() + 50);
+		if (viewport->getHeight() + viewport->getViewPositionY() >= (worksheet->getHeight() - 50) * worksheet->getZoomFactor())
+			worksheet->setSize(worksheet->getWidth(), worksheet->getHeight() + 30);
 
 		worksheet->repaint();
 	}
+
+  setUIStateInformation();
 }
 
 
@@ -196,11 +242,11 @@ void SupersynthAudioProcessorEditor::setViewPortDragScrolling(bool allow) const
 void SupersynthAudioProcessorEditor::addAudioProcessor(ToolboxComponent::ModulesListElement* element) const
 {
   AudioProcessor* proc = element->getInstance();
-  AudioProcessorGraph::Node* node = processor.addNode(proc);
+  AudioProcessorGraph::Node* node = processor.graph->addNode(proc);
 
   if (proc->acceptsMidi())
   {
-    processor.addConnection(midiInID, 4096, node->nodeId, 4096);
+    processor.graph->addConnection(midiInID, 4096, node->nodeId, 4096);
   }
 
   if (proc->hasEditor())
@@ -214,7 +260,21 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(ToolboxComponent::Modules
 
 int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int nodeIdToConnect, int channelToConnect) const
 {
-  AudioProcessorGraph::Node* node = processor.addNode(p);
-  processor.addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
+  AudioProcessorGraph::Node* node = processor.graph->addNode(p);
+  processor.graph->addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
   return node->nodeId;
+}
+
+void SupersynthAudioProcessorEditor::removeAudioProcessor(int nodeId, Array<int> mixerNodeIds) const
+{
+  processor.graph->removeNode(nodeId);
+  worksheet->removeEditor(nodeId);
+
+  for (int mixerId : mixerNodeIds)
+  {
+    processor.graph->removeNode(mixerId);
+    worksheet->removeConnections(nodeId, mixerId);
+  }
+
+  setViewPortDragScrolling(true);
 }

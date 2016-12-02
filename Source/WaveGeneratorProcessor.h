@@ -75,12 +75,14 @@ public:
     triangle
   };
   
-  inline void setBlepOn(double on) {oscillator->setBlepOn(on);}
+  void setBlepOn(bool on) const {oscillator->setBlepOn(on);}
+  void setMidiOn(bool on) {takesMidi = on;}
 
 private:
   
   AudioParameterFloat* targetFreqParam;
   AudioParameterFloat* volumeParam;
+  AudioParameterFloat* frequencyRollParam;
   AudioParameterChoice* waveformParam;
   
   AudioParameterInt* octaveParam;
@@ -88,9 +90,12 @@ private:
   AudioParameterInt* centsParam;
   
   double currentSampleRate;
+  int blockSize;
   
   double currentFrequency;
   double targetFrequency;
+
+  bool takesMidi = false;
   
   waveform currentWaveform;
   waveform targetWaveform;

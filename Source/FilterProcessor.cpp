@@ -11,6 +11,7 @@
 #include "FilterProcessor.h"
 #include "FilterProcessorEditor.h"
 #include "GenericIIRFilter.h"
+#include "Constants.h"
 
 FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withInput("Audio", AudioChannelSet::mono())
@@ -18,9 +19,16 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   .withInput("Control", AudioChannelSet::mono())), types(new StringArray)
 {
   addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 50, 15000, 100));
-  addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1, 6, 0.72));
+  addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1f, 6, 0.72f));
   addParameter(gainParameter = new AudioParameterFloat("gainParameter2", "Gain", -12, 12, 0));
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
+  
+  
+  int size = sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
+  
+  filterFIR = new FIRFilter(lowpass_200hz_strong, size);
+  
+  
   
   types->add("bypass");
   types->add("lowpass");
@@ -33,16 +41,16 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   types->add("canonical bandstop");
   types->add("lowshelf");
   types->add("highshelf");
+  types->add("FIR");
   
   
   addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
-  
-  addListener(this);
+
+  AudioProcessor::addListener(this);
 }
 
 FilterProcessor::~FilterProcessor()
 {
-  delete types;
 }
 
 void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
@@ -55,6 +63,7 @@ void FilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 
 void FilterProcessor::releaseResources()
 {
+  delete[] types;
 }
 
 void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer & midiBuffer)
@@ -124,6 +133,9 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
       filterIIR->highShelf(outBuffer, modBuffer);
       break;
       
+    case 11:
+      filterFIR->applyFIRFilter(outBuffer);
+      
     default:
       break;
   }
@@ -148,7 +160,7 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
 //  }
 }
 
-void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue)
+void FilterProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
   switch (parameterIndex) {
     case 0:

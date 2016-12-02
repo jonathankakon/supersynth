@@ -26,10 +26,10 @@ EQFourProcessor::EQFourProcessor() : AudioProcessor(BusesProperties()
   addParameter(cutoffFreq3 = new AudioParameterFloat("Cutoff Frequency 3", "Cutoff", 50, 15000, 5000));
   addParameter(cutoffFreq4 = new AudioParameterFloat("Cutoff Frequency 4", "Cutoff", 50, 15000, 10000));
   
-  addParameter(qParam1 = new AudioParameterFloat("Q 1", "Q", 0.1, 6, 0.72));
-  addParameter(qParam2 = new AudioParameterFloat("Q 2", "Q", 0.1, 6, 0.72));
-  addParameter(qParam3 = new AudioParameterFloat("Q 3", "Q", 0.1, 6, 0.72));
-  addParameter(qParam4 = new AudioParameterFloat("Q 4", "Q", 0.1, 6, 0.72));
+  addParameter(qParam1 = new AudioParameterFloat("Q 1", "Q", 0.1f, 6, 0.72f));
+  addParameter(qParam2 = new AudioParameterFloat("Q 2", "Q", 0.1f, 6, 0.72f));
+  addParameter(qParam3 = new AudioParameterFloat("Q 3", "Q", 0.1f, 6, 0.72f));
+  addParameter(qParam4 = new AudioParameterFloat("Q 4", "Q", 0.1f, 6, 0.72f));
   
   addParameter(gainParam1 = new AudioParameterFloat("Gain 1", "Gain", -12, 12, 0));
   addParameter(gainParam2 = new AudioParameterFloat("Gain 2", "Gain", -12, 12, 0));
@@ -149,7 +149,7 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
 
 
 
-void EQFourProcessor::audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue)
+void EQFourProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
   switch (parameterIndex) {
     case 0:
@@ -215,19 +215,23 @@ bool EQFourProcessor::hasEditor() const
   return true;
 }
 
-void EQFourProcessor::changeFilterTypeBand1(int newIndex){
+void EQFourProcessor::changeFilterTypeBand1(int newIndex) const
+{
   *filterTypeBand1 = newIndex;
 }
 
-void EQFourProcessor::changeFilterTypeBand2(int newIndex){
+void EQFourProcessor::changeFilterTypeBand2(int newIndex) const
+{
   *filterTypeBand2 = newIndex;
 }
 
-void EQFourProcessor::changeFilterTypeBand3(int newIndex){
+void EQFourProcessor::changeFilterTypeBand3(int newIndex) const
+{
   *filterTypeBand3 = newIndex;
 }
 
-void EQFourProcessor::changeFilterTypeBand4(int newIndex){
+void EQFourProcessor::changeFilterTypeBand4(int newIndex) const
+{
   *filterTypeBand4 = newIndex;
 }
 

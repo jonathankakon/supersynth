@@ -42,7 +42,7 @@ void OutputConnector::resized()
 
 }
 
-Point<int> OutputConnector::getClosestConnector(const int x, const int y)
+Point<int> OutputConnector::getClosestConnector(const int /*x*/, const int /*y*/)
 {
   return Point<int>(16, 16);
 }

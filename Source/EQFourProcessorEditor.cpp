@@ -15,7 +15,7 @@
 EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEditorBase* b)
 : AudioProcessorEditor(p) , processor (*p), parent(*b)
 {
-  setSize(500, 300);
+  setSize(350, 250);
   
   //SLIDERS initialising and setting skew factors for frequency sliders
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
@@ -144,7 +144,7 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   addAndMakeVisible(qLabel);
   addAndMakeVisible(gainLabel);
   
-  frequencyLabel.setText("Frequency", juce::dontSendNotification);
+  frequencyLabel.setText("Freq.", juce::dontSendNotification);
   qLabel.setText("Q", juce::dontSendNotification);
   gainLabel.setText("Gain", juce::dontSendNotification);
   
@@ -198,19 +198,19 @@ void EQFourProcessorEditor::paint (Graphics& g)
   
   
   //BUTTONS
-  buttonLowCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+0));
-  buttonLowCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+1*yoffset12));
-  buttonLowShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withY(r.getY()+3*yoffset+2*yoffset12));
+  buttonLowCut1->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 0));
+  buttonLowCut2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
+  buttonLowShelf->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withY(r.getY() + 3 * yoffset + 2 * yoffset12));
   
-  buttonBandpass2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonNotch2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonBandpass2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonNotch2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
   
-  buttonBandpass3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonNotch3->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+2*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
+  buttonBandpass3->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 2 * xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonNotch3->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 2 * xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
   
-  buttonHighCut1->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+0*yoffset12));
-  buttonHighCut2->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+1*yoffset12));
-  buttonHighShelf->setBounds(r.withWidth(0.8*xoffset).withHeight(yoffset12).withX(r.getX()+3*xoffset).withY(r.getY()+3*yoffset+2*yoffset12));
+  buttonHighCut1->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 0 * yoffset12));
+  buttonHighCut2->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 1 * yoffset12));
+  buttonHighShelf->setBounds(r.withWidth((int)(0.8*xoffset)).withHeight(yoffset12).withX(r.getX() + 3 * xoffset).withY(r.getY() + 3 * yoffset + 2 * yoffset12));
   
   
 }
@@ -219,7 +219,8 @@ void EQFourProcessorEditor::initialiseSlider(juce::Slider *slider, juce::AudioPa
 {
   slider->setRange(min, max, stepSize);
   slider->setSliderStyle(Slider::RotaryVerticalDrag);
-  slider->setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 80, 20);
+  slider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
+  slider->setPopupDisplayEnabled(true, this);
   slider->setValue(dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   slider->addListener(this);
   slider->setValue(initialValue);
@@ -381,7 +382,7 @@ void EQFourProcessorEditor::buttonClicked(Button* button)
   
 }
 
-void EQFourProcessorEditor::buttonStateChanged(Button *button)
+void EQFourProcessorEditor::buttonStateChanged(Button* /*button*/)
 {
   
 }

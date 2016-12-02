@@ -7,7 +7,6 @@
 
   ==============================================================================
 */
-
 #ifndef CONNECTION_H_INCLUDED
 #define CONNECTION_H_INCLUDED
 
@@ -16,9 +15,10 @@
 //==============================================================================
 /*
 */
+#pragma warning( disable : 4521 ) 
 class Worksheet;
 
-class Connection : public Component, public MouseListener, public ComponentListener
+class Connection : public Component, public ComponentListener
 {
 public:
   Connection(int inId, int inChannel, int outId, int outChannel);

@@ -75,7 +75,7 @@ public:
   void setGain(float gain)
   {
     gainParameter = gain;
-    h0 = powf(10, gain / 20.0) - 1;
+    h0 = powf(10, gain / 20.0f) - 1.0f;
   }
   
 private:
@@ -87,7 +87,7 @@ private:
   
   float targetCutoffFrequency;    //changed by the slider
   float currentCutoffFrequency;   //internal current cutoff frequency
-  float stepsize = 1.0/500.0;     //current cutoff frequency changes towards targeted
+  float stepsize = 1.0f/500.0f;     //current cutoff frequency changes towards targeted
                                   //frequency with stepsize*currentCutoffFrequency
   
 

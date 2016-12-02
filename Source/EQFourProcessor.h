@@ -31,7 +31,7 @@ public:
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   
   void audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue) override;
-  void audioProcessorChanged(AudioProcessor* processor) override {return;}
+  void audioProcessorChanged(AudioProcessor* ) override {return;}
   
   //==============================================================================
   AudioProcessorEditor* createEditor() override;
@@ -58,10 +58,10 @@ public:
   double currentSampleRate;
 
 
-  void changeFilterTypeBand1(int newIndex);
-  void changeFilterTypeBand2(int newIndex);
-  void changeFilterTypeBand3(int newIndex);
-  void changeFilterTypeBand4(int newIndex);
+  void changeFilterTypeBand1(int newIndex) const;
+  void changeFilterTypeBand2(int newIndex) const;
+  void changeFilterTypeBand3(int newIndex) const;
+  void changeFilterTypeBand4(int newIndex) const;
   
 private:
   //==============================================================================

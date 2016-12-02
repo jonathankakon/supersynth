@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class OutputConnector : public Component, public MouseListener
+class OutputConnector : public Component
 {
 public:
   OutputConnector(int processorNodeId);

@@ -41,13 +41,13 @@ public:
   //==============================================================================
   int getNumPrograms() override { return 1; };
   int getCurrentProgram() override { return 0; };
-  void setCurrentProgram(int index) override { };
-  const String getProgramName(int index) override { return String(); };
-  void changeProgramName(int index, const String& newName) override {};
+  void setCurrentProgram(int) override { };
+  const String getProgramName(int) override { return String(); };
+  void changeProgramName(int, const String&) override {};
 
   //==============================================================================
-  void getStateInformation(MemoryBlock& destData) override {};
-  void setStateInformation(const void* data, int sizeInBytes) override {};
+  void getStateInformation(MemoryBlock&) override {};
+  void setStateInformation(const void*, int) override {};
 
 
 private:

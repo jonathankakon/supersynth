@@ -28,7 +28,7 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
     
     void audioProcessorParameterChanged(AudioProcessor* processor, int parameterIndex, float newValue) override;
-    void audioProcessorChanged(AudioProcessor* processor) override {return;}
+    void audioProcessorChanged(AudioProcessor*) override {return;}
     
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -57,7 +57,7 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     struct EnvelopeState
     {
         float lastSample; int numSamplesSinceLastMidi; bool wasNoteOn;
-      int attackDecayCounter, releaseCounter;
+      int attackDecayCounter, releaseCounter, lastNote;
       float initialReleaseValue;
       };
     
@@ -66,7 +66,7 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     void resetEnvelopeState()
     {
         state.lastSample = 0.0;
-        state.numSamplesSinceLastMidi = 0.0;
+        state.numSamplesSinceLastMidi = 0;
         state.wasNoteOn = true;
         state.attackDecayCounter = 0;
         state.releaseCounter = 0;
@@ -86,8 +86,20 @@ class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
     AudioParameterFloat* releaseParameter;
     
     double currentSampleRate;
-    
-    
+  
+  int attackLength;
+  int decayLength;
+  int releaseLength;
+  
+  float attackGradient;
+  float decayGradient;
+  float releaseGradient;
+  
+  void calculateLenghtAndGradient();
+  void initialiseFirstSample(float* audioData);
+  void computeAttackDecaySustain(float* audioData, int lastIndexForLoop);
+  void expandRangeMinusOneToPlusOne(AudioBuffer<float>& audioBuffer);
+  
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeProcessor)
   };

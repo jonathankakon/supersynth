@@ -89,9 +89,14 @@ void ProcessorEditorBase::setComponentDragging(bool enableDragging)
   draggingEnabled = enableDragging;
 }
 
-int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* processor, int nodeIdToConnect, int channelNumberToConnect) const
+int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* p, int nodeIdToConnect, int channelNumberToConnect) const
 {
-  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(processor, nodeIdToConnect, channelNumberToConnect);
+  return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(p, nodeIdToConnect, channelNumberToConnect);
+}
+
+void ProcessorEditorBase::removeProcessor(int nodeId, Array<int> mixerNodeIds) const
+{
+  findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeAudioProcessor(nodeId, mixerNodeIds);
 }
 
 void ProcessorEditorBase::registerImmobileObject(Component & component) const
@@ -121,7 +126,6 @@ ProcessorEditorBase::DragStopHelper::~DragStopHelper()
 
 void ProcessorEditorBase::DragStopHelper::mouseDown(const MouseEvent &)
 {
-  int i = 0;
 }
 
 void ProcessorEditorBase::DragStopHelper::mouseDrag(const MouseEvent &)

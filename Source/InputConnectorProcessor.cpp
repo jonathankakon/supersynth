@@ -20,7 +20,7 @@ InputConnectorProcessor::~InputConnectorProcessor()
 {
 }
 
-void InputConnectorProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
+void InputConnectorProcessor::prepareToPlay(double /*sampleRate*/, int /*samplesPerBlock*/)
 {
 }
 

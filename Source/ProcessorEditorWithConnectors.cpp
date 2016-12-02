@@ -16,7 +16,7 @@
 
 template<class AudioProcessorType, class EditorType>
 ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::ProcessorEditorWithConnectors(AudioProcessorType * p) : ProcessorEditorBase(p),
-processorEditor(new EditorType(p, this)), processor(*p)
+processorEditor(new EditorType(p, this)), deleteButton(new TextButton("X", "Delete Module")), mixerNodeIds(Array<int>()), processor(*p)
 {
   static_cast<Component*>(processorEditor)->addMouseListener(this, false);
   addAndMakeVisible(processorEditor);
@@ -33,6 +33,23 @@ ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::~ProcessorEditorW
 }
 
 
+template <class AudioProcessorType, class EditorType>
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::createDeleteButton(Rectangle<int> r)
+{
+  registerImmobileObject(*deleteButton);
+  deleteButton->setBounds(r.withX(r.getWidth() - 32 - 15)
+                           .withY(0)
+                           .withWidth(15)
+                           .withHeight(15));
+  deleteButton->addListener(this);
+  addAndMakeVisible(deleteButton);
+}
+
+template <>
+void ProcessorEditorWithConnectors<InternalIOProcessor, IOEditor>::createDeleteButton(Rectangle<int> r)
+{
+}
+
 template<class AudioProcessorType, class EditorType>
 void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnectors()
 {
@@ -44,8 +61,9 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
   for (int i = 0; i < numInputs; ++i)
   {
     InputConnectorProcessor* inputMixer = new InputConnectorProcessor();
-    mixerNodeId = addProcessorToGraph(inputMixer, nodeId, i);
-    InputConnector* input = new InputConnector(inputMixer, this, mixerNodeId);
+    int mixerId = addProcessorToGraph(inputMixer, nodeId, i);
+    InputConnector* input = new InputConnector(inputMixer, this, mixerId);
+    mixerNodeIds.add(mixerId);
     inputConnectors.add(input);
     registerImmobileObject(*input);
     addAndMakeVisible(input);
@@ -67,6 +85,8 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
       .withWidth(outputConnector->getWidth())
       .withHeight(outputConnector->getHeight()));
   }
+
+  createDeleteButton(r);
 }
 
 template <class AudioProcessorType, class EditorType>
@@ -112,8 +132,17 @@ bool ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::hasOutputWit
   return false;
 }
 
+template <class AudioProcessorType, class EditorType>
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::buttonClicked(Button* button)
+{
+  if(button == deleteButton)
+  {
+    removeProcessor(nodeId, mixerNodeIds);
+  }
+}
+
 template<class AudioProcessorType, class EditorType>
-void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graphics& g)
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graphics& /*g*/)
 {
 }
 

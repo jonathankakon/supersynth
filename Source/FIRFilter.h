@@ -19,19 +19,22 @@
 class FIRFilter
 {
 public:
-  FIRFilter(AudioBuffer<float> &buffer,const Array<float> taps);
+  FIRFilter(const float* tapsArray, int size);
   ~FIRFilter();
   
+  void applyFIRFilter(AudioBuffer<float> &buffer);
+
   
 private:
   ScopedPointer<AudioBuffer<float>> filterBuffer;
-  ScopedPointer<float> filterBufferPointer;
+  float* filterBufferPointer;
   int index;
   int tapsLength;
+  ScopedPointer<AudioBuffer<float>> taps;
+  float* tapsPointer;
+  bool isInitialised;
   
-  void applyFIRFilter(AudioBuffer<float> &buffer, const Array<float> taps);
-  void convolute(float* audioDataPointer, const Array<float> taps);
-  
+  void convolute(float* audioDataPointer, int audioDataIndex);
 };
 
 
