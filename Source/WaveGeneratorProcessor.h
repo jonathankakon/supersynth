@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "VAOscillator.h"
+#include "Distorter.h"
 
 class WaveGeneratorProcessor: public AudioProcessor, AudioProcessorListener
 {
@@ -106,6 +107,8 @@ private:
   void updateFrequency();
   
   ScopedPointer<VAOscillator> oscillator;
+  
+  ScopedPointer<Distorter> hardclipper;
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);

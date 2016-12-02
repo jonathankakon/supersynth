@@ -66,6 +66,8 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   waveformChanged = true;//just so that there is a ramp when putting the wavegenerator in
   
+  hardclipper = new Distorter();
+  
 }
 
 WaveGeneratorProcessor::~WaveGeneratorProcessor()
@@ -135,6 +137,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   else if(currentWaveform == sawUp)
   {
     oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
+    hardclipper->processTanhAprx(outBuffer);
   }
   else if(currentWaveform == sawDown)
   {
