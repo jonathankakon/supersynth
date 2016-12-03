@@ -12,6 +12,7 @@
 #define DISTORTER_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GenericIIRFilter.h"
 
 class Distorter
 {
@@ -23,10 +24,14 @@ public:
   void processHardclip(AudioBuffer<float>& buffer);
   void processTanhAprx(AudioBuffer<float>& buffer);
   
+  inline double getSampleRate(){return currentSampleRate;}
+  void setSampleRate(double newSampleRate);
+  
 private:
   
-  float gain = 50;
-  float invGain = 1.0f/gain;
+  double currentSampleRate;
+  
+  ScopedPointer<GenericIIRFilter> filter;
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Distorter)

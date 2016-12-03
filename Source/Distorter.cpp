@@ -12,7 +12,7 @@
 
 Distorter::Distorter()
 {
-  
+  filter = new GenericIIRFilter(18000, 0.72, 1);
 }
 
 Distorter::~Distorter()
@@ -22,26 +22,50 @@ Distorter::~Distorter()
 
 void Distorter::processHardclip(AudioBuffer<float> &buffer)
 {
+  ScopedPointer<AudioBuffer<float>> upsampledBuffer = new AudioBuffer<float>(1, buffer.getNumSamples() * 8);
+  ScopedPointer<AudioBuffer<float>> minusOneBuffer = new AudioBuffer<float>(1, buffer.getNumSamples() * 8);
+  
   float* const data = buffer.getWritePointer(0);
+  float* const upsampledData = upsampledBuffer->getWritePointer(0);
+  float* const minusOneData = minusOneBuffer->getWritePointer(0);
   
-  buffer.applyGain(gain);
-  
+  upsampledBuffer->clear();
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    if(std::abs(data[sampleIndex]) > 1)
+    upsampledData[sampleIndex * 8] = data[sampleIndex];
+  }
+  
+  //fill the buffer with -1 so it doesnt modulate the cutoff frequency
+  FloatVectorOperations::fill(minusOneData, -1, minusOneBuffer->getNumSamples());
+  
+  //do it three times for higher order
+  filter->secondOrderLowPass(*upsampledBuffer, *minusOneBuffer);
+//  filter->secondOrderLowPass(*upsampledBuffer, *minusOneBuffer);
+//  filter->secondOrderLowPass(*upsampledBuffer, *minusOneBuffer);
+  
+  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
+  {
+    if(std::abs(upsampledData[sampleIndex]) > 1)
     {
-      if(data[sampleIndex] < 0)
+      if(upsampledData[sampleIndex] < 0)
       {
-        data[sampleIndex] = -1;
+        upsampledData[sampleIndex] = -1;
       }
       else
       {
-        data[sampleIndex] = 1;
+        upsampledData[sampleIndex] = 1;
       }
     }
   }
   
-  buffer.applyGain(invGain);
+  //LowPass filter at old Nyquist
+  //do it three times for higher order
+  filter->secondOrderLowPass(*upsampledBuffer, *minusOneBuffer);
+  
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    data[sampleIndex] = upsampledData[sampleIndex * 8];
+  }
   
 }
 
@@ -49,14 +73,17 @@ void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 {
   float* const data = buffer.getWritePointer(0);
   
-  buffer.applyGain(gain);
-  
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     float x = data[sampleIndex];
     
     data[sampleIndex] = x/powf(1 + powf(std::abs(x), 2.5), 0.4);
   }
-  
-  buffer.applyGain(invGain);
+}
+
+void Distorter::setSampleRate(double newSampleRate)
+{
+  currentSampleRate = newSampleRate;
+  filter->updateSampleRate(newSampleRate);
+  filter->setCutoff(newSampleRate/8 - 500); // cut a little before the nyquist
 }

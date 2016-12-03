@@ -1,36 +1,37 @@
 /*
   ==============================================================================
 
-    WaveGeneratorProcessor.h
-    Created: 7 Oct 2016 3:42:56pm
+    DistortionProcessor.h
+    Created: 2 Dec 2016 1:09:17pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#ifndef WAVEGENERATORPROCESSOR_H_INCLUDED
-#define WAVEGENERATORPROCESSOR_H_INCLUDED
+#ifndef DISTORTIONPROCESSOR_H_INCLUDED
+#define DISTORTIONPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "VAOscillator.h"
 
-class WaveGeneratorProcessor: public AudioProcessor, AudioProcessorListener
+#include "Distorter.h"
+
+class DistortionProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
-  WaveGeneratorProcessor();
-  ~WaveGeneratorProcessor();
+  DistortionProcessor();
+  ~DistortionProcessor();
   
   //==============================================================================
   void prepareToPlay (double sampleRate, int samplesPerBlock) override;
   void releaseResources() override;
- 
+  
   /*
-#ifndef JucePlugin_PreferredChannelConfigurations
-  bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
-#endif
-  */
-
+   #ifndef JucePlugin_PreferredChannelConfigurations
+   bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
+   #endif
+   */
+  
   void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
   void audioProcessorChanged(AudioProcessor *) override { return; }
   
@@ -43,7 +44,7 @@ public:
   //==============================================================================
   
   bool supportsDoublePrecisionProcessing() const override;
-
+  
   //==============================================================================
   const String getName() const override;
   
@@ -62,55 +63,28 @@ public:
   void getStateInformation (MemoryBlock& destData) override;
   void setStateInformation (const void* data, int sizeInBytes) override;
   
-  
   //==============================================================================
   
-  enum waveform
+  enum distortionType
   {
-    sine,
-    sawUp,
-    sawDown,
-    square,
-    triangle
+    hardclip,
+    tanhApprox
   };
   
-  void setBlepOn(bool on) const {oscillator->setBlepOn(on);}
-  void setMidiOn(bool on) {takesMidi = on;}
-
 private:
   
-  AudioParameterFloat* targetFreqParam;
-  AudioParameterFloat* volumeParam;
-  AudioParameterFloat* frequencyRollParam;
-  AudioParameterChoice* waveformParam;
+  ScopedPointer<Distorter> distorter;
   
-  AudioParameterInt* octaveParam;
-  AudioParameterInt* semitonesParam;
-  AudioParameterInt* centsParam;
+  AudioParameterFloat* preGainParam;
+  AudioParameterChoice* distortionTypeParam;
+  AudioParameterFloat* postGainParam;
   
-  double currentSampleRate;
-  int blockSize;
+  distortionType currentDistortionType;
   
-  double currentFrequency;
-  double targetFrequency;
-
-  bool takesMidi = false;
-  
-  waveform currentWaveform;
-  waveform targetWaveform;
-  
-  bool waveformChanged;
-  
-  void setWaveform(waveform newWaveform);
-  void setWaveform(int index);
-  void updateFrequency();
-  
-  ScopedPointer<VAOscillator> oscillator;
+  void setDistType(int index);
   
   //==============================================================================
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessor);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistortionProcessor);
 };
 
-
-
-#endif  // WAVEGENERATORPROCESSOR_H_INCLUDED
+#endif  // DISTORTIONPROCESSOR_H_INCLUDED

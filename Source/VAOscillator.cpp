@@ -148,7 +148,7 @@ void VAOscillator::fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer
       }
     }
     
-    data[sampleIndex] *= (float)abs(0.5 * (volMod[sampleIndex] + 1));
+    data[sampleIndex] *= (float)std::abs(0.5 * (volMod[sampleIndex] + 1));
   }
   
 }// end square pulse
@@ -201,7 +201,7 @@ void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<fl
       }
     }
     
-    data[sampleIndex] *= (float)abs(0.5 * (volMod[sampleIndex] + 1));
+    data[sampleIndex] *= (float)std::abs(0.5 * (volMod[sampleIndex] + 1));
     
   }
 }// end triangle
