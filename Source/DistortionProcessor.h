@@ -1,24 +1,26 @@
 /*
   ==============================================================================
 
-    NoiseGeneratorProcessor.h
-    Created: 27 Nov 2016 8:03:55pm
+    DistortionProcessor.h
+    Created: 2 Dec 2016 1:09:17pm
     Author:  Paul Lehmann
 
   ==============================================================================
 */
 
-#ifndef NOISEGENERATORPROCESSOR_H_INCLUDED
-#define NOISEGENERATORPROCESSOR_H_INCLUDED
+#ifndef DISTORTIONPROCESSOR_H_INCLUDED
+#define DISTORTIONPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-class NoiseGeneratorProcessor: public AudioProcessor, AudioProcessorListener
+#include "Distorter.h"
+
+class DistortionProcessor: public AudioProcessor, AudioProcessorListener
 {
 public:
   //==============================================================================
-  NoiseGeneratorProcessor();
-  ~NoiseGeneratorProcessor();
+  DistortionProcessor();
+  ~DistortionProcessor();
   
   //==============================================================================
   void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -31,7 +33,7 @@ public:
    */
   
   void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
-  inline void audioProcessorChanged(AudioProcessor *) override { return; }
+  void audioProcessorChanged(AudioProcessor *) override { return; }
   
   void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
   
@@ -61,56 +63,28 @@ public:
   void getStateInformation (MemoryBlock& destData) override;
   void setStateInformation (const void* data, int sizeInBytes) override;
   
-  
   //==============================================================================
   
-  void changeNoiseType(int newIndex) const
+  enum distortionType
   {
-    *noisetypeParam = newIndex;
+    hardclip,
+    tanhApprox
   };
   
 private:
   
-  AudioParameterFloat* volumeParam;
-  AudioParameterChoice* noisetypeParam;
+  ScopedPointer<Distorter> distorter;
   
-  Random rand;
+  AudioParameterFloat* preGainParam;
+  AudioParameterChoice* distortionTypeParam;
+  AudioParameterFloat* postGainParam;
   
-  void fillBufferWhiteNoise(AudioBuffer<float> &buffer);
-  void applyPinkNoiseFilter(AudioBuffer<float> &buffer);
+  distortionType currentDistortionType;
   
-  struct filterCoefficients{
-    float a1, a2, a3, b1, b2, b3;
-  };
-  
-  struct filterState{
-    float xn0, xn1, xn2, xn3;
-  };
-  
-  filterState state;
-  filterCoefficients coefficients;
-  
-  void setFilterCoefficients()
-  {
-    coefficients.a1 = -2.47931;
-    coefficients.a2 = 1.98501;
-    coefficients.a3 = -0.5056;
-    coefficients.b1 = -1.89404;
-    coefficients.b2 = 0.958565;
-    coefficients.b3 = -0.0621323;
-  };
-  
-  void resetFilterState()
-  {
-    state.xn0 = 0;
-    state.xn1 = 0;
-    state.xn2 = 0;
-    state.xn3 = 0;
-  }
-  
+  void setDistType(int index);
   
   //==============================================================================
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoiseGeneratorProcessor);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistortionProcessor);
 };
 
-#endif  // NOISEGENERATORPROCESSOR_H_INCLUDED
+#endif  // DISTORTIONPROCESSOR_H_INCLUDED

@@ -16,6 +16,7 @@
 #include "EQFourProcessorEditor.h"
 #include "EnvelopeProcessor.h"
 #include "NoiseGeneratorProcessor.h"
+#include "DistortionProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -60,6 +61,7 @@ ToolboxComponent::ToolboxComponent() :
   modules.add(new ModulesListElement("Equalizer", "EQFourProcessor", &createInstance<EQFourProcessor>));
   modules.add(new ModulesListElement("Envelope", "EnvelopeProcessor", &createInstance<EnvelopeProcessor>));
   modules.add(new ModulesListElement("NoiseGenerator", "NoiseGeneratorProcessor", &createInstance<NoiseGeneratorProcessor>));
+  modules.add(new ModulesListElement("Distortion", "DistortionProcessor", &createInstance<DistortionProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());

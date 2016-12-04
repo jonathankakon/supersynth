@@ -299,6 +299,7 @@ void GenericIIRFilter::bandstop(AudioBuffer<float>& buffer, AudioBuffer<float>& 
 void GenericIIRFilter::secondOrderLowPass(AudioBuffer<float> &buffer, AudioBuffer<float>& modBuffer)
 {
   float* modBufferPointer = modBuffer.getWritePointer(0);
+  
   for (float* pointer = buffer.getWritePointer(0); pointer < (buffer.getWritePointer(0)+buffer.getNumSamples()); pointer++) {
     
     updateCanonicalCoefficientsLowpass(computeCurrentFrequency(pointer, buffer, modBufferPointer));
@@ -311,6 +312,7 @@ void GenericIIRFilter::secondOrderLowPass(AudioBuffer<float> &buffer, AudioBuffe
     
     canonicalState.stateXh2 = canonicalState.stateXh1;
     canonicalState.stateXh1 = canonicalState.stateXh0;
+    
     modBufferPointer++;
     
   }

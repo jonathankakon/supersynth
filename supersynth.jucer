@@ -8,12 +8,16 @@
               pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.pkj.supersynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.3.0"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
               pluginVSTCategory="">
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="zWOx4D" name="DistortionProcessorEditor.cpp" compile="1"
+                resource="0" file="Source/DistortionProcessorEditor.cpp"/>
+          <FILE id="uYsScm" name="DistortionProcessorEditor.h" compile="0" resource="0"
+                file="Source/DistortionProcessorEditor.h"/>
           <FILE id="fBFRdS" name="NoiseGeneratorProcessorEditor.cpp" compile="1"
                 resource="0" file="Source/NoiseGeneratorProcessorEditor.cpp"/>
           <FILE id="iuYeuw" name="NoiseGeneratorProcessorEditor.h" compile="0"
@@ -72,6 +76,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="Ld3BuZ" name="DistortionProcessor.cpp" compile="1" resource="0"
+              file="Source/DistortionProcessor.cpp"/>
+        <FILE id="UbPqqo" name="DistortionProcessor.h" compile="0" resource="0"
+              file="Source/DistortionProcessor.h"/>
         <FILE id="wanSwG" name="NoiseGeneratorProcessor.cpp" compile="1" resource="0"
               file="Source/NoiseGeneratorProcessor.cpp"/>
         <FILE id="gO9Bqq" name="NoiseGeneratorProcessor.h" compile="0" resource="0"
@@ -106,6 +114,8 @@
               file="Source/PluginProcessor.h"/>
       </GROUP>
       <FILE id="cnLiw4" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
+      <FILE id="t1xG10" name="Distorter.cpp" compile="1" resource="0" file="Source/Distorter.cpp"/>
+      <FILE id="LjQaGy" name="Distorter.h" compile="0" resource="0" file="Source/Distorter.h"/>
       <FILE id="WJ4kvk" name="FIRFilter.cpp" compile="1" resource="0" file="Source/FIRFilter.cpp"/>
       <FILE id="H5VoMC" name="FIRFilter.h" compile="0" resource="0" file="Source/FIRFilter.h"/>
       <FILE id="E22bAe" name="GenericIIRFilter.cpp" compile="1" resource="0"

@@ -20,6 +20,7 @@
 #include "EnvelopeProcessor.h"
 #include "EnvelopeProcessorEditor.h"
 #include "NoiseGeneratorProcessorEditor.h"
+#include "DistortionProcessorEditor.h"
 
 #include "InputConnector.h"
 #include "OutputConnector.h"
