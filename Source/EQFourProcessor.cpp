@@ -237,7 +237,7 @@ void EQFourProcessor::changeFilterTypeBand4(int newIndex) const
 
 const String EQFourProcessor::getName() const
 {
-  return "EQ four";
+  return "EQFourProcessor";
 }
 
 bool EQFourProcessor::acceptsMidi() const

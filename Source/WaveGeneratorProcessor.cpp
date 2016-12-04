@@ -195,7 +195,7 @@ bool WaveGeneratorProcessor::supportsDoublePrecisionProcessing() const
 
 const String WaveGeneratorProcessor::getName() const
 {
-  return "aWave";
+  return "WaveGeneratorProcessor";
 }
 
 bool WaveGeneratorProcessor::acceptsMidi() const

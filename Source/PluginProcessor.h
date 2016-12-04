@@ -40,8 +40,7 @@ public:
 
   void releaseResources() override { return; };
 
-  void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override 
-    { graph->processBlock(audioBuffer, midiBuffer); };
+  void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override { graph->processBlock(audioBuffer, midiBuffer); };
 
   void handleAsyncUpdate() override { graph->prepareToPlay(sampleRate, blockSize); };
 
@@ -66,7 +65,7 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
   ScopedPointer<AudioProcessorGraph> graph;
-  ScopedPointer<XmlElement> stateInformation;
+  ValueTree stateInformation;
 private:
   int blockSize;
   double sampleRate;

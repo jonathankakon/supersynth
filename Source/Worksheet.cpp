@@ -29,21 +29,14 @@ Worksheet::~Worksheet()
 
 void Worksheet::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-	g.fillAll(Colour(0xFF2D2D30));   // clear the background
+	g.fillAll(Colour(0xFF2D2D30));
 
 	Rectangle<int> r(getLocalBounds());
 
 	g.setColour(Colour(0xFFC8C8C8));
 	g.drawRect(r);
 
-    g.setColour (Colours::darkgrey);
+  g.setColour (Colours::darkgrey);
 	for (int x = 0; x < getWidth(); x += 50)
 	{
 		g.drawLine(Line<float>(static_cast<float>(x), static_cast<float>(r.getY()), static_cast<float>(x), static_cast<float>(r.getBottom())), 0.3f);
@@ -108,6 +101,11 @@ void Worksheet::itemDropped(const SourceDetails& dragSourceDetails)
 	repaint();
 }
 
+void Worksheet::componentMovedOrResized(Component& component, bool wasMoved, bool wasResized)
+{
+  findParentComponentOfClass<SupersynthAudioProcessorEditor>()->componentMovedOrResized(component, wasMoved, wasResized);
+}
+
 void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
 {
   if(event.mods.isCtrlDown() || event.mods.isCommandDown())
@@ -127,8 +125,9 @@ void Worksheet::addEditor(Component* editor, double x, double y)
 {
   editors.add(editor);
   addAndMakeVisible(editor);
-  Rectangle<int>r((int)x - editor->getWidth() / 2, (int)y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
+  Rectangle<int> r((int)x - editor->getWidth() / 2, (int)y - editor->getHeight() / 2, editor->getWidth(), editor->getHeight());
   editor->setBounds(r);
+  editor->addComponentListener(this);
 }
 
 void Worksheet::beginConnectorDrag(int outputNodeId, int outputChannel, int inputNodeId, int inputChannel, const MouseEvent& e)
@@ -209,12 +208,13 @@ void Worksheet::endDraggingConnector(const MouseEvent& e)
     addAndMakeVisible(newConnection);
     registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addConnection(newConnection);
-    draggingConnection = nullptr;
+    newConnection->addComponentListener(this);
+    draggingConnection.deleteAndZero();
   } else
   {
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeConnection(*draggingConnection);
     connections.removeObject(draggingConnection, false);
-    draggingConnection = nullptr;
+    draggingConnection.deleteAndZero();
   }
 }
 
@@ -236,8 +236,9 @@ void Worksheet::removeEditor(int nodeId)
 {
   for(int i = editors.size() -1; i >= 0; --i )
   {
-    if(dynamic_cast<ProcessorEditorBase*>(editors[i])->getNodeId() == nodeId)
+    if(reinterpret_cast<ProcessorEditorBase*>(editors[i])->getNodeId() == nodeId)
     {
+      editors[i]->removeComponentListener(this);
       editors.remove(i, true);
     }
   }
@@ -266,6 +267,59 @@ void Worksheet::setZoomFactor(float zoom)
 float Worksheet::getZoomFactor() const
 {
   return zoomFactor;
+}
+
+int Worksheet::getEditorX(int nodeId)
+{
+  for(Component* editor : editors)
+  {
+    if (reinterpret_cast<ProcessorEditorBase*>(editor)->getNodeId() == nodeId)
+      return editor->getBoundsInParent().getX();
+  }
+  return 0;
+}
+
+int Worksheet::getEditorY(int nodeId)
+{
+  for (Component* editor : editors)
+  {
+    if (reinterpret_cast<ProcessorEditorBase*>(editor)->getNodeId() == nodeId)
+      return editor->getBoundsInParent().getY();
+  }
+  return 0;
+}
+
+StringPairArray Worksheet::getInputAndChannelsOfEditor(int nodeId)
+{
+  for (Component* editor : editors)
+  {
+    if (reinterpret_cast<ProcessorEditorBase*>(editor)->getNodeId() == nodeId)
+      return reinterpret_cast<ProcessorEditorBase*>(editor)->getMixerNodeConnectionIds();
+  }
+  return StringPairArray();
+}
+
+Rectangle<int> Worksheet::getConnectionRectangle(const int sourceId, const int destId, const int sourceChannel, const int destChannel)
+{
+  for(Connection* conn : connections)
+  {
+    if (conn->inputNodeId == destId && conn->inputNodeChannel == destChannel 
+      && conn->outputNodeId == sourceId && conn->outputNodeChannel == sourceChannel)
+      return Rectangle<int>(conn->getX1(), conn->getY1(), conn->getX2(), conn->getY2());
+  }
+  return Rectangle<int>();
+}
+
+void Worksheet::addConnection(int x0, int y0, int x1, int y1, int sourceNodeId, int sourceChannelId, int destNodeId, int destChannelId)
+{
+  Connection* newConnection = new Connection(destNodeId, destChannelId, sourceNodeId, sourceChannelId);
+
+  newConnection->dragEnd(x0, y0);
+  newConnection->dragStart(x1, y1);
+
+  connections.add(newConnection);
+  addAndMakeVisible(newConnection);
+  registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
 }
 
 void Worksheet::clearEditorListeners(Connection* connection)

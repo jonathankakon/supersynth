@@ -72,7 +72,7 @@ bool NoiseGeneratorProcessor::supportsDoublePrecisionProcessing() const
 
 const String NoiseGeneratorProcessor::getName() const
 {
-  return String();
+  return "NoiseGeneratorProcessor";
 }
 
 bool NoiseGeneratorProcessor::acceptsMidi() const

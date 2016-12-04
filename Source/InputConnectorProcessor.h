@@ -32,7 +32,7 @@ public:
   AudioProcessorEditor* createEditor() override { return nullptr; };
 
   //==============================================================================
-  const String getName() const override { return "processorInputMixer"; };
+  const String getName() const override { return "InputConnectorProcessor"; };
 
   bool acceptsMidi() const override { return false; };
   bool producesMidi() const override { return false; };

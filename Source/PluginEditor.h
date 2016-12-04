@@ -27,9 +27,11 @@ class SupersynthAudioProcessorEditor :
   public AudioProcessorEditor,
   public ButtonListener,
   public DragAndDropContainer,
-  public ComponentListener
+  public ComponentListener,
+  public AudioProcessorListener
 {
 public:
+
   SupersynthAudioProcessorEditor(SupersynthAudioProcessor&);
   ~SupersynthAudioProcessorEditor();
 
@@ -42,6 +44,7 @@ public:
   void setViewPortDragScrolling(bool allow) const;
   void addAudioProcessor(ToolboxComponent::ModulesListElement*) const;
   int addAudioProcessor(AudioProcessor*, int, int) const;
+  void addAudioProcessor(AudioProcessor*, int, int, int) const;
   void removeAudioProcessor(int, Array<int>) const;
 
   void addIOComponents();
@@ -51,20 +54,38 @@ public:
   bool testConnection(Connection& connection, int dest_id) const;
 
   void setUIStateInformation() const;
+
+  void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
+  void audioProcessorChanged(AudioProcessor *) override;
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   int addInternalProcessor(InternalIOProcessor* p, int x, int y, bool addToWorksheet) const;
+
+  void SerializeProcessors(ValueTree processors) const;
+  void SerializeConnections(ValueTree connections) const;
+  void SerializeGraph(ValueTree parent) const;
+
+  void DeserializeProcessors(ValueTree Processors);
+  void DeserializeConnections(ValueTree Connections);
+  void DeserializeGraph(ValueTree element);
+
+  AudioProcessor* getProcessorFromClassName(String className) const;
+
+  bool isMixerOrMidiConnection(const AudioProcessorGraph::Connection* connection) const;
+
   int midiInID = 0;
 
   ScopedPointer<ToolboxComponent> toolbox;
   ScopedPointer<CollapseButton> collapseButton;
   ScopedPointer<Viewport> viewport;
   ScopedPointer<Worksheet> worksheet;
+  ScopedPointer<UndoManager> manager;
 
   SupersynthAudioProcessor& processor;
 
   bool open = false;
+  bool isLoading = false;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SupersynthAudioProcessorEditor)
 };

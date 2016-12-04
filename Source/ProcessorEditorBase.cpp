@@ -94,6 +94,11 @@ int ProcessorEditorBase::addProcessorToGraph(AudioProcessor* p, int nodeIdToConn
   return findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(p, nodeIdToConnect, channelNumberToConnect);
 }
 
+void ProcessorEditorBase::addProcessorToGraph(AudioProcessor* p, int nodeIdToConnect, int mixerId, int channelNumberToConnect) const
+{
+  findParentComponentOfClass<SupersynthAudioProcessorEditor>()->addAudioProcessor(p, nodeIdToConnect, mixerId, channelNumberToConnect);
+}
+
 void ProcessorEditorBase::removeProcessor(int nodeId, Array<int> mixerNodeIds) const
 {
   findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeAudioProcessor(nodeId, mixerNodeIds);

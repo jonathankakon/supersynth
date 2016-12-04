@@ -330,7 +330,7 @@ bool EnvelopeProcessor::hasEditor() const
 
 const String EnvelopeProcessor::getName() const
 {
-    return "anEnvelope";
+    return "EnvelopeProcessor";
   }
 
 bool EnvelopeProcessor::acceptsMidi() const

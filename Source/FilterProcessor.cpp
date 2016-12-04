@@ -189,7 +189,7 @@ bool FilterProcessor::hasEditor() const
 
 const String FilterProcessor::getName() const
 {
-  return "aFilter";
+  return "FilterProcessor";
 }
 
 bool FilterProcessor::acceptsMidi() const
