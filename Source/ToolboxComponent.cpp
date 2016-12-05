@@ -17,6 +17,7 @@
 #include "EnvelopeProcessor.h"
 #include "NoiseGeneratorProcessor.h"
 #include "DistortionProcessor.h"
+#include "DelayProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -62,6 +63,7 @@ ToolboxComponent::ToolboxComponent() :
   modules.add(new ModulesListElement("Envelope", "EnvelopeProcessor", &createInstance<EnvelopeProcessor>));
   modules.add(new ModulesListElement("NoiseGenerator", "NoiseGeneratorProcessor", &createInstance<NoiseGeneratorProcessor>));
   modules.add(new ModulesListElement("Distortion", "DistortionProcessor", &createInstance<DistortionProcessor>));
+  modules.add(new ModulesListElement("Delay", "DelayProcessor", &createInstance<DelayProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());

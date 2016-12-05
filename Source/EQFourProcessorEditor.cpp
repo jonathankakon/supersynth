@@ -20,51 +20,51 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   //SLIDERS initialising and setting skew factors for frequency sliders
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
-  AudioParameterFloat* param = dynamic_cast< AudioParameterFloat*>(params[0]);
+  AudioParameterFloat* param = dynamic_cast<AudioParameterFloat*>(params[0]);
   cutoffFreqBand1 = new Slider(param->name);
-  initialiseSlider(cutoffFreqBand1, param, 50, 10000, 0.001, 50);
+  initialiseSlider(cutoffFreqBand1, param, 50, 10000, 0.001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   cutoffFreqBand1->setTextValueSuffix(" Hz");
   
   param = dynamic_cast< AudioParameterFloat*>(params[1]);
   cutoffFreqBand2 = new Slider(param->name);
-  initialiseSlider(cutoffFreqBand2, param, 50, 10000, 0.001, 1000);
+  initialiseSlider(cutoffFreqBand2, param, 50, 10000, 0.001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   cutoffFreqBand2->setTextValueSuffix(" Hz");
   
   param = dynamic_cast< AudioParameterFloat*>(params[2]);
   cutoffFreqBand3 = new Slider(param->name);
-  initialiseSlider(cutoffFreqBand3, param, 50, 15000, 0.001, 5000);
+  initialiseSlider(cutoffFreqBand3, param, 50, 15000, 0.001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   cutoffFreqBand3->setTextValueSuffix(" Hz");
   
   param = dynamic_cast< AudioParameterFloat*>(params[3]);
   cutoffFreqBand4 = new Slider(param->name);
-  initialiseSlider(cutoffFreqBand4, param, 50, 15000, 0.001, 15000);
+  initialiseSlider(cutoffFreqBand4, param, 50, 15000, 0.001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   cutoffFreqBand4->setTextValueSuffix(" Hz");
   
   param = dynamic_cast< AudioParameterFloat*>(params[4]);
   qParamBand1 = new Slider(param->name);
-  initialiseSlider(qParamBand1, param, 0.1, 6, 0.0001, 0.72);
+  initialiseSlider(qParamBand1, param, 0.1, 6, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[5]);
   qParamBand2 = new Slider(param->name);
-  initialiseSlider(qParamBand2, param, 0.1, 6, 0.0001, 0.72);
+  initialiseSlider(qParamBand2, param, 0.1, 6, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[6]);
   qParamBand3 = new Slider(param->name);
-  initialiseSlider(qParamBand3, param, 0.1, 6, 0.0001, 0.72);
+  initialiseSlider(qParamBand3, param, 0.1, 6, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[7]);
   qParamBand4 = new Slider(param->name);
-  initialiseSlider(qParamBand4, param, 0.1, 6, 0.0001, 0.72);
+  initialiseSlider(qParamBand4, param, 0.1, 6, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   
   param = dynamic_cast< AudioParameterFloat*>(params[8]);
   gainBand1 = new Slider(param->name);
-  initialiseSlider(gainBand1, param, -12, 12, 0.0001, 0);
+  initialiseSlider(gainBand1, param, -12, 12, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[9]);
   gainBand2 = new Slider(param->name);
-  initialiseSlider(gainBand2, param, -12, 12, 0.0001, 0);
+  initialiseSlider(gainBand2, param, -12, 12, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[10]);
   gainBand3 = new Slider(param->name);
-  initialiseSlider(gainBand3, param, -12, 12, 0.0001, 0);
+  initialiseSlider(gainBand3, param, -12, 12, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   param = dynamic_cast< AudioParameterFloat*>(params[11]);
   gainBand4 = new Slider(param->name);
-  initialiseSlider(gainBand4, param, -12, 12, 0.0001, 0);
+  initialiseSlider(gainBand4, param, -12, 12, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   
   cutoffFreqBand1->setSkewFactor(0.5);
   cutoffFreqBand2->setSkewFactor(0.5);
@@ -94,19 +94,34 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   buttonHighCut2 = new ToggleButton("2nd Highcut");
   buttonHighShelf = new ToggleButton("Highshelf");
   
+  AudioParameterChoice* choice = dynamic_cast<AudioParameterChoice*>(params[12]);
   buttonLowCut1->setRadioGroupId(1);
+  buttonLowCut1->setToggleState(0 == choice->getIndex(), juce::dontSendNotification);
   buttonLowCut2->setRadioGroupId(1);
+  buttonLowCut2->setToggleState(1 == choice->getIndex(), juce::dontSendNotification);
   buttonLowShelf->setRadioGroupId(1);
-  
+  buttonLowShelf->setToggleState(2 == choice->getIndex(), juce::dontSendNotification);
+
+  choice = dynamic_cast<AudioParameterChoice*>(params[13]);
   buttonBandpass2->setRadioGroupId(2);
+  buttonBandpass2->setToggleState(0 == choice->getIndex(), juce::dontSendNotification);
   buttonNotch2->setRadioGroupId(2);
+  buttonNotch2->setToggleState(1 == choice->getIndex(), juce::dontSendNotification);
   
+  choice = dynamic_cast<AudioParameterChoice*>(params[14]);
   buttonBandpass3->setRadioGroupId(3);
+  buttonBandpass3->setToggleState(0 == choice->getIndex(), juce::dontSendNotification);
   buttonNotch3->setRadioGroupId(3);
+  buttonNotch3->setToggleState(1 == choice->getIndex(), juce::dontSendNotification);
   
+
+  choice = dynamic_cast<AudioParameterChoice*>(params[15]);
   buttonHighCut1->setRadioGroupId(4);
+  buttonHighCut1->setToggleState(0 == choice->getIndex(), juce::dontSendNotification);
   buttonHighCut2->setRadioGroupId(4);
+  buttonHighCut2->setToggleState(1 == choice->getIndex(), juce::dontSendNotification);
   buttonHighShelf->setRadioGroupId(4);
+  buttonHighShelf->setToggleState(2 == choice->getIndex(), juce::dontSendNotification);
   
   buttonLowCut1->addListener(this);
   buttonLowCut2->addListener(this);
@@ -118,13 +133,6 @@ EQFourProcessorEditor::EQFourProcessorEditor (EQFourProcessor* p, ProcessorEdito
   buttonHighShelf->addListener(this);
   buttonBandpass2->addListener(this);
   buttonBandpass3->addListener(this);
-  
-  
-  //buttons setting defaults
-  buttonLowShelf->setToggleState(true, juce::dontSendNotification);
-  buttonBandpass2->setToggleState(true, juce::dontSendNotification);
-  buttonBandpass3->setToggleState(true, juce::dontSendNotification);
-  buttonHighShelf->setToggleState(true, juce::dontSendNotification);
   
   //Buttons addAndMakeVisible
   addAndMakeVisible(buttonBandpass2);
@@ -221,7 +229,6 @@ void EQFourProcessorEditor::initialiseSlider(juce::Slider *slider, juce::AudioPa
   slider->setSliderStyle(Slider::RotaryVerticalDrag);
   slider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 80, 20);
   slider->setPopupDisplayEnabled(true, this);
-  slider->setValue(dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   slider->addListener(this);
   slider->setValue(initialValue);
   slider->setTextBoxIsEditable(true);

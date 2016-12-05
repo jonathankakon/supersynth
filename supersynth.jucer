@@ -14,6 +14,10 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="dXBlPK" name="DelayProcessorEditor.cpp" compile="1" resource="0"
+                file="Source/DelayProcessorEditor.cpp"/>
+          <FILE id="xhAVuI" name="DelayProcessorEditor.h" compile="0" resource="0"
+                file="Source/DelayProcessorEditor.h"/>
           <FILE id="zWOx4D" name="DistortionProcessorEditor.cpp" compile="1"
                 resource="0" file="Source/DistortionProcessorEditor.cpp"/>
           <FILE id="uYsScm" name="DistortionProcessorEditor.h" compile="0" resource="0"
@@ -76,6 +80,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="F0cFMR" name="DelayProcessor.cpp" compile="1" resource="0"
+              file="Source/DelayProcessor.cpp"/>
+        <FILE id="C6X9es" name="DelayProcessor.h" compile="0" resource="0"
+              file="Source/DelayProcessor.h"/>
         <FILE id="Ld3BuZ" name="DistortionProcessor.cpp" compile="1" resource="0"
               file="Source/DistortionProcessor.cpp"/>
         <FILE id="UbPqqo" name="DistortionProcessor.h" compile="0" resource="0"

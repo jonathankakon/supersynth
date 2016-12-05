@@ -18,6 +18,7 @@ SupersynthAudioProcessor::SupersynthAudioProcessor() : AudioProcessor(BusesPrope
     .withOutput("AudioOut", AudioChannelSet::mono(), true)),
   graph(new AudioProcessorGraph()), stateInformation(ValueTree("Root"))
 {
+  addParameter(new AudioParameterFloat("DummyParameter", "Dummy", 0, 1, 0));
 }
 
 SupersynthAudioProcessor::~SupersynthAudioProcessor()
@@ -43,6 +44,7 @@ void SupersynthAudioProcessor::setStateInformation(const void* data, int sizeInB
 {
   ScopedPointer<XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
   stateInformation = ValueTree::fromXml(*xml);
+  ScopedPointer<SupersynthAudioProcessorEditor> editor = new SupersynthAudioProcessorEditor(*this);
 }
 
 AudioProcessorEditor* SupersynthAudioProcessor::createEditor()

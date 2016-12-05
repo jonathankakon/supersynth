@@ -13,6 +13,7 @@
 #include "IOEditor.h"
 #include "InternalIOProcessor.h"
 #include "InputConnectorProcessor.h"
+#include "DelayProcessorEditor.h"
 
 template<class AudioProcessorType, class EditorType>
 ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::ProcessorEditorWithConnectors(AudioProcessorType * p) : ProcessorEditorBase(p),
@@ -209,4 +210,5 @@ template class ProcessorEditorWithConnectors<EQFourProcessor, EQFourProcessorEdi
 template class ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>;
 template class ProcessorEditorWithConnectors<NoiseGeneratorProcessor, NoiseGeneratorProcessorEditor>;
 template class ProcessorEditorWithConnectors<DistortionProcessor, DistortionProcessorEditor>;
+template class ProcessorEditorWithConnectors<DelayProcessor, DelayProcessorEditor>;
 

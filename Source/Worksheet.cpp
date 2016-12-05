@@ -317,6 +317,7 @@ void Worksheet::addConnection(int x0, int y0, int x1, int y1, int sourceNodeId, 
   newConnection->dragEnd(x0, y0);
   newConnection->dragStart(x1, y1);
 
+  newConnection->toBack();
   connections.add(newConnection);
   addAndMakeVisible(newConnection);
   registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);

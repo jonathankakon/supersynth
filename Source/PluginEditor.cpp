@@ -95,6 +95,15 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
 
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
 {
+  for(int i = 0; i < processor.graph->getNumNodes(); i++)
+  {
+    AudioProcessorGraph::Node* node = processor.graph->getNode(i);
+    if(node != nullptr)
+    {
+      node->getProcessor()->removeListener(this);
+    }
+  }
+  SerializeGraph(processor.stateInformation.getChildWithName("Supersynth").getOrCreateChildWithName("Graph", manager));
 	collapseButton->removeListener(this);
 }
 
@@ -225,7 +234,8 @@ void SupersynthAudioProcessorEditor::SerializeProcessors(ValueTree processors) c
         ValueTree param("Parameter");
         node.addChild(param, -1, manager);
         param.setProperty("paramId", k, manager);
-        param.setProperty("value", nodeProcessor->getProcessor()->getParameter(k), manager);
+        var value = nodeProcessor->getProcessor()->getParameter(k);
+        param.setProperty("value",value, manager);
       }
     }
   }
@@ -262,6 +272,7 @@ void SupersynthAudioProcessorEditor::SerializeGraph(ValueTree element) const
   ValueTree connections = element.getOrCreateChildWithName("Connections", manager);
   SerializeProcessors(processors);
   SerializeConnections(connections);
+  processor.setParameterNotifyingHost(0, 0);
 }
 
 void SupersynthAudioProcessorEditor::DeserializeProcessors(ValueTree processors)
@@ -299,19 +310,19 @@ void SupersynthAudioProcessorEditor::DeserializeProcessors(ValueTree processors)
         p = getProcessorFromClassName(name);
       }
       node = processor.graph->addNode(p, id);
-
-      for (int k = 0; k < processorTree.getNumChildren(); ++k)
-      {
-        if (processorTree.getChild(k).hasType("Parameter"))
-        {
-          ValueTree parameter = processorTree.getChild(k);
-          p->setParameter(parameter.getProperty("paramId"), parameter.getProperty("value"));
-        }
-      }
     }
     else
     {
       p = node->getProcessor();
+    }
+
+    for (int k = 0; k < processorTree.getNumChildren(); ++k)
+    {
+      if (processorTree.getChild(k).hasType("Parameter"))
+      {
+        ValueTree parameter = processorTree.getChild(k);
+        p->setParameter(parameter.getProperty("paramId"), parameter.getProperty("value"));
+      }
     }
 
     if (p->acceptsMidi())
@@ -341,6 +352,8 @@ void SupersynthAudioProcessorEditor::DeserializeProcessors(ValueTree processors)
       editor->setOutputConnectors();
       editor->setBounds(xpos, ypos, editor->getWidth(), editor->getHeight());
     }
+
+    p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
   }
 }
 
@@ -496,6 +509,8 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(ToolboxComponent::Modules
     editor->setConnectors();
   }
 
+  proc->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
+
   if (!isLoading)
   {
     SerializeGraph(processor.stateInformation.getChildWithName("Supersynth").getOrCreateChildWithName("Graph", manager));
@@ -507,6 +522,7 @@ int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int nod
   AudioProcessorGraph::Node* node = processor.graph->addNode(p);
   p->enableAllBuses();
   processor.graph->addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
+  p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
   return node->nodeId;
 }
 
@@ -515,10 +531,12 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int no
   AudioProcessorGraph::Node* node = processor.graph->addNode(p, mixerId);
   p->enableAllBuses();
   processor.graph->addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
+  p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
 }
 
 void SupersynthAudioProcessorEditor::removeAudioProcessor(int nodeId, Array<int> mixerNodeIds) const
 {
+  processor.graph->getNodeForId(nodeId)->getProcessor()->removeListener(const_cast<SupersynthAudioProcessorEditor*>(this));
   processor.graph->removeNode(nodeId);
   worksheet->removeEditor(nodeId);
 
