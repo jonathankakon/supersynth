@@ -22,19 +22,17 @@ EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOu
   
   resetEnvelopeState();
   state.wasNoteOn = false;
-
-    
   }
 
 EnvelopeProcessor::~EnvelopeProcessor()
 {
-  }
+}
 
 void EnvelopeProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     ignoreUnused(sampleRate, samplesPerBlock);
     currentSampleRate = sampleRate;
-  }
+}
 
 void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::MidiBuffer & midiBuffer)
 {
@@ -323,45 +321,45 @@ void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBu
 
 void EnvelopeProcessor::releaseResources()
 {
-  }
+}
 
-void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int /*parameterIndex*/, float /*newValue*/)
+void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
-  }
+}
 
 AudioProcessorEditor* EnvelopeProcessor::createEditor(){
     return new ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>(this);
-  }
+}
 
 bool EnvelopeProcessor::hasEditor() const
 {
     return true;
-  }
+}
 
 const String EnvelopeProcessor::getName() const
 {
     return "EnvelopeProcessor";
-  }
+}
 
 bool EnvelopeProcessor::acceptsMidi() const
 {
     return true;
-  }
+}
 
 bool EnvelopeProcessor::producesMidi() const
 {
     return false;
-  }
+}
 
 double EnvelopeProcessor::getTailLengthSeconds() const
 {
     return 0.0;
-  }
+}
 
 int EnvelopeProcessor::getNumPrograms()
 {
     return 1;
-  }
+}
 
 int EnvelopeProcessor::getCurrentProgram()
 {

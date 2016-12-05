@@ -96,11 +96,6 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
 SupersynthAudioProcessorEditor::~SupersynthAudioProcessorEditor()
 {
 	collapseButton->removeListener(this);
-
-	toolbox = nullptr;
-	worksheet = nullptr;
-	viewport = nullptr;
-	collapseButton = nullptr;
 }
 
 void SupersynthAudioProcessorEditor::addIOComponents()
@@ -532,6 +527,7 @@ void SupersynthAudioProcessorEditor::removeAudioProcessor(int nodeId, Array<int>
     processor.graph->removeNode(mixerId);
     worksheet->removeConnections(nodeId, mixerId);
   }
+  worksheet->removeConnections(nodeId, -1);
 
   setViewPortDragScrolling(true);
 }

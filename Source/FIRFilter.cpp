@@ -106,14 +106,3 @@ void FIRFilter::fastConvolution(float *audioDataPointer, int audioDataIndex)
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
