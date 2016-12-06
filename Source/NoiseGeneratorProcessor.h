@@ -12,8 +12,9 @@
 #define NOISEGENERATORPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "RMSRequestable.h"
 
-class NoiseGeneratorProcessor: public AudioProcessor, AudioProcessorListener
+class NoiseGeneratorProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================

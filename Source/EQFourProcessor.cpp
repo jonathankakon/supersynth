@@ -143,8 +143,8 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
     default:
       break;
   }
-  
-  
+
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 }
 
 

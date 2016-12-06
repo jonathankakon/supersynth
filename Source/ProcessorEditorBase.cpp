@@ -104,6 +104,11 @@ void ProcessorEditorBase::removeProcessor(int nodeId, Array<int> mixerNodeIds) c
   findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeAudioProcessor(nodeId, mixerNodeIds);
 }
 
+AudioProcessor& ProcessorEditorBase::getProcessor() const
+{
+  return processor;
+}
+
 void ProcessorEditorBase::registerImmobileObject(Component & component) const
 {
   component.addMouseListener(dragStop, false);

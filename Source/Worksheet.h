@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class Worksheet : public Component, public DragAndDropTarget, public ComponentListener
+class Worksheet : public Component, public DragAndDropTarget, public ComponentListener, Timer
 {
 public:
   Worksheet(int, int);
@@ -31,7 +31,8 @@ public:
   void itemDragMove(const SourceDetails& sourceDetails) override;
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
-  void componentMovedOrResized(Component&, bool, bool) override;
+  void componentMovedOrResized(Component&, bool, bool) override; 
+  void timerCallback() override;
 
   void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
 

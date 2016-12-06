@@ -12,8 +12,9 @@
 #define DELAYPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "RMSRequestable.h"
 
-class DelayProcessor : public AudioProcessor, AudioProcessorListener
+class DelayProcessor : public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================

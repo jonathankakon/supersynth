@@ -79,7 +79,8 @@ void DistortionProcessor::processBlock(AudioSampleBuffer& buffer, MidiBuffer& mi
   inBuffer.applyGain(postGainParam->get());
   
   outBuffer.copyFrom(0, 0, inBuffer, 0, 0, inBuffer.getNumSamples());
-  
+
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 }
 
 AudioProcessorEditor* DistortionProcessor::createEditor()

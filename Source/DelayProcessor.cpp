@@ -53,6 +53,7 @@ void DelayProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*
 void DelayProcessor::processBlock(AudioSampleBuffer &buffer, juce::MidiBuffer &/*midiBuffer*/)
 {
   applyDelay(buffer);
+  setCurrentRMS(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
 }
 
 AudioProcessorEditor* DelayProcessor::createEditor()

@@ -63,6 +63,12 @@ public:
   virtual Array<int> getMixerNodeIds() { return Array<int>(); };
   virtual StringPairArray getMixerNodeConnectionIds() { return StringPairArray(); };
 
+  AudioProcessor& getProcessor() const;
+  bool hasProcessor() const
+  {
+    return (&processor != nullptr);
+  };
+
 private:
   bool draggingEnabled;
   ComponentDragger dragger;

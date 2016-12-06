@@ -16,7 +16,7 @@
 #include "GenericIIRFilter.h"
 
 
-class EQFourProcessor: public AudioProcessor, AudioProcessorListener
+class EQFourProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================

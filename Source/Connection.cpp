@@ -21,6 +21,7 @@ inputNodeId(inId), inputNodeChannel(inChannel), outputNodeId(outId), outputNodeC
 draggingToInput(inId == 0), dragging(false), lastInputX(0),
 lastOutputX(0), lastOutputY(0), lastInputY(0), stopPathRedraw(false)
 {
+  rmsColour = Colour(0, 0, 255);
   setAlwaysOnTop(false);
 }
 
@@ -40,7 +41,7 @@ Connection::~Connection()
 
 void Connection::paint (Graphics& g)
 {
-  g.setColour(Colours::blue);
+  g.setColour(rmsColour);
   g.fillPath(path);
 }
 
@@ -202,6 +203,13 @@ void Connection::setDestNodeId(int nodeId)
     inputNodeId = nodeId;
   else
     outputNodeId = nodeId;
+}
+
+void Connection::setPathColourFromRms(float rms)
+{
+  NormalisableRange<float> range = NormalisableRange<float>(0, 1, 1e-7, 4);
+  rmsColour = Colour(range.convertFrom0to1(rms) * 255, 0, (1 - rms) * 255);
+  repaint();
 }
 
 void Connection::getDistancesFromEnds(int x, int y, double& distanceFromStart, double& distanceFromEnd) const

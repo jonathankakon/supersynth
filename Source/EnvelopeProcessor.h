@@ -12,9 +12,10 @@
 #define ENVELOPEPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "RMSRequestable.h"
 
 
-class EnvelopeProcessor: public AudioProcessor, AudioProcessorListener
+class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
   public:
     EnvelopeProcessor();

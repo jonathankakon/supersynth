@@ -80,6 +80,8 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="FhILoI" name="RMSRequestable.h" compile="0" resource="0"
+              file="Source/RMSRequestable.h"/>
         <FILE id="F0cFMR" name="DelayProcessor.cpp" compile="1" resource="0"
               file="Source/DelayProcessor.cpp"/>
         <FILE id="C6X9es" name="DelayProcessor.h" compile="0" resource="0"

@@ -80,6 +80,7 @@ default:
   }
   
   outBuffer.applyGain(volumeParam->get());
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 }
 
 AudioProcessorEditor* NoiseGeneratorProcessor::createEditor()

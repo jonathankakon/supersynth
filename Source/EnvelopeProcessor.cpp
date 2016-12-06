@@ -37,7 +37,6 @@ void EnvelopeProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::MidiBuffer & midiBuffer)
 {
     audioBuffer.clear();
-  DBG("last sample " << state.lastSample);
   
     float* const audioData = audioBuffer.getWritePointer(0);
     
@@ -139,6 +138,7 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
   
   //check if there are midi events
   if(midiBuffer.isEmpty()){
+    setCurrentRMS(audioBuffer.getRMSLevel(0, 0, audioBuffer.getNumSamples()));
     expandRangeMinusOneToPlusOne(audioBuffer);
     return;
   }
@@ -238,9 +238,9 @@ void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::Midi
               }
           }
       }
-  
+
+  setCurrentRMS(audioBuffer.getRMSLevel(0, 0, audioBuffer.getNumSamples()));
   expandRangeMinusOneToPlusOne(audioBuffer);
-  
 }
 
 void EnvelopeProcessor::initialiseFirstSample(float* audioData){

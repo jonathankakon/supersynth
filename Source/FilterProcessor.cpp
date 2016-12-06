@@ -141,7 +141,8 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   }
   
   
-  
+
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 //  if(filterType->getIndex() == 0)
 //  {
 //    filterIIR->firstOrderLowPass(outBuffer);
