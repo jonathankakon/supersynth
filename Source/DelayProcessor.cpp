@@ -34,7 +34,9 @@ void DelayProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
   rate = sampleRate;
   bufferSize = samplesPerBlock;
 
-  delayBuffer.setSize(1, *delayParam * sampleRate);
+  delayBufferSize = 2 * sampleRate;
+  delayBuffer.setSize(1, 2*sampleRate);
+  delayBuffer.clear();
 }
 
 void DelayProcessor::releaseResources()
@@ -46,7 +48,7 @@ void DelayProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*
 {
   if (parameterIndex == 0) 
   {
-    delayBuffer.setSize(1, *delayParam * rate, true, true);
+    delayBufferSize = *delayParam * 2 * rate;
   }
 }
 
@@ -80,8 +82,10 @@ void DelayProcessor::applyDelay(AudioBuffer<float>& buffer)
     channelData[i] += delayData[delayPos];
     delayData[delayPos] = (delayData[delayPos] + in) * delayLevel;
 
-    if (++delayPos >= delayBuffer.getNumSamples())
+    if (++delayPos >= delayBufferSize)
+    {
       delayPos = 0;
+    }
   }
 
   delayPosition = delayPos;

@@ -70,6 +70,7 @@ private:
   double rate;
   int bufferSize; 
   int delayPosition;
+  int delayBufferSize;
 
   void applyDelay(AudioBuffer<float>& buffer);
   AudioBuffer<float> delayBuffer;
