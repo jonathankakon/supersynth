@@ -15,12 +15,31 @@
 #include "RMSRequestable.h"
 
 
+
 class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
   public:
+  
+  enum EnvelopeSlopeState
+  {
+    attack,     /**< In this mode, the processor has output channels
+                         representing all the audio input channels that are
+                         coming into its parent audio graph. */
+    decay,    /**< In this mode, the processor has input channels
+                         representing all the audio output channels that are
+                         going out of its parent audio graph. */
+    sustain,      /**< In this mode, the processor has a midi output which
+                         delivers the same midi data that is arriving at its
+                         parent graph. */
+    release,
+    none/**< In this mode, the processor has a midi input and
+                         any data sent to it will be passed out of the parent
+                         graph. */
+  };
+  
     EnvelopeProcessor();
     ~EnvelopeProcessor();
-    
+  
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -41,7 +60,7 @@ class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProc
     bool acceptsMidi() const override;
     bool producesMidi() const override;
     double getTailLengthSeconds() const override;
-    
+  
     //==============================================================================
     int getNumPrograms() override;
     int getCurrentProgram() override;
@@ -52,34 +71,26 @@ class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProc
     //==============================================================================
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+  
     
+  
   private:
-    
-    struct EnvelopeState
-    {
-        float lastSample; int numSamplesSinceLastMidi; bool wasNoteOn;
-      int attackDecayCounter, releaseCounter, lastNote;
-      float initialReleaseValue;
-      };
-    
-    EnvelopeState state;
-    
-    void resetEnvelopeState()
-    {
-        state.lastSample = 0.0;
-        state.numSamplesSinceLastMidi = 0;
-        state.wasNoteOn = true;
-        state.attackDecayCounter = 0;
-        state.releaseCounter = 0;
-        state.initialReleaseValue = 0;
-      }
-    
-    void updateEnvelopeState(float sample, int sinceLastMidi, bool noteOn){
-        state.lastSample = sample;
-        state.numSamplesSinceLastMidi = sinceLastMidi;
-        state.wasNoteOn = noteOn;
-      
-      }
+  
+  //-------KianKakonTagTeam-------
+  EnvelopeSlopeState getNextSlopeStateFromLastSample(MidiMessage , int , int);
+  
+  EnvelopeSlopeState slope = EnvelopeSlopeState::none;
+  
+  float nextSample = 0;
+  int lastPlayingNote = 0;
+  
+  float attackStep = 0;
+  float decayStep = 0;
+  float releaseStep = 0;
+  
+  float attackGradient = 0;
+  float decayGradient = 0;
+  float releaseGradient = 0;
     
     AudioParameterFloat* attackParameter;
     AudioParameterFloat* decayParameter;
@@ -88,18 +99,10 @@ class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProc
     
     double currentSampleRate;
   
-  int attackLength;
-  int decayLength;
-  int releaseLength;
   
-  float attackGradient;
-  float decayGradient;
-  float releaseGradient;
-  
-  void calculateLenghtAndGradient();
-  void initialiseFirstSample(float* audioData);
-  void computeAttackDecaySustain(float* audioData, int lastIndexForLoop);
+
   void expandRangeMinusOneToPlusOne(AudioBuffer<float>& audioBuffer);
+  
   
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnvelopeProcessor)

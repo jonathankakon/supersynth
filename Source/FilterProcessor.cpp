@@ -24,9 +24,9 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
   
   
-  int size = sizeof(church)/sizeof(*church);
+  int size = sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
   
-  filterFIR = new FIRFilter(church, size);
+  filterFIR = new FIRFilter(lowpass_200hz_strong, size, 0, 0);
   
   
   
