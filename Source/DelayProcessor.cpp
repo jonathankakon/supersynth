@@ -34,7 +34,7 @@ void DelayProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
   rate = sampleRate;
   bufferSize = samplesPerBlock;
 
-  delayBufferSize = 2 * sampleRate;
+  delayBufferSize = *delayParam * 2 * sampleRate;
   delayBuffer.setSize(1, 2*sampleRate);
   delayBuffer.clear();
 }

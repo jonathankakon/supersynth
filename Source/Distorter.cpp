@@ -49,11 +49,11 @@ void Distorter::processHardclip(AudioBuffer<float> &buffer)
     {
       if(upsampledData[sampleIndex] < 0)
       {
-        upsampledData[sampleIndex] = -1;
+        //upsampledData[sampleIndex] = -1;
       }
       else
       {
-        upsampledData[sampleIndex] = 1;
+        //upsampledData[sampleIndex] = 1;
       }
     }
   }
