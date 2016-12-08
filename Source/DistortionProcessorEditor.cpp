@@ -17,7 +17,7 @@ DistortionProcessorEditor::DistortionProcessorEditor (DistortionProcessor* p, Pr
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (200, 80);
+  setSize (140, 60);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -50,6 +50,22 @@ DistortionProcessorEditor::DistortionProcessorEditor (DistortionProcessor* p, Pr
   postGainSlider->addListener(this);
   parent.registerImmobileObject(*postGainSlider);
   addAndMakeVisible(postGainSlider);
+  
+  //Labels
+  preGainLabel.setText("Drive", juce::dontSendNotification);
+  preGainLabel.attachToComponent(preGainSlider, false);
+  preGainLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(preGainLabel);
+  
+  typeLabel.setText("Type", juce::dontSendNotification);
+  typeLabel.attachToComponent(distortionTypeSlider, false);
+  typeLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(typeLabel);
+  
+  postGainLabel.setText("Vol", juce::dontSendNotification);
+  postGainLabel.attachToComponent(postGainSlider, false);
+  postGainLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(postGainLabel);
 
 }
 
@@ -63,7 +79,7 @@ void DistortionProcessorEditor::paint (Graphics& g)
 {
   g.fillAll (Colours::darkgrey);
   
-  Rectangle<int> r(10, 5 , 30, 30);
+  Rectangle<int> r(10, 25 , 30, 30);
   preGainSlider->setBounds(r);
   
   r.setX(r.getX() + 40);

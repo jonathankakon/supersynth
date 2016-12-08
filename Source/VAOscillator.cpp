@@ -28,17 +28,18 @@ VAOscillator::VAOscillator(): fourFoldSampleRate(0), phaseOffset(0), twoPiHalfPu
 //==============================================================================
   // waveforms:
 
-void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer)// add midi buffer and know channel with control Voltage
+void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer)// add midi buffer and know channel with control Voltage
 {
   float* const data = buffer.getWritePointer(0);
   float const *phaseMod = phaseModBuffer.getReadPointer(0);
   float const *volMod = volumeModBuffer.getReadPointer(0);
+  float const *pitchMod = pitchModBuffer.getReadPointer(0);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
     data[sampleIndex] = static_cast<float>(sin(currentPhase + phaseModAmp * phaseMod[sampleIndex]) * std::abs(0.5 * (volMod[sampleIndex] + 1)));
     
-    currentPhase += phaseInc;
+    currentPhase += 2 * double_Pi * ((currentFrequency * (pitchMod[sampleIndex] + 2.0))/currentSampleRate);
     
     if(currentPhase > 2 * double_Pi)
     {
@@ -68,6 +69,7 @@ void VAOscillator::fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<f
     }
     
     currentPhase += phaseInc;
+    
     if(currentPhase > 2 * double_Pi)
     {
       currentPhase -= 2 * double_Pi;

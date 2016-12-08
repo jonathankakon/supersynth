@@ -20,3 +20,4 @@ void NoiseOscillator::fillBufferNoise(AudioBuffer<float> &buffer)
   }
 
 }
+q
