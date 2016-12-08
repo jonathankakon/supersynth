@@ -23,37 +23,37 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(volumeParam = new AudioParameterFloat("volume",
-                                                       "Volume",
-                                                       NormalisableRange<float>(0.0,1,0.001,0.5, false),
-                                                       0.2f));
+                            "Volume",
+                            NormalisableRange<float>(0.0,1,0.001,0.5, false),
+                            0.2f));
   
   addParameter(targetFreqParam = new AudioParameterFloat("currentFrequency",
-                                                        "Frequency",
-                                                        NormalisableRange<float>(1, 15000.0, 0.001f,1, false),
-                                                        440.0f));
+                            "Frequency",
+                            NormalisableRange<float>(1, 15000.0, 0.001f,1, false),
+                            440.0f));
 
   addParameter(octaveParam = new AudioParameterInt("octaves",
-                                                   "Octaves",
-                                                   0,
-                                                   6,
-                                                   3)); // from -3 to 3
+                            "Octaves",
+                            0,
+                            6,
+                            3)); // from -3 to 3
   
   addParameter(semitonesParam = new AudioParameterInt("semitones",
-                                                      "Semitones",
-                                                      0,
-                                                      24,
-                                                      12)); // from -12 to 12
+                            "Semitones",
+                            0,
+                            24,
+                            12)); // from -12 to 12
   
   addParameter(centsParam = new AudioParameterInt("cents",
-                                                  "Cents",
-                                                  0,
-                                                  200,
-                                                  100)); // from -100 to 100
+                            "Cents",
+                            0,
+                            200,
+                            100)); // from -100 to 100
   
   addParameter(waveformParam = new AudioParameterChoice("waveform",
-                                                        "Waveform",
-                                                        StringArray({"Sine","SawUp","SawDown","Square","Triangle"}),
-                                                        1) );
+                            "Waveform",
+                            StringArray({"Sine","SawUp","SawDown","Square","Triangle"}),
+                            1) );
 
 
   AudioProcessor::addListener(this);

@@ -12,7 +12,8 @@
 #include "FIRFilter.h"
 
 
-FIRFilter::FIRFilter(const float* tapsArray, int size, int order, bool isInverse): FFT(order, isInverse), forwardTransform(9, false), inverseTransform(9, true){
+FIRFilter::FIRFilter(const float* tapsArray, int size, int order, bool isInverse)//: FFT(order, isInverse), forwardTransform(9, false), inverseTransform(9, true)
+{
   
   tapsLength = size;
   
@@ -48,10 +49,10 @@ FIRFilter::FIRFilter(const float* tapsArray, int size, int order, bool isInverse
 //  forwardTransform = new FFT(order, isInverse);
 //  isInverse = true;
 //  inverseTransform = new FFT(order, isInverse);
-  int a = forwardTransform.getSize();
-  
-  forwardTransform.performRealOnlyForwardTransform(tapsFFTBufferPointer);
-  
+  //int a = forwardTransform.getSize();
+  //
+  //forwardTransform.performRealOnlyForwardTransform(tapsFFTBufferPointer);
+  //
   
   isInitialised = false;
   
@@ -152,16 +153,16 @@ void FIRFilter::vectorConvolution(float *audioDataPointer, int audioDataIndex)
 
 void FIRFilter::fftConvolution()
 {
-  forwardTransform.performRealOnlyForwardTransform(fftBufferPointer);
-  
-  //FloatVectorOperations::multiply(processedBufferPointer, tapsFFTBufferPointer, fftBufferPointer, 2*fftSize);
-  
-  processedBuffer->copyFrom(0, 0, fftBufferPointer, 4*fftSize, 1);
-  
-  inverseTransform.performRealOnlyInverseTransform(processedBufferPointer);
-  
-  fftBuffer->clear();
-  fftBuffer->copyFrom(0, 0, audioBackupBufferPointer, fftSize);
+  //forwardTransform.performRealOnlyForwardTransform(fftBufferPointer);
+  //
+  ////FloatVectorOperations::multiply(processedBufferPointer, tapsFFTBufferPointer, fftBufferPointer, 2*fftSize);
+  //
+  //processedBuffer->copyFrom(0, 0, fftBufferPointer, 4*fftSize, 1);
+  //
+  //inverseTransform.performRealOnlyInverseTransform(processedBufferPointer);
+  //
+  //fftBuffer->clear();
+  //fftBuffer->copyFrom(0, 0, audioBackupBufferPointer, fftSize);
 
 }
 

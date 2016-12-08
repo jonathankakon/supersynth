@@ -16,7 +16,7 @@
 #include "constants.h"
 
 
-class FIRFilter: public FFT
+class FIRFilter //: public FFT
 {
 public:
   FIRFilter(const float* tapsArray, int size, int order, bool isInverse);
@@ -43,8 +43,8 @@ private:
   float* tapsFFTBufferPointer;
   float* audioBackupBufferPointer;
   
-  FFT forwardTransform;
-  FFT inverseTransform;
+  //FFT forwardTransform;
+  //FFT inverseTransform;
   
   int index;
   int tapsLength;
