@@ -17,7 +17,7 @@ FIRFilterProcessor::FIRFilterProcessor() : AudioProcessor(BusesProperties()
                                                           .withInput("Audio Input", AudioChannelSet::mono())
                                                           .withOutput("Audio Output", AudioChannelSet::mono()))
 {
-  int size = getTapsSize(lowpass_200hz_strong);
+  int size = sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
   filterFIR = new FIRFilter(lowpass_200hz_strong, size, 0, 0);
 }
 
@@ -39,10 +39,7 @@ void FIRFilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuff
   }
 }
 
-int FIRFilterProcessor::getTapsSize(const float *array)
-{
-  return sizeof(array)/sizeof(*array);
-}
+
 
 void FIRFilterProcessor::audioProcessorParameterChanged(AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {

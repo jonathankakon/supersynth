@@ -55,9 +55,9 @@ public:
   void getStateInformation (MemoryBlock& destData) override;
   void setStateInformation (const void* data, int sizeInBytes) override;
   
-  void changeFilterTaps(const float* taps)
+  void changeFilterTaps(const float taps[], int size)
   {
-    filterFIR->changeTaps(taps, getTapsSize(taps));
+    filterFIR->changeTaps(taps, size);
   };
   void bypass(bool isBypassed)
   {
@@ -67,7 +67,6 @@ public:
   
 private:
   
-  int getTapsSize(const float* array);
   AudioParameterChoice* tapsSelector;
   bool bypassBool = true;
   

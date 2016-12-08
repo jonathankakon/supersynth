@@ -14,7 +14,7 @@ FIRFilterProcessorEditor::FIRFilterProcessorEditor(FIRFilterProcessor* p, Proces
 : AudioProcessorEditor(p) , processor (*p), parent(*b)
 {
   
-  setSize(150, 60);
+  setSize(250, 60);
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
 
   
@@ -28,11 +28,11 @@ FIRFilterProcessorEditor::FIRFilterProcessorEditor(FIRFilterProcessor* p, Proces
   addAndMakeVisible(tapsSelectorComboBox);
   
   //BUTTON
-  bypassButton = new ToggleButton("BypassButton");
+  bypassButton = new ToggleButton("Bypass");
   bypassButton->addListener(this);
   parent.registerImmobileObject(*bypassButton);
   addAndMakeVisible(bypassButton);
-  //bypassButton->setToggleState(true, juce::dontSendNotification);
+  bypassButton->setToggleState(true, juce::dontSendNotification);
   
   
 }
@@ -51,8 +51,8 @@ void FIRFilterProcessorEditor::paint(juce::Graphics & g)
   Rectangle<int> r(getLocalBounds());
   r.reduce(20, 20);
   
-  bypassButton->setBounds(r.withWidth(30));
-  tapsSelectorComboBox->setBounds(r.withX(r.getX()+ 50).withWidth(r.getWidth() - 70));
+  bypassButton->setBounds(r.withWidth(80));
+  tapsSelectorComboBox->setBounds(r.withX(r.getX()+ 100).withWidth(r.getWidth() - 120));
   
   
   
@@ -64,7 +64,7 @@ void FIRFilterProcessorEditor::resized()
 
 void FIRFilterProcessorEditor::buttonClicked(juce::Button *button)
 {
-  if(bypassButton->getState())
+  if(bypassButton->getToggleState())
     processor.bypass(true);
   else
     processor.bypass(false);
@@ -77,13 +77,16 @@ void FIRFilterProcessorEditor::buttonStateChanged(juce::Button *button)
 
 void FIRFilterProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
 {
+  int size = 0;
   switch (comboBoxThatHasChanged->getSelectedId()) {
     case 1:
-      processor.changeFilterTaps(lowpass_200hz_strong);
+      size =  sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
+      processor.changeFilterTaps(lowpass_200hz_strong, size);
       break;
       
     case 2:
-      processor.changeFilterTaps(bandpass300to600);
+      size =  sizeof(bandpass300to600)/sizeof(*bandpass300to600);
+      processor.changeFilterTaps(bandpass300to600, size);
       break;
       
     default:

@@ -43,6 +43,9 @@ private:
   float* tapsFFTBufferPointer;
   float* audioBackupBufferPointer;
   
+  
+  int maxLength = 801;
+  
   //FFT forwardTransform;
   //FFT inverseTransform;
   
