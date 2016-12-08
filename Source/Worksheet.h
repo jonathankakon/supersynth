@@ -34,7 +34,7 @@ public:
   void itemDragMove(const SourceDetails& sourceDetails) override;
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
-  void componentMovedOrResized(Component&, bool, bool) override; 
+  void componentMovedOrResized(Component&, bool, bool) override;
   void timerCallback() override;
 
   void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
@@ -68,7 +68,7 @@ private:
   String message;
 
   OwnedArray<Component> editors;
-  OwnedArray<Connection> connections;
+  Array<Connection*> connections;
 
   SafePointer<Connection> draggingConnection;
   ScopedPointer<TooltipWindow> tooltipWindow;

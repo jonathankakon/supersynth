@@ -522,6 +522,7 @@ int SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int nod
   AudioProcessorGraph::Node* node = processor.graph->addNode(p);
   p->enableAllBuses();
   processor.graph->addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
+  processor.graph->getNodeForId(nodeIdToConnect)->getProcessor()->enableAllBuses();
   p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
   return node->nodeId;
 }
@@ -530,6 +531,7 @@ void SupersynthAudioProcessorEditor::addAudioProcessor(AudioProcessor* p, int no
 {
   AudioProcessorGraph::Node* node = processor.graph->addNode(p, mixerId);
   p->enableAllBuses();
+  processor.graph->getNodeForId(nodeIdToConnect)->getProcessor()->enableAllBuses();
   processor.graph->addConnection(node->nodeId, 0, nodeIdToConnect, channelToConnect);
   p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
 }

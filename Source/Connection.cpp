@@ -30,6 +30,7 @@ inputNodeId(c.inputNodeId), inputNodeChannel(c.inputNodeChannel), outputNodeId(c
 outputNodeChannel(c.outputNodeChannel), draggingToInput(c.inputNodeId == 0), stopPathRedraw(c.getStopPathRedraw()),
 dragging(false), lastInputX(c.getX1()), lastOutputX(c.getX2()), lastOutputY(c.getY2()), lastInputY(c.getY1())
 {
+  rmsColour = Colour(0, 0, 255);
   setAlwaysOnTop(false);
   resizeToFit();
 }

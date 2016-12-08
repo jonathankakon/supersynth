@@ -198,7 +198,7 @@ void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBu
   float * pointer = audioBuffer.getWritePointer(0);
   
   FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
-  FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
+  //FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
   
   //DBG("second sample" << pointer[1]);
   for (int i = 0; i < audioBuffer.getNumSamples(); i++)

@@ -22,11 +22,20 @@ Worksheet::Worksheet(int width, int height) : tooltipWindow(new TooltipWindow(nu
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 	setSize(width, height);
-  startTimerHz(60);
+  startTimerHz(30);
 }
 
 Worksheet::~Worksheet()
 {
+  for (int i = connections.size()-1; i >= 0; --i)
+  {
+    clearEditorListeners(connections[i]);
+    Connection* conn = connections.removeAndReturn(i);
+    if(conn != nullptr)
+    {
+      delete conn;
+    }
+  }
 }
 
 void Worksheet::paint (Graphics& g)
@@ -110,25 +119,26 @@ void Worksheet::componentMovedOrResized(Component& component, bool wasMoved, boo
 
 void Worksheet::timerCallback()
 {
-  for (int i = editors.size() - 1; i >= 0; --i)
-  {
-    ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
-    if (editor != nullptr)
-    {
-      RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
-
-      if (&rmsProcessor != nullptr)
-      {
-        float rms = rmsProcessor.getCurrentRMS();
-
-        for (int k = connections.size() - 1; k >= 0; --k)
-        {
-          if (connections[k]->outputNodeId == editor->getNodeId())
-            connections[k]->setPathColourFromRms(rms);
-        }
-      }
-    }
-  }
+  
+//  for (int i = editors.size() - 1; i >= 0; --i)
+//  {
+//    ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
+//    if (editor != nullptr)
+//    {
+//      RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
+//
+//      if (&rmsProcessor != nullptr)
+//      {
+//        float rms = rmsProcessor.getCurrentRMS();
+//
+//        for (int k = connections.size() - 1; k >= 0; --k)
+//        {
+//          if (connections[k]->outputNodeId == editor->getNodeId())
+//            connections[k]->setPathColourFromRms(rms);
+//        }
+//      }
+//    }
+//  }
 }
 
 void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
@@ -267,7 +277,7 @@ void Worksheet::endDraggingConnector(const MouseEvent& e)
   } else
   {
     findParentComponentOfClass<SupersynthAudioProcessorEditor>()->removeConnection(*draggingConnection);
-    connections.removeObject(draggingConnection, false);
+    connections.remove(connections.indexOf(draggingConnection));
     draggingConnection.deleteAndZero();
   }
 }
@@ -306,7 +316,8 @@ void Worksheet::removeConnections(int nodeId, int mixerNodeId)
       || connections[i]->inputNodeId == mixerNodeId || connections[i]->outputNodeId == mixerNodeId)
     {
       clearEditorListeners(connections[i]);
-      connections.remove(i, false);
+      Connection* conn = connections.removeAndReturn(i);
+      delete conn;
     }
   }
 }
