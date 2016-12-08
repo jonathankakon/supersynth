@@ -35,6 +35,7 @@ public:
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
   void componentMovedOrResized(Component&, bool, bool) override;
+  Rectangle<int>& getViewPortArea();
   void timerCallback() override;
 
   void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;

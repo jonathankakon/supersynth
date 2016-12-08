@@ -45,7 +45,6 @@ private:
   ScopedPointer<Slider> centsSlider;
   ScopedPointer<Slider> waveformSlider;
 
-  ScopedPointer<ToggleButton> blepToggle;
   ScopedPointer<ToggleButton> midiToggle;
   
   Label volumeLabel;
