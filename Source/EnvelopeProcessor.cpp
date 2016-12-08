@@ -23,8 +23,7 @@ EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOu
   addListener(this);
   
   computeSteps();
-  
-  }
+}
 
 EnvelopeProcessor::~EnvelopeProcessor()
 {
@@ -220,9 +219,7 @@ void EnvelopeProcessor::releaseResources()
 
 void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
-  
   computeSteps();
-
 }
 
 void EnvelopeProcessor::computeSteps()
