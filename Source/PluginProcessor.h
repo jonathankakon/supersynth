@@ -30,6 +30,7 @@ public:
   //==============================================================================
   void prepareToPlay(double sr, int samplesPerBlock) override {
     setPlayConfigDetails(1, 1, sr, samplesPerBlock);
+    keyboardState.reset();
 
     graph->setPlayConfigDetails(1, 1, sr, samplesPerBlock);
     sampleRate = sr;
@@ -38,9 +39,14 @@ public:
     this->triggerAsyncUpdate();
   };
 
-  void releaseResources() override { return; };
+  void releaseResources() override { keyboardState.reset(); };
 
-  void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override { graph->processBlock(audioBuffer, midiBuffer); };
+  void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override {
+    // Now pass any incoming midi messages to our keyboard state object, and let it
+    // add messages to the buffer if the user is clicking on the on-screen keys
+    keyboardState.processNextMidiBuffer(midiBuffer, 0, audioBuffer.getNumSamples(), true);
+    graph->processBlock(audioBuffer, midiBuffer); 
+  };
 
   void handleAsyncUpdate() override { graph->prepareToPlay(sampleRate, blockSize); };
 
@@ -66,6 +72,9 @@ public:
 
   ScopedPointer<AudioProcessorGraph> graph;
   ValueTree stateInformation;
+  // this is kept up to date with the midi messages that arrive, and the UI component
+  // registers with it so it can represent the incoming messages
+  MidiKeyboardState keyboardState;
 private:
   int blockSize;
   double sampleRate;

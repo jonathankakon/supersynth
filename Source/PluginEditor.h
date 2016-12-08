@@ -28,7 +28,8 @@ class SupersynthAudioProcessorEditor :
   public ButtonListener,
   public DragAndDropContainer,
   public ComponentListener,
-  public AudioProcessorListener
+  public AudioProcessorListener,
+  public FileBasedDocument
 {
 public:
 
@@ -57,6 +58,12 @@ public:
 
   void audioProcessorParameterChanged(AudioProcessor *processor, int parameterIndex, float newValue) override;
   void audioProcessorChanged(AudioProcessor *) override;
+  void setAnimating(bool animating) const;
+  Result loadDocument(const File& file) override;
+  Result saveDocument(const File& file) override;
+  File getLastDocumentOpened() override;
+  void setLastDocumentOpened(const File& file) override;
+  String getDocumentTitle() override;
 private:
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
@@ -81,6 +88,7 @@ private:
   ScopedPointer<Viewport> viewport;
   ScopedPointer<Worksheet> worksheet;
   ScopedPointer<UndoManager> manager;
+  MidiKeyboardComponent keyboard;
 
   SupersynthAudioProcessor& processor;
 

@@ -19,6 +19,7 @@
 #include "DistortionProcessor.h"
 #include "DelayProcessor.h"
 #include "FIRFilterProcessor.h"
+#include "PluginEditor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -56,7 +57,7 @@ var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRow
 
 //==============================================================================
 ToolboxComponent::ToolboxComponent() :
-  moduleList(new ListBox("ModuleList", nullptr))
+  moduleList(new ListBox("ModuleList", nullptr)), saveButton(new TextButton("Save Preset")), loadButton(new TextButton("Load Preset")), enableAnimation(new TextButton("Animate"))
 {
   modules.add(new ModulesListElement("Wave Generator", "WaveGeneratorProcessor", &createInstance<WaveGeneratorProcessor>));
   modules.add(new ModulesListElement("IIR Filter", "FilterProcessor", &createInstance<FilterProcessor>));
@@ -73,19 +74,22 @@ ToolboxComponent::ToolboxComponent() :
   addAndMakeVisible(moduleList);
   moduleList->setColour(ListBox::ColourIds::backgroundColourId, Colour(0xFFC8C8C8));
   moduleList->setColour(ListBox::ColourIds::outlineColourId, Colour(0xFFC8C8C8));
-  moduleList->setBounds(r);
+  moduleList->setBounds(r.withTrimmedBottom(65));
   moduleList->setModel(this);
   moduleList->setMultipleSelectionEnabled(false);
 
-  /*
-  ComponentBoundsConstrainer* bounds = new ComponentBoundsConstrainer();
-  bounds->setMaximumWidth(400);
-  bounds->setMinimumWidth(150);
-  resizeBorder = new ResizableBorderComponent(this, bounds);
-  addAndMakeVisible(resizeBorder);
-  resizeBorder->setBorderThickness(BorderSize<int>(0,0,0,3));
-  resizeBorder->setBounds(r);
-  */
+
+  saveButton->addListener(this);
+  loadButton->addListener(this);
+  enableAnimation->addListener(this);
+
+  saveButton->setBounds(r.removeFromBottom(60).withHeight(20));
+  loadButton->setBounds(r.removeFromBottom(40).withHeight(20));
+  enableAnimation->setBounds(r.removeFromBottom(20).withHeight(20));
+
+  addAndMakeVisible(saveButton);
+  addAndMakeVisible(loadButton);
+  addAndMakeVisible(enableAnimation);
 }
 
 ToolboxComponent::~ToolboxComponent()
@@ -96,7 +100,7 @@ ToolboxComponent::~ToolboxComponent()
 
 void ToolboxComponent::paint(Graphics& g)
 {
-  g.fillAll(Colour(0xFF3F3F46)); 
+  g.fillAll(Colour(0xFFC8C8C8));
 }
 
 void ToolboxComponent::resized()
@@ -106,7 +110,29 @@ void ToolboxComponent::resized()
 
   Rectangle<int> r(getLocalBounds());
 
-  moduleList->setBounds(r);
+  moduleList->setBounds(r.withTrimmedBottom(80));
   //resizeBorder->setBounds(r);
+
+  Rectangle<int> buttons = r.removeFromBottom(75).withTrimmedLeft(10);
+  saveButton->setBounds(buttons.withHeight(20));
+  loadButton->setBounds(buttons.withHeight(20).withY(buttons.getY() + 23));
+  enableAnimation->setBounds(buttons.withHeight(20).withY(buttons.getY() + 51));
+
 }
 
+void ToolboxComponent::buttonClicked(Button* button)
+{
+  if(button == saveButton)
+  {
+    findParentComponentOfClass<SupersynthAudioProcessorEditor>()->save(true, true);
+  }
+  else if (button == loadButton)
+  {
+    findParentComponentOfClass<SupersynthAudioProcessorEditor>()->loadFromUserSpecifiedFile(true);
+  }
+  else if (button == enableAnimation)
+  {
+    enableAnimation->setToggleState(!enableAnimation->getToggleState(), dontSendNotification);
+    findParentComponentOfClass<SupersynthAudioProcessorEditor>()->setAnimating(enableAnimation->getToggleState());
+  }
+}

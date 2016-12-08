@@ -210,6 +210,7 @@ void Connection::setPathColourFromRms(float rms)
 {
   NormalisableRange<float> range = NormalisableRange<float>(0, 1, 1e-7, 4);
   rmsColour = Colour(range.convertFrom0to1(rms) * 255, 0, (1 - rms) * 255);
+  repaint();
 }
 
 void Connection::getDistancesFromEnds(int x, int y, double& distanceFromStart, double& distanceFromEnd) const

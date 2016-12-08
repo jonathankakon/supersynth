@@ -17,10 +17,14 @@
 
 
 //==============================================================================
-SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p),
+SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioProcessor& p) : 
+  AudioProcessorEditor (&p), 
+  FileBasedDocument("susy", "*.susy", "Open Preset", "SavePreset"),
+  processor (p),
 	toolbox(new ToolboxComponent()), 
-	collapseButton(new CollapseButton()), manager(new UndoManager())
+	collapseButton(new CollapseButton()), 
+  manager(new UndoManager()), 
+  keyboard(p.keyboardState, MidiKeyboardComponent::Orientation::horizontalKeyboard)
 {
   setResizable(true, true);
   if(processor.stateInformation.getNumChildren() == 0)
@@ -47,6 +51,7 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
     addAndMakeVisible(toolbox);
     addAndMakeVisible(collapseButton);
     addAndMakeVisible(viewport);
+    addAndMakeVisible(keyboard);
 
     addIOComponents();
     graphElement.setProperty("midiNodeId", midiInID, manager);
@@ -78,6 +83,7 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
     addAndMakeVisible(toolbox);
     addAndMakeVisible(collapseButton);
     addAndMakeVisible(viewport);
+    addAndMakeVisible(keyboard);
 
     DeserializeGraph(graphElement);
     isLoading = false;
@@ -87,9 +93,10 @@ SupersynthAudioProcessorEditor::SupersynthAudioProcessorEditor (SupersynthAudioP
   worksheet->addComponentListener(this);
 
   Rectangle<int> r(getLocalBounds());
-  viewport->setBounds(r.withTrimmedLeft(200));
-  toolbox->setBounds(r.withWidth(180));
-  collapseButton->setBounds(r.withWidth(200).withTrimmedLeft(180));
+  viewport->setBounds(r.withTrimmedLeft(200).withTrimmedBottom(50));
+  toolbox->setBounds(r.withWidth(180).withTrimmedBottom(50));
+  collapseButton->setBounds(r.withWidth(200).withTrimmedLeft(180).withTrimmedBottom(50));
+  keyboard.setBounds(r.removeFromBottom(50));
   setResizeLimits(800, 500, 10000, 10000);
 }
 
@@ -182,6 +189,69 @@ void SupersynthAudioProcessorEditor::audioProcessorChanged(AudioProcessor*)
   }
 }
 
+void SupersynthAudioProcessorEditor::setAnimating(bool animating) const
+{
+  worksheet->setAnimateConnections(animating);
+}
+
+Result SupersynthAudioProcessorEditor::loadDocument(const File& file)
+{
+  XmlDocument doc(file);
+  ScopedPointer<XmlElement> xml(doc.getDocumentElement());
+
+  if (xml == nullptr || !xml->hasTagName("Supersynth"))
+    return Result::fail("Not a valid filter graph file");
+
+  try
+  {
+    isLoading = true;
+    ValueTree supersynth = ValueTree::fromXml(*xml);
+    processor.graph->clear();
+    worksheet->removeAllEditors();
+
+
+    DeserializeGraph(supersynth.getChild(0));
+    processor.stateInformation.removeAllChildren(manager);
+    processor.stateInformation.addChild(supersynth, -1, manager);
+    isLoading = false;
+  }
+  catch(...)
+  {
+    isLoading = false;
+    return Result::fail("Unable to load file");
+  }
+  return Result::ok();
+}
+
+Result SupersynthAudioProcessorEditor::saveDocument(const File& file)
+{
+  SerializeGraph(processor.stateInformation.getChildWithName("Supersynth").getChildWithName("Graph"));
+  ScopedPointer<XmlElement> xml = processor.stateInformation.getChildWithName("Supersynth").createXml();
+
+  if (!xml->writeToFile(file, String()))
+    return Result::fail("Couldn't write to the file");
+
+  return Result::ok();
+}
+
+File SupersynthAudioProcessorEditor::getLastDocumentOpened()
+{
+  return File();
+}
+
+void SupersynthAudioProcessorEditor::setLastDocumentOpened(const File& /*file*/)
+{
+  return;
+}
+
+String SupersynthAudioProcessorEditor::getDocumentTitle()
+{
+  if (!getFile().exists())
+    return "Unnamed";
+
+  return getFile().getFileNameWithoutExtension();
+}
+
 int SupersynthAudioProcessorEditor::addInternalProcessor(InternalIOProcessor* p, int x, int y, bool addToWorksheet) const
 {
   AudioProcessorGraph::Node* node = processor.graph->addNode(p);
@@ -204,7 +274,7 @@ void SupersynthAudioProcessorEditor::SerializeProcessors(ValueTree processors) c
     AudioProcessorGraph::Node* nodeProcessor = processor.graph->getNode(i);
     int nodeId = nodeProcessor->nodeId;
     String name = nodeProcessor->getProcessor()->getName();
-    if (name != "InputConnectorProcessor" || nodeId == midiInID)
+    if (name != "InputConnectorProcessor" && nodeId != midiInID)
     {
       ValueTree node("Processor");
       processors.addChild(node, -1, manager);
@@ -277,11 +347,7 @@ void SupersynthAudioProcessorEditor::SerializeGraph(ValueTree element) const
 
 void SupersynthAudioProcessorEditor::DeserializeProcessors(ValueTree processors)
 {
-  if (processor.graph->getNodeForId(midiInID) == nullptr)
-  {
-    midiInID = addInternalProcessor(new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::midiInputNode), 0, 0, false);
-  }
-
+  processor.graph->removeNode(midiInID);
   for (int i = 0; i < processors.getNumChildren(); ++i)
   {
     ValueTree processorTree = processors.getChild(i);
@@ -355,6 +421,15 @@ void SupersynthAudioProcessorEditor::DeserializeProcessors(ValueTree processors)
 
     p->addListener(const_cast<SupersynthAudioProcessorEditor*>(this));
   }
+
+  midiInID = addInternalProcessor(new InternalIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::midiInputNode), 0, 0, false);
+  for (int i = 0; i < processor.graph->getNumNodes(); ++i)
+  {
+    if (processor.graph->getNode(i)->getProcessor()->acceptsMidi())
+    {
+      processor.graph->addConnection(midiInID, 4096, processor.graph->getNode(i)->nodeId, 4096);
+    }
+  }
 }
 
 void SupersynthAudioProcessorEditor::DeserializeConnections(ValueTree connections)
@@ -420,10 +495,11 @@ void SupersynthAudioProcessorEditor::paint(Graphics& g)
 void SupersynthAudioProcessorEditor::resized()
 {
 	Rectangle<int> r(getLocalBounds());
-	toolbox->setBounds(r.withWidth(toolbox->getWidth()).withX(toolbox->getX()));
+	toolbox->setBounds(r.withWidth(toolbox->getWidth()).withX(toolbox->getX()).withTrimmedBottom(50));
 	Rectangle<int> toolsBounds(toolbox->getBounds());
-	collapseButton->setBounds(r.withWidth(20).withX(toolsBounds.getRight()));
-	viewport->setBounds(r.withTrimmedLeft(toolsBounds.getWidth() + toolsBounds.getX() + 20));
+	collapseButton->setBounds(r.withWidth(20).withX(toolsBounds.getRight()).withTrimmedBottom(50));
+	viewport->setBounds(r.withTrimmedLeft(toolsBounds.getWidth() + toolsBounds.getX() + 20).withTrimmedBottom(50));
+  keyboard.setBounds(r.removeFromBottom(50));
 
 	if(viewport->getViewWidth() / worksheet->getZoomFactor()>= worksheet->getWidth())
 	{

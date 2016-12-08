@@ -22,7 +22,6 @@ Worksheet::Worksheet(int width, int height) : tooltipWindow(new TooltipWindow(nu
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 	setSize(width, height);
-  startTimerHz(30);
 }
 
 Worksheet::~Worksheet()
@@ -119,33 +118,36 @@ void Worksheet::componentMovedOrResized(Component& component, bool wasMoved, boo
 
 void Worksheet::timerCallback()
 {
-  for (int i = editors.size() - 1; i >= 0; --i)
+  if (animateConnections)
   {
-    ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
-    if (editor != nullptr)
+    for (int i = editors.size() - 1; i >= 0; --i)
     {
-      RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
-
-      if (&rmsProcessor != nullptr)
+      ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
+      if (editor != nullptr)
       {
-        float rms = rmsProcessor.getCurrentRMS();
+        RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
 
-        for (int k = connections.size() - 1; k >= 0; --k)
+        if (&rmsProcessor != nullptr)
         {
-          if (connections[k]->outputNodeId == editor->getNodeId())
-            connections[k]->setPathColourFromRms(rms);
+          float rms = rmsProcessor.getCurrentRMS();
+
+          for (int k = connections.size() - 1; k >= 0; --k)
+          {
+            if (connections[k]->outputNodeId == editor->getNodeId())
+              connections[k]->setPathColourFromRms(rms);
+          }
         }
       }
     }
+    repaint();
   }
-  repaint();
 }
 
 void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
 {
   if(event.mods.isCtrlDown() || event.mods.isCommandDown())
   {
-    zoomFactor *= (wheel.deltaY > 0) ? 1.1f: 0.9f;
+    zoomFactor *= (wheel.deltaY > 0) ? 1.05f: 0.95f;
     setTransform(AffineTransform().scaled(zoomFactor, zoomFactor));
     repaint();
   }
@@ -386,6 +388,43 @@ void Worksheet::addConnection(int x0, int y0, int x1, int y1, int sourceNodeId, 
   connections.add(newConnection);
   addAndMakeVisible(newConnection);
   registerComponentListener(newConnection, newConnection->inputNodeId, newConnection->outputNodeId);
+}
+
+void Worksheet::setAnimateConnections(bool animate)
+{
+  animateConnections = animate;
+  if(!animate)
+  {
+    for(Connection* connection : connections)
+    {
+      connection->setPathColourFromRms(0);
+    }
+    stopTimer();
+  }
+  else
+  {
+    startTimerHz(24);
+  }
+  repaint();
+}
+
+void Worksheet::removeAllEditors()
+{
+  for(int i = (editors.size() - 1); i >= 0; --i)
+  {
+    ProcessorEditorBase* base = dynamic_cast<ProcessorEditorBase*>(editors[i]);
+
+    Array<int> mixerNodeIds = base->getMixerNodeIds();
+    int nodeId = base->getNodeId();
+
+    removeEditor(nodeId);
+
+    for (int mixerId : mixerNodeIds)
+    {
+      removeConnections(nodeId, mixerId);
+    }
+    removeConnections(nodeId, -1);
+  }
 }
 
 void Worksheet::clearEditorListeners(Connection* connection)

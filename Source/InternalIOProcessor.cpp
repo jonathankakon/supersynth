@@ -28,7 +28,7 @@ AudioProcessorEditor* InternalIOProcessor::createEditor()
 
 bool InternalIOProcessor::hasEditor() const
 {
-  return true;
+  return (IOType == midiInputNode) ? false : true;
 }
 
 const String InternalIOProcessor::getName() const

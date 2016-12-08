@@ -35,7 +35,6 @@ public:
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
   void componentMovedOrResized(Component&, bool, bool) override;
-  Rectangle<int>& getViewPortArea();
   void timerCallback() override;
 
   void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
@@ -62,8 +61,11 @@ public:
   StringPairArray getInputAndChannelsOfEditor(int nodeId);
   Rectangle<int> getConnectionRectangle(const int sourceId, const int destId, const int sourceChannel, const int destChannel);
   void addConnection(int x0, int y0, int x1, int y1, int sourceNodeId, int sourceChannelId, int destNodeId, int destChannelId);
+  void setAnimateConnections(bool animate);
+  void removeAllEditors();
 private:
   bool somethingIsBeingDraggedOver;
+  bool animateConnections = false;
   float zoomFactor = 1;
   Point<int> dropPosition;
   String message;

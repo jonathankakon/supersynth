@@ -24,7 +24,6 @@ public:
   Connection(int inId, int inChannel, int outId, int outChannel);
   Connection(Connection& c);
   ~Connection();
-
   void paint(Graphics&) override;
   void resized() override;
 
@@ -68,6 +67,7 @@ private:
   Path path, hitPath;
   bool dragging;
   bool stopPathRedraw;
+  OpenGLContext context;
 
   float lastInputX, lastOutputX, lastInputY, lastOutputY;
 

@@ -16,7 +16,7 @@
 //==============================================================================
 /*
 */
-class ToolboxComponent : public Component, public ListBoxModel
+class ToolboxComponent : public Component, public ListBoxModel, public ButtonListener
 {
 public:
 
@@ -37,6 +37,7 @@ public:
 
   void paint(Graphics&) override;
   void resized() override;
+  void buttonClicked(Button* buton) override;
 
   int getNumRows() override;
   void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
@@ -46,6 +47,9 @@ public:
 private:
   ScopedPointer<ListBox> moduleList;
   ScopedPointer<ResizableBorderComponent> resizeBorder;
+  ScopedPointer<Button> saveButton;
+  ScopedPointer<Button> loadButton;
+  ScopedPointer<Button> enableAnimation;
 
   template<typename T>
   static AudioProcessor * createInstance() { return new T; }
