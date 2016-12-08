@@ -179,7 +179,23 @@ int FIRFilter::getClosestPowerOfTwo(int number)
   return result;
 }
 
+void FIRFilter::changeTaps(const float *tapsArray, int size)
+{
+  taps->setSize(0, size);
+  taps->clear();
+  
+  filterBuffer->setSize(0, size);
+  filterBuffer->clear();
+  
+  tapsLength = size;
+  index = 0;
 
+  for (int i = 0; i < tapsLength; i++)
+  {
+    tapsPointer[i] = tapsArray[tapsLength -1 - i];
+  }
+  
+}
 
 
 
