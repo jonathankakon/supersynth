@@ -14,12 +14,12 @@
 #include "EQFourProcessorEditor.h"
 
 EQFourProcessor::EQFourProcessor() : AudioProcessor(BusesProperties()
-                                                    .withInput("Audio", AudioChannelSet::mono())
-                                                    .withOutput("Audio", AudioChannelSet::mono())
-                                                    .withInput("Control1", AudioChannelSet::mono())
-                                                    .withInput("Control2", AudioChannelSet::mono())
-                                                    .withInput("Control3", AudioChannelSet::mono())
-                                                    .withInput("Control4", AudioChannelSet::mono()))
+                                                    .withInput("Audio Input", AudioChannelSet::mono())
+                                                    .withOutput("Audio Output", AudioChannelSet::mono())
+                                                    .withInput("Cutoff 1", AudioChannelSet::mono())
+                                                    .withInput("Cutoff 2", AudioChannelSet::mono())
+                                                    .withInput("Cutoff 3", AudioChannelSet::mono())
+                                                    .withInput("Cutoff 4", AudioChannelSet::mono()))
 {
   addParameter(cutoffFreq1 = new AudioParameterFloat("Cutoff Frequency 1", "Cutoff", 50, 10000, 50));
   addParameter(cutoffFreq2 = new AudioParameterFloat("Cutoff Frequency 2", "Cutoff", 50, 10000, 1000));

@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class OutputConnector : public Component
+class OutputConnector : public Component, public SettableTooltipClient
 {
 public:
   OutputConnector(int processorNodeId);

@@ -12,8 +12,8 @@
 #include "DistortionProcessorEditor.h"
 
 DistortionProcessor::DistortionProcessor() : AudioProcessor(BusesProperties()
-                                                            .withOutput("Audio", AudioChannelSet::mono())
-                                                            .withInput("InAudio", AudioChannelSet::mono())),
+                                                            .withOutput("Audio Output", AudioChannelSet::mono())
+                                                            .withInput("Audio Input", AudioChannelSet::mono())),
                                              distorter(new Distorter())
 {
   // dont change the order of the parameters here, because the Editor depends on it!

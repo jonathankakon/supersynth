@@ -17,7 +17,7 @@
 #include "RMSRequestable.h"
 
 //==============================================================================
-Worksheet::Worksheet(int width, int height)
+Worksheet::Worksheet(int width, int height) : tooltipWindow(new TooltipWindow(nullptr, 500)), popup(new PopupDisplay(*this))
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -183,6 +183,21 @@ void Worksheet::beginConnectorDrag(int outputNodeId, int outputChannel, int inpu
   dragConnector(e);
 }
 
+String Worksheet::getTooltipTextAt(const Point<int> point)
+{
+  String tooltip = String();
+  for (Component* editor : editors)
+  {
+    tooltip = reinterpret_cast<ProcessorEditorBase*>(editor)->findConnectorTextAt(point.withX(point.x - editor->getX()).withY(point.y - editor->getY()));
+    if (tooltip != "")
+    {
+      return tooltip;
+    }
+  }
+  tooltip = (tooltip == "") ? " " : tooltip;
+  return tooltip;
+}
+
 void Worksheet::dragConnector(const MouseEvent& e)
 {
   const MouseEvent e2(e.getEventRelativeTo(this));
@@ -192,26 +207,39 @@ void Worksheet::dragConnector(const MouseEvent& e)
     int x = e2.x;
     int y = e2.y;
     int destId = 0;
-
     //findPin, updateConnection, check if can connect, snap to pin.
 
     if(draggingConnection->draggingToInput)
     {
       Point<int> connectorPosition{};
-      if(findConnectorAt(draggingConnection->draggingToInput, x, y, connectorPosition, destId)
-            && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+      if (findConnectorAt(draggingConnection->draggingToInput, x, y, connectorPosition, destId)
+        && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+      {
         draggingConnection->dragEnd(connectorPosition.getX(), connectorPosition.getY());
+        popup->updatePosition(getTooltipTextAt({ x,y }), connectorPosition);
+        addAndMakeVisible(popup);
+      }
       else
+      {
         draggingConnection->dragEnd(x, y);
+        removeChildComponent(popup);
+      }
     }
     else
     {
       Point<int> connectorPosition{};
       if (findConnectorAt(draggingConnection->draggingToInput, x, y, connectorPosition, destId)
-            && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+        && findParentComponentOfClass<SupersynthAudioProcessorEditor>()->testConnection(*draggingConnection, destId))
+      {
         draggingConnection->dragStart(connectorPosition.getX(), connectorPosition.getY());
+        popup->updatePosition(getTooltipTextAt({ x,y }), connectorPosition);
+        addAndMakeVisible(popup);
+      }
       else
+      {
         draggingConnection->dragStart(x, y);
+        removeChildComponent(popup);
+      }
     }
   }
 }
@@ -221,6 +249,7 @@ void Worksheet::endDraggingConnector(const MouseEvent& e)
   if (draggingConnection == nullptr)
     return;
 
+  removeChildComponent(popup);
   const MouseEvent e2(e.getEventRelativeTo(this));
 
   Point<int> connectorPosition{};
@@ -277,7 +306,7 @@ void Worksheet::removeConnections(int nodeId, int mixerNodeId)
       || connections[i]->inputNodeId == mixerNodeId || connections[i]->outputNodeId == mixerNodeId)
     {
       clearEditorListeners(connections[i]);
-      connections.remove(i, true);
+      connections.remove(i, false);
     }
   }
 }

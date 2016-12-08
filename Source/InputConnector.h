@@ -19,7 +19,7 @@ class ProcessorEditorBase;
 //==============================================================================
 /*
 */
-class InputConnector : public AudioProcessorEditor, public SliderListener
+class InputConnector : public AudioProcessorEditor, public SliderListener, public SettableTooltipClient
 {
 public:
   InputConnector(AudioProcessor* p, ProcessorEditorBase* b, int mixerNodeId);

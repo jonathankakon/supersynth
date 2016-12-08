@@ -13,8 +13,8 @@
 #include "DelayProcessorEditor.h"
 
 DelayProcessor::DelayProcessor() : AudioProcessor(BusesProperties()
-  .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("Audio", AudioChannelSet::mono())),
+  .withOutput("Audio Output", AudioChannelSet::mono())
+  .withInput("Audio Input", AudioChannelSet::mono())),
   delayPosition(0)
 {
   // dont change the order of the parameters here, because the Editor depends on it!

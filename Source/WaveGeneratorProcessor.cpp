@@ -15,9 +15,9 @@
 
 
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
-  .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("PhaseModulation", AudioChannelSet::mono())
-  .withInput("VolumeModulation", AudioChannelSet::mono())),
+  .withOutput("Audio Output", AudioChannelSet::mono())
+  .withInput("Phase", AudioChannelSet::mono())
+  .withInput("Amplitude", AudioChannelSet::mono())),
   oscillator(new VAOscillator())
 {
   

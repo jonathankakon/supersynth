@@ -43,6 +43,20 @@ bool ProcessorEditorBase::findConnectorAt(const bool isInput, int x, int y, Poin
     return false;
 }
 
+String ProcessorEditorBase::findConnectorTextAt(const Point<int> point)
+{
+  Component* componentAtPos = getComponentAt(point.x, point.y);
+  if (InputConnector* in = dynamic_cast<InputConnector*>(componentAtPos))
+  {
+    return in->getTooltip();
+  }
+  else if (OutputConnector* out = dynamic_cast<OutputConnector*>(componentAtPos))
+  {
+    return out->getTooltip();
+  }
+  return String();
+}
+
 void ProcessorEditorBase::mouseDown(const MouseEvent& e)
 {
   if (draggingEnabled)
