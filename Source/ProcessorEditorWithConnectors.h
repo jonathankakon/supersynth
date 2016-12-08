@@ -21,6 +21,7 @@
 #include "EnvelopeProcessorEditor.h"
 #include "NoiseGeneratorProcessorEditor.h"
 #include "DistortionProcessorEditor.h"
+#include "FIRFilterProcessorEditor.h"
 
 #include "InputConnector.h"
 #include "OutputConnector.h"

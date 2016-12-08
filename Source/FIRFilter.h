@@ -23,6 +23,8 @@ public:
   ~FIRFilter();
   
   void applyFIRFilter(AudioBuffer<float> &buffer);
+  void changeTaps(const float* tapsArray, int size);
+
 
   
 private:

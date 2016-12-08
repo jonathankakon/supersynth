@@ -18,6 +18,7 @@
 #include "NoiseGeneratorProcessor.h"
 #include "DistortionProcessor.h"
 #include "DelayProcessor.h"
+#include "FIRFilterProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -64,6 +65,7 @@ ToolboxComponent::ToolboxComponent() :
   modules.add(new ModulesListElement("NoiseGenerator", "NoiseGeneratorProcessor", &createInstance<NoiseGeneratorProcessor>));
   modules.add(new ModulesListElement("Distortion", "DistortionProcessor", &createInstance<DistortionProcessor>));
   modules.add(new ModulesListElement("Delay", "DelayProcessor", &createInstance<DelayProcessor>));
+  modules.add(new ModulesListElement("FIR Filter", "FIRFilterProcessor", &createInstance<FIRFilterProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());
