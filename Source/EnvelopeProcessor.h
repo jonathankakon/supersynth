@@ -102,6 +102,7 @@ class EnvelopeProcessor: public AudioProcessor, public RMSRequestable, AudioProc
   
 
   void expandRangeMinusOneToPlusOne(AudioBuffer<float>& audioBuffer);
+  void computeSteps();
   
   
     
