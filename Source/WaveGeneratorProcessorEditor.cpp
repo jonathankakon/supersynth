@@ -117,10 +117,6 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   addAndMakeVisible(centLabel);
   
   //Toggle Buttons
-  blepToggle = new ToggleButton("BLEP");
-  blepToggle->addListener(this);
-  parent.registerImmobileObject(*blepToggle);
-  addAndMakeVisible(blepToggle);
 
   midiToggle = new ToggleButton("MIDI");
   midiToggle->addListener(this);
@@ -157,12 +153,9 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   r.setX(r.getX() + 40);
   centsSlider->setBounds(r);
   
-  r.setX(r.getX() + 30);
+  r.setX(r.getX() + 40);
   r.setY(r.getY() - 30);
   r.setWidth(60);
-  blepToggle->setBounds(r);
-
-  r.setY(r.getY() - 20);
   midiToggle->setBounds(r);
   
 }
@@ -233,11 +226,7 @@ void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
 
 void WaveGeneratorProcessorEditor::buttonClicked(Button* button)
 {
-  if(button == blepToggle)
-  {
-    processor.setBlepOn(blepToggle->getToggleState());
-  }
-  else if (button == midiToggle)
+  if (button == midiToggle)
   {
     processor.setMidiOn(midiToggle->getToggleState());
   }

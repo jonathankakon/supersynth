@@ -75,7 +75,6 @@ public:
     triangle
   };
   
-  void setBlepOn(bool on) const {oscillator->setBlepOn(on);}
   void setMidiOn(bool on) {takesMidi = on;}
 
 private:
@@ -95,7 +94,7 @@ private:
   double currentFrequency;
   double targetFrequency;
 
-  bool takesMidi = false;
+  bool takesMidi = true;
   
   waveform currentWaveform;
   waveform targetWaveform;

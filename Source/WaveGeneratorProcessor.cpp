@@ -112,7 +112,12 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
   AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
   AudioBuffer<float> pitchModBuffer = getBusBuffer(buffer, true, 2);
-
+  
+  // kind of hackish the envelope should be between 0-1 and then everything is nice and doesnt work if sustain = 0.5 :'(
+  if(pitchModBuffer.getMagnitude(0, 0, pitchModBuffer.getNumSamples()) == 0)
+  {
+    FloatVectorOperations::fill(pitchModBuffer.getWritePointer(0), -1, pitchModBuffer.getNumSamples());
+  }
 
   if(takesMidi && !midiBuffer.isEmpty())
   {
@@ -136,19 +141,19 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   }
   else if(currentWaveform == sawUp)
   {
-    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
+    oscillator->fillBufferRisingSaw(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
   }
   else if(currentWaveform == sawDown)
   {
-    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer, volumeModBuffer);
+    oscillator->fillBufferFallingSaw(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
   }
   else if(currentWaveform == square)
   {
-    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer, volumeModBuffer);
+    oscillator->fillBufferSquarePulse(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
   }
   else // index == 4 => Triangle
   {
-    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer, volumeModBuffer);
+    oscillator->fillBufferTriangle(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
   }
   
   
