@@ -17,7 +17,7 @@ FIRFilter::FIRFilter(const float* tapsArray, int size, int order, bool isInverse
   
   tapsLength = size;
   
-  filterBuffer = new AudioBuffer<float>(1, tapsLength);
+  filterBuffer = new AudioBuffer<float>(1, maxLength);
   filterBufferPointer = filterBuffer->getWritePointer(0);
   filterBuffer->clear();
   
@@ -57,7 +57,7 @@ FIRFilter::FIRFilter(const float* tapsArray, int size, int order, bool isInverse
   isInitialised = false;
   
 //initialis taps buffer
-  taps = new AudioBuffer<float>(1, tapsLength);
+  taps = new AudioBuffer<float>(1, maxLength);
   tapsPointer = taps->getWritePointer(0);
   
   result = new AudioBuffer<float>(1, tapsLength);
@@ -182,10 +182,10 @@ int FIRFilter::getClosestPowerOfTwo(int number)
 
 void FIRFilter::changeTaps(const float *tapsArray, int size)
 {
-  taps->setSize(0, size);
+//  taps->setSize(0, size);
   taps->clear();
   
-  filterBuffer->setSize(0, size);
+//  filterBuffer->setSize(0, size);
   filterBuffer->clear();
   
   tapsLength = size;
