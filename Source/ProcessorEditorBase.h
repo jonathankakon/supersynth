@@ -39,6 +39,7 @@ public:
   void registerImmobileObject(Component& component) const;
 
   bool findConnectorAt(const bool isInput, int x, int y, Point<int>& outPosition, int& nodeId);
+  String findConnectorTextAt(const Point<int> point);
 
   void mouseDown(const MouseEvent& e) override;
   void mouseDrag(const MouseEvent& e) override;

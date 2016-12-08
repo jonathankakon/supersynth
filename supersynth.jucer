@@ -8,7 +8,7 @@
               pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.pkj.supersynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.3.0"
               pluginVSTCategory="">
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
@@ -68,6 +68,7 @@
                 file="Source/OutputConnector.cpp"/>
           <FILE id="i6ZkyO" name="OutputConnector.h" compile="0" resource="0"
                 file="Source/OutputConnector.h"/>
+          <FILE id="qLOEtZ" name="PopupDisplay.h" compile="0" resource="0" file="Source/PopupDisplay.h"/>
           <FILE id="lAK43m" name="ToolboxComponent.cpp" compile="1" resource="0"
                 file="Source/ToolboxComponent.cpp"/>
           <FILE id="WHA7ra" name="ToolboxComponent.h" compile="0" resource="0"

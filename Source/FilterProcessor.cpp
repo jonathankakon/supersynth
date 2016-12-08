@@ -14,9 +14,9 @@
 #include "Constants.h"
 
 FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
-  .withInput("Audio", AudioChannelSet::mono())
-  .withOutput("Audio", AudioChannelSet::mono())
-  .withInput("Control", AudioChannelSet::mono())), types(new StringArray)
+  .withInput("Audio Input", AudioChannelSet::mono())
+  .withOutput("Audio Output", AudioChannelSet::mono())
+  .withInput("Cutoff", AudioChannelSet::mono())), types(new StringArray)
 {
   addParameter(cutoffFreqency = new AudioParameterFloat("cutoffFrequency", "Cutoff", 50, 15000, 100));
   addParameter(qParameter = new AudioParameterFloat("qParameter", "Q", 0.1f, 6, 0.72f));

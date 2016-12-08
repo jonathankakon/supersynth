@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Connection.h"
+#include "PopupDisplay.h"
 
 //==============================================================================
 /*
@@ -22,6 +23,8 @@ class Worksheet : public Component, public DragAndDropTarget, public ComponentLi
 public:
   Worksheet(int, int);
   ~Worksheet();
+
+
 
   void paint(Graphics&) override;
   void resized() override;
@@ -40,6 +43,7 @@ public:
   void addEditor(Component* editor, double x, double y);
 
   void beginConnectorDrag(int outputNodeId, int outputChannel, int inputNodeId, int inputChannel, const MouseEvent& e);
+  String getTooltipTextAt(const Point<int> point);
   void dragConnector(const MouseEvent& e);
   void endDraggingConnector(const MouseEvent& e);
 
@@ -67,6 +71,8 @@ private:
   OwnedArray<Connection> connections;
 
   SafePointer<Connection> draggingConnection;
+  ScopedPointer<TooltipWindow> tooltipWindow;
+  ScopedPointer<PopupDisplay> popup;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Worksheet)
 };

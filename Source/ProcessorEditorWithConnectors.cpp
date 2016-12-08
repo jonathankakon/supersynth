@@ -69,7 +69,8 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
     inputConnectors.add(input);
     registerImmobileObject(*input);
     addAndMakeVisible(input);
-
+    input->setTooltip(processor.getBus(true, i)->getName());
+    
     int totHeight = numInputs * input->getHeight();
 
     input->setBounds(r.withY(r.getHeight() / 2 - totHeight / 2 + i*input->getHeight())
@@ -82,6 +83,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
     outputConnector = new OutputConnector(nodeId);
     registerImmobileObject(*outputConnector);
     addAndMakeVisible(outputConnector);
+    outputConnector->setTooltip(processor.getBus(false, 0)->getName());
     outputConnector->setBounds(r.withX(r.getWidth() - 32)
       .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
       .withWidth(outputConnector->getWidth())
@@ -112,6 +114,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
   mixerNodeIds.add(mixerId);
   mixerConnectionIds.set(String(mixerId), String(connectedTo));
   inputConnectors.add(input);
+  input->setTooltip(processor.getBus(true, (inputConnectors.size() - 1))->getName());
   registerImmobileObject(*input);
   addAndMakeVisible(input);
   
@@ -133,6 +136,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setOutputCon
     outputConnector = new OutputConnector(nodeId);
     registerImmobileObject(*outputConnector);
     addAndMakeVisible(outputConnector);
+    outputConnector->setTooltip(processor.getBus(false, 0)->getName());
     outputConnector->setBounds(r.withX(r.getWidth() - 32)
       .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
       .withWidth(outputConnector->getWidth())

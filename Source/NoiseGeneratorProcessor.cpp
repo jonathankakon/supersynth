@@ -12,8 +12,8 @@
 #include "NoiseGeneratorProcessorEditor.h"
 
 NoiseGeneratorProcessor::NoiseGeneratorProcessor(): AudioProcessor(BusesProperties()
-                                                                   .withOutput("Audio", AudioChannelSet::mono())
-                                                                   .withInput("volumeControl", AudioChannelSet::mono()))
+                                                                   .withOutput("Audio Output", AudioChannelSet::mono())
+                                                                   .withInput("Amplitude", AudioChannelSet::mono()))
 {
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(volumeParam = new AudioParameterFloat("volume",
