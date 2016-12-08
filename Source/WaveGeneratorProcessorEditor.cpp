@@ -18,7 +18,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (200, 80);
+  setSize (200, 120);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -86,8 +86,37 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   volumeSlider->addListener(this);
    
   //labels
+  volumeLabel.setText("Vol", juce::dontSendNotification);
+  volumeLabel.attachToComponent(volumeSlider, false);
+  volumeLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(volumeLabel);
   
+  waveformLabel.setText("~", juce::dontSendNotification);
+  waveformLabel.attachToComponent(waveformSlider, false);
+  waveformLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(waveformLabel);
   
+  frequencyLabel.setText("Freq", juce::dontSendNotification);
+  frequencyLabel.attachToComponent(frequencySlider, false);
+  frequencyLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(frequencyLabel);
+  
+  octaveLabel.setText("oct", juce::dontSendNotification);
+  octaveLabel.attachToComponent(octavesSlider, false);
+  octaveLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(octaveLabel);
+  
+  semitoneLabel.setText("semi", juce::dontSendNotification);
+  semitoneLabel.attachToComponent(semitonesSlider, false);
+  semitoneLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(semitoneLabel);
+  
+  centLabel.setText("cent", juce::dontSendNotification);
+  centLabel.attachToComponent(centsSlider, false);
+  centLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(centLabel);
+  
+  //Toggle Buttons
   blepToggle = new ToggleButton("BLEP");
   blepToggle->addListener(this);
   parent.registerImmobileObject(*blepToggle);
@@ -109,7 +138,7 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
 {
   g.fillAll (Colours::lightgreen);
   
-  Rectangle<int> r(10, 5 , 30, 30);
+  Rectangle<int> r(10, 20 , 30, 30);
   volumeSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -119,7 +148,7 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   frequencySlider->setBounds(r);
   
   r.setX(r.getX() - 80);
-  r.setY(r.getY() + 40);
+  r.setY(r.getY() + 55);
   octavesSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -129,7 +158,7 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   centsSlider->setBounds(r);
   
   r.setX(r.getX() + 30);
-  r.setY(r.getY() - 25);
+  r.setY(r.getY() - 30);
   r.setWidth(60);
   blepToggle->setBounds(r);
 

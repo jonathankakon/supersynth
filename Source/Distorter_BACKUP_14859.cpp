@@ -54,7 +54,24 @@ void Distorter::processHardclip(AudioBuffer<float> &buffer)
 //  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
 //  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
   
+<<<<<<< HEAD
   upsampledBuffer->applyGain(8);
+=======
+  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
+  {
+    if(std::abs(upsampledData[sampleIndex]) > 1)
+    {
+      if(upsampledData[sampleIndex] < 0)
+      {
+        //upsampledData[sampleIndex] = -1;
+      }
+      else
+      {
+        //upsampledData[sampleIndex] = 1;
+      }
+    }
+  }
+>>>>>>> b6d173f21410a1ae0c1ed3a7c3b44b551b0bb666
   
 //  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
 //  {
@@ -101,5 +118,11 @@ void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 void Distorter::setSampleRate(double newSampleRate)
 {
   currentSampleRate = newSampleRate;
+<<<<<<< HEAD
   filter->setCoefficients(IIRCoefficients::makeLowPass(8 * currentSampleRate, currentSampleRate/64)); // cut a little before the nyquist
 }
+=======
+  filter->updateSampleRate(newSampleRate);
+  filter->setCutoff(newSampleRate/8 - 500); // cut a little before the nyquist
+}
+>>>>>>> b6d173f21410a1ae0c1ed3a7c3b44b551b0bb666

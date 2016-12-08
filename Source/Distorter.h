@@ -29,9 +29,9 @@ public:
   
 private:
   
-  double currentSampleRate;
+  ScopedPointer<IIRFilter> filter;
   
-  ScopedPointer<GenericIIRFilter> filter;
+  double currentSampleRate;
   
   //==============================================================================
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Distorter)

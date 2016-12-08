@@ -48,6 +48,13 @@ private:
   ScopedPointer<ToggleButton> blepToggle;
   ScopedPointer<ToggleButton> midiToggle;
   
+  Label volumeLabel;
+  Label waveformLabel;
+  Label frequencyLabel;
+  Label octaveLabel;
+  Label semitoneLabel;
+  Label centLabel;
+  
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)
 };
