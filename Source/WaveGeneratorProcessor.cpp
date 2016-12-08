@@ -17,7 +17,8 @@
 WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesProperties()
   .withOutput("Audio Output", AudioChannelSet::mono())
   .withInput("Phase", AudioChannelSet::mono())
-  .withInput("Amplitude", AudioChannelSet::mono())),
+  .withInput("Amplitude", AudioChannelSet::mono())
+  .withInput("Pitch", AudioChannelSet::mono())),
   oscillator(new VAOscillator())
 {
   
@@ -110,6 +111,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   AudioBuffer<float> outBuffer = getBusBuffer(buffer, false, 0);
   AudioBuffer<float> phaseModBuffer = getBusBuffer(buffer, true, 0);
   AudioBuffer<float> volumeModBuffer = getBusBuffer(buffer, true, 1);
+  AudioBuffer<float> pitchModBuffer = getBusBuffer(buffer, true, 2);
 
 
   if(takesMidi && !midiBuffer.isEmpty())
@@ -130,7 +132,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   
   if(currentWaveform == sine)
   {
-    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer);
+    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
   }
   else if(currentWaveform == sawUp)
   {

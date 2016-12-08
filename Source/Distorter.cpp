@@ -67,7 +67,16 @@ void Distorter::processHardclip(AudioBuffer<float> &buffer)
 
 void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 {
+  ScopedPointer<AudioBuffer<float>> upsampledBuffer = new AudioBuffer<float>(1, buffer.getNumSamples() * 8);
+  
   float* const data = buffer.getWritePointer(0);
+  float* const upsampledData = upsampledBuffer->getWritePointer(0);
+  
+  upsampledBuffer->clear();
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    upsampledData[sampleIndex * 8] = data[sampleIndex];
+  }
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
@@ -75,6 +84,14 @@ void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
     
     data[sampleIndex] = x/powf(1 + powf(std::abs(x), 2.5), 0.4);
   }
+  
+  postFilter->applyFIRFilter(*upsampledBuffer);
+  
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    data[sampleIndex] = upsampledData[sampleIndex * 8];
+  }
+  
 }
 
 void Distorter::setSampleRate(double newSampleRate)

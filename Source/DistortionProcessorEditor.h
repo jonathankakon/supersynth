@@ -37,6 +37,10 @@ private:
   ScopedPointer<Slider> distortionTypeSlider;
   ScopedPointer<Slider> postGainSlider;
   
+  Label preGainLabel;
+  Label typeLabel;
+  Label postGainLabel;
+  
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistortionProcessorEditor)
 };
 
