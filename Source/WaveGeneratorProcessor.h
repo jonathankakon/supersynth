@@ -13,8 +13,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "VAOscillator.h"
+#include "RMSRequestable.h"
 
-class WaveGeneratorProcessor: public AudioProcessor, AudioProcessorListener
+class WaveGeneratorProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================

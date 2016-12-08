@@ -16,8 +16,9 @@
 SupersynthAudioProcessor::SupersynthAudioProcessor() : AudioProcessor(BusesProperties()
     .withInput("AudioIn", AudioChannelSet::mono(), true)
     .withOutput("AudioOut", AudioChannelSet::mono(), true)),
-  graph(new AudioProcessorGraph())
+  graph(new AudioProcessorGraph()), stateInformation(ValueTree("Root"))
 {
+  addParameter(new AudioParameterFloat("DummyParameter", "Dummy", 0, 1, 0));
 }
 
 SupersynthAudioProcessor::~SupersynthAudioProcessor()
@@ -32,15 +33,18 @@ bool SupersynthAudioProcessor::hasEditor() const
 
 void SupersynthAudioProcessor::getStateInformation(MemoryBlock& destData)
 {
-  if (stateInformation != nullptr)
+  if (stateInformation.getNumChildren() > 0)
   {
-    copyXmlToBinary(*stateInformation, destData);
+    ScopedPointer<XmlElement> xml = stateInformation.createXml();
+    copyXmlToBinary(*xml, destData);
   }
 }
 
 void SupersynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-  stateInformation = getXmlFromBinary(data, sizeInBytes);
+  ScopedPointer<XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
+  stateInformation = ValueTree::fromXml(*xml);
+  ScopedPointer<SupersynthAudioProcessorEditor> editor = new SupersynthAudioProcessorEditor(*this);
 }
 
 AudioProcessorEditor* SupersynthAudioProcessor::createEditor()

@@ -79,7 +79,6 @@ void NoiseGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
   
   if (slider == volumeSlider)
   {
-    DBG("volume 222: " << volumeSlider->getValue());
     AudioProcessorParameter* param = params[0];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());

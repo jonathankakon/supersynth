@@ -80,6 +80,7 @@ default:
   }
   
   outBuffer.applyGain(volumeParam->get());
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 }
 
 AudioProcessorEditor* NoiseGeneratorProcessor::createEditor()
@@ -99,7 +100,7 @@ bool NoiseGeneratorProcessor::supportsDoublePrecisionProcessing() const
 
 const String NoiseGeneratorProcessor::getName() const
 {
-  return String();
+  return "NoiseGeneratorProcessor";
 }
 
 bool NoiseGeneratorProcessor::acceptsMidi() const

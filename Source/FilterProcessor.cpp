@@ -24,9 +24,9 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
   
   
-  int size = sizeof(church)/sizeof(*church);
+  int size = sizeof(lowpass_2600hz)/sizeof(*lowpass_2600hz);
   
-  filterFIR = new FIRFilter(church, size);
+  filterFIR = new FIRFilter(lowpass_2600hz, size, 0, 0);
   
   
   
@@ -141,7 +141,8 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
   }
   
   
-  
+
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 //  if(filterType->getIndex() == 0)
 //  {
 //    filterIIR->firstOrderLowPass(outBuffer);
@@ -189,7 +190,7 @@ bool FilterProcessor::hasEditor() const
 
 const String FilterProcessor::getName() const
 {
-  return "aFilter";
+  return "FilterProcessor";
 }
 
 bool FilterProcessor::acceptsMidi() const

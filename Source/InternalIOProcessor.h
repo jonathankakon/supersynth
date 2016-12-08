@@ -12,8 +12,9 @@
 #define INTERNALIOPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "RMSRequestable.h"
 
-class InternalIOProcessor : public AudioProcessorGraph::AudioGraphIOProcessor
+class InternalIOProcessor : public AudioProcessorGraph::AudioGraphIOProcessor, public RMSRequestable
 {
 public:
 
@@ -25,7 +26,7 @@ public:
 
   AudioProcessorEditor* createEditor() override;
   bool hasEditor() const override;
-
+  const String getName() const override;
 private:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InternalIOProcessor)
 };

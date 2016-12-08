@@ -14,8 +14,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "GenericIIRFilter.h"
 #include "FIRFilter.h"
+#include "RMSRequestable.h"
 
-class FilterProcessor: public AudioProcessor, AudioProcessorListener
+class FilterProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================

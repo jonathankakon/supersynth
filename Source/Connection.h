@@ -42,7 +42,8 @@ public:
   void update();
 
   void setFixedConnectorPosition(const Point<int>& point);
-  void setDestNodeId(int nodeId);;
+  void setDestNodeId(int nodeId);
+  void setPathColourFromRms(float rms);;
 
   float getX1() const { return lastInputX; }
   float getX2() const { return lastOutputX; };
@@ -63,6 +64,7 @@ private:
     return findParentComponentOfClass<Worksheet>();
   }
 
+  Colour rmsColour;
   Path path, hitPath;
   bool dragging;
   bool stopPathRedraw;

@@ -84,3 +84,7 @@ Builds/MacOSX/supersynth.xcodeproj/project.xcworkspace/xcshareddata/supersynth.x
 /Builds/VisualStudio2015
 /SDK/JuceModules
 /SDK/VST
+/Source/VAOscillator_BACKUP_10414.cpp
+/Source/VAOscillator_BASE_10414.cpp
+/Source/VAOscillator_LOCAL_10414.cpp
+/Source/VAOscillator_REMOTE_10414.cpp

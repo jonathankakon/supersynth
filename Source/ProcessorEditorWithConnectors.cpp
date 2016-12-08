@@ -13,10 +13,11 @@
 #include "IOEditor.h"
 #include "InternalIOProcessor.h"
 #include "InputConnectorProcessor.h"
+#include "DelayProcessorEditor.h"
 
 template<class AudioProcessorType, class EditorType>
 ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::ProcessorEditorWithConnectors(AudioProcessorType * p) : ProcessorEditorBase(p),
-processorEditor(new EditorType(p, this)), deleteButton(new TextButton("X", "Delete Module")), mixerNodeIds(Array<int>()), processor(*p)
+processorEditor(new EditorType(p, this)), deleteButton(new TextButton("X", "Delete Module")), mixerNodeIds(Array<int>()), mixerConnectionIds(StringPairArray()), processor(*p)
 {
   static_cast<Component*>(processorEditor)->addMouseListener(this, false);
   addAndMakeVisible(processorEditor);
@@ -64,6 +65,7 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
     int mixerId = addProcessorToGraph(inputMixer, nodeId, i);
     InputConnector* input = new InputConnector(inputMixer, this, mixerId);
     mixerNodeIds.add(mixerId);
+    mixerConnectionIds.set(String(mixerId), String(i));
     inputConnectors.add(input);
     registerImmobileObject(*input);
     addAndMakeVisible(input);
@@ -86,6 +88,56 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector
       .withHeight(outputConnector->getHeight()));
   }
 
+  createDeleteButton(r);
+}
+
+template <class AudioProcessorType, class EditorType>
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setConnector(AudioProcessor* oldInput, const int mixerId, const int connectedTo)
+{
+  int numInputs = processor.getBusCount(true);
+  Rectangle<int> r(getLocalBounds());
+
+  InputConnectorProcessor* inputMixer;
+  if(oldInput == nullptr)
+  {
+    inputMixer = new InputConnectorProcessor();
+    addProcessorToGraph(inputMixer, nodeId, mixerId, connectedTo);
+  }
+  else
+  {
+    inputMixer = reinterpret_cast<InputConnectorProcessor*>(oldInput);
+  }
+
+  InputConnector* input = new InputConnector(inputMixer, this, mixerId);
+  mixerNodeIds.add(mixerId);
+  mixerConnectionIds.set(String(mixerId), String(connectedTo));
+  inputConnectors.add(input);
+  registerImmobileObject(*input);
+  addAndMakeVisible(input);
+  
+  int totHeight = numInputs * input->getHeight();
+
+  input->setBounds(r.withY(r.getHeight() / 2 - totHeight / 2 + (inputConnectors.size() - 1)*input->getHeight())
+    .withWidth(input->getWidth())
+    .withHeight(input->getHeight()));
+}
+
+template <class AudioProcessorType, class EditorType>
+void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::setOutputConnectors()
+{
+  int numOutputs = processor.getBusCount(false);
+  Rectangle<int> r(getLocalBounds());
+
+  if (numOutputs > 0)
+  {
+    outputConnector = new OutputConnector(nodeId);
+    registerImmobileObject(*outputConnector);
+    addAndMakeVisible(outputConnector);
+    outputConnector->setBounds(r.withX(r.getWidth() - 32)
+      .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
+      .withWidth(outputConnector->getWidth())
+      .withHeight(outputConnector->getHeight()));
+  }
   createDeleteButton(r);
 }
 
@@ -149,27 +201,6 @@ void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::paint (Graph
 template<class AudioProcessorType, class EditorType>
 void ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::resized()
 {
-  /*
-  if (processorEditor != nullptr && inputConnectors.size() > 0 && outputConnector != nullptr)
-  {
-    Rectangle<int> r(static_cast<Component*>(processorEditor)->getBounds());
-  
-    static_cast<Component*>(processorEditor)->setBounds(r.withX(r.getX() + 32));
-    r.expand(32, 0);
-
-    setSize(r.getWidth(), r.getHeight());
-
-    r = getLocalBounds();
-
-    InputConnector * in = inputConnectors.getFirst();
-    in->setBounds(r.withY(r.getHeight() / 2 - in->getHeight() / 2)
-      .withWidth(in->getWidth())
-      .withHeight(in->getHeight()));
-    outputConnector->setBounds(r.withX(r.getWidth() - 32)
-      .withY(r.getHeight() / 2 - outputConnector->getHeight() / 2)
-      .withWidth(outputConnector->getWidth())
-      .withHeight(outputConnector->getHeight()));
-  }*/
 }
 
 template class ProcessorEditorWithConnectors<WaveGeneratorProcessor, WaveGeneratorProcessorEditor>;
@@ -179,4 +210,5 @@ template class ProcessorEditorWithConnectors<EQFourProcessor, EQFourProcessorEdi
 template class ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>;
 template class ProcessorEditorWithConnectors<NoiseGeneratorProcessor, NoiseGeneratorProcessorEditor>;
 template class ProcessorEditorWithConnectors<DistortionProcessor, DistortionProcessorEditor>;
+template class ProcessorEditorWithConnectors<DelayProcessor, DelayProcessorEditor>;
 

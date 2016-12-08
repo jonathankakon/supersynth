@@ -23,12 +23,12 @@ public:
   class ModulesListElement : public ReferenceCountedObject
   {
   public:
-    ModulesListElement(String displayName, String icon, AudioProcessor* (*createFunction)()) : name(displayName), iconPath(icon), getInstance(createFunction){}
-    ModulesListElement(ModulesListElement& other) : name(other.name), iconPath(other.iconPath), getInstance(other.getInstance){}
+    ModulesListElement(String displayName, String className, AudioProcessor* (*createFunction)()) : name(displayName), className(className), getInstance(createFunction){}
+    ModulesListElement(ModulesListElement& other) : name(other.name), className(other.className), getInstance(other.getInstance){}
     ~ModulesListElement(){}
 
     String name;
-    String iconPath;
+    String className;
     AudioProcessor* (*getInstance)();
   };
 
@@ -42,13 +42,10 @@ public:
   void paintListBoxItem(int rowNumber, Graphics& g, int width, int height, bool isRowSeleected) override;
   var getDragSourceDescription(const SparseSet<int>& selectedrow) override;
 
-
-
+  OwnedArray<ModulesListElement> modules;
 private:
   ScopedPointer<ListBox> moduleList;
   ScopedPointer<ResizableBorderComponent> resizeBorder;
-
-  OwnedArray<ModulesListElement> modules;
 
   template<typename T>
   static AudioProcessor * createInstance() { return new T; }

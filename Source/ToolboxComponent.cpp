@@ -17,6 +17,7 @@
 #include "EnvelopeProcessor.h"
 #include "NoiseGeneratorProcessor.h"
 #include "DistortionProcessor.h"
+#include "DelayProcessor.h"
 
 int ToolboxComponent::getNumRows()
 {
@@ -56,12 +57,13 @@ var ToolboxComponent::getDragSourceDescription(const SparseSet<int>& selectedRow
 ToolboxComponent::ToolboxComponent() :
   moduleList(new ListBox("ModuleList", nullptr))
 {
-  modules.add(new ModulesListElement("Wave Generator", "wave.png", &createInstance<WaveGeneratorProcessor>));
-  modules.add(new ModulesListElement("IIR Filter", "filter.png", &createInstance<FilterProcessor>));
-  modules.add(new ModulesListElement("Equalizer", "eq.png", &createInstance<EQFourProcessor>));
-  modules.add(new ModulesListElement("Envelope", "envelope.png", &createInstance<EnvelopeProcessor>));
-  modules.add(new ModulesListElement("NoiseGenerator", "noise.png", &createInstance<NoiseGeneratorProcessor>));
-  modules.add(new ModulesListElement("Distortion", "noise.png", &createInstance<DistortionProcessor>));
+  modules.add(new ModulesListElement("Wave Generator", "WaveGeneratorProcessor", &createInstance<WaveGeneratorProcessor>));
+  modules.add(new ModulesListElement("IIR Filter", "FilterProcessor", &createInstance<FilterProcessor>));
+  modules.add(new ModulesListElement("Equalizer", "EQFourProcessor", &createInstance<EQFourProcessor>));
+  modules.add(new ModulesListElement("Envelope", "EnvelopeProcessor", &createInstance<EnvelopeProcessor>));
+  modules.add(new ModulesListElement("NoiseGenerator", "NoiseGeneratorProcessor", &createInstance<NoiseGeneratorProcessor>));
+  modules.add(new ModulesListElement("Distortion", "DistortionProcessor", &createInstance<DistortionProcessor>));
+  modules.add(new ModulesListElement("Delay", "DelayProcessor", &createInstance<DelayProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());

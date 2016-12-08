@@ -143,8 +143,8 @@ void EQFourProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
     default:
       break;
   }
-  
-  
+
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
 }
 
 
@@ -237,7 +237,7 @@ void EQFourProcessor::changeFilterTypeBand4(int newIndex) const
 
 const String EQFourProcessor::getName() const
 {
-  return "EQ four";
+  return "EQFourProcessor";
 }
 
 bool EQFourProcessor::acceptsMidi() const

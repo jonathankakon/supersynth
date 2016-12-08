@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class Worksheet : public Component, public DragAndDropTarget
+class Worksheet : public Component, public DragAndDropTarget, public ComponentListener, Timer
 {
 public:
   Worksheet(int, int);
@@ -31,6 +31,8 @@ public:
   void itemDragMove(const SourceDetails& sourceDetails) override;
   void itemDragExit(const SourceDetails& sourceDetails) override;
   void itemDropped(const SourceDetails& sourceDetails) override;
+  void componentMovedOrResized(Component&, bool, bool) override; 
+  void timerCallback() override;
 
   void 	mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
 
@@ -49,6 +51,12 @@ public:
   void removeConnections(int nodeId, int mixerNodeId);
   void setZoomFactor(float zoomFactor);
   float getZoomFactor() const;
+
+  int getEditorX(int nodeId);
+  int getEditorY(int nodeId);
+  StringPairArray getInputAndChannelsOfEditor(int nodeId);
+  Rectangle<int> getConnectionRectangle(const int sourceId, const int destId, const int sourceChannel, const int destChannel);
+  void addConnection(int x0, int y0, int x1, int y1, int sourceNodeId, int sourceChannelId, int destNodeId, int destChannelId);
 private:
   bool somethingIsBeingDraggedOver;
   float zoomFactor = 1;

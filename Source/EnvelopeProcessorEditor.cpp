@@ -20,21 +20,21 @@ EnvelopeProcessorEditor::EnvelopeProcessorEditor (EnvelopeProcessor* p, Processo
 
   AudioParameterFloat* param = dynamic_cast< AudioParameterFloat*>(params[0]);
   attackSlider = new Slider(param->name);
-  initialiseSlider(attackSlider, param, 0.0, 1, 0.0001, 0.01);
+  initialiseSlider(attackSlider, param, 0.0, 1, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   attackSlider->setTextValueSuffix(" s");
   
   param = dynamic_cast< AudioParameterFloat*>(params[1]);
   decaySlider = new Slider(param->name);
-  initialiseSlider(decaySlider, param, 0, 1, 0.0001, 0.01);
+  initialiseSlider(decaySlider, param, 0, 1, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   decaySlider->setTextValueSuffix(" s");
   
   param = dynamic_cast<AudioParameterFloat*>(params[2]);
   sustainSlider = new Slider(param->name);
-  initialiseSlider(sustainSlider, param, 0, 1, 0.001, 0.9);
+  initialiseSlider(sustainSlider, param, 0, 1, 0.001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   
   param = dynamic_cast<AudioParameterFloat*>(params[3]);
   releaseSlider = new Slider(param->name);
-  initialiseSlider(releaseSlider, param, 0, 1, 0.0001, 0.01);
+  initialiseSlider(releaseSlider, param, 0, 1, 0.0001, dynamic_cast<const AudioProcessorParameter*>(param)->getValue());
   
   attackSlider->setSkewFactor(0.5);
   decaySlider->setSkewFactor(0.5);

@@ -172,9 +172,8 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   }
   
   outBuffer.applyGain(volumeParam->get());
-  
+  setCurrentRMS(outBuffer.getRMSLevel(0, 0, outBuffer.getNumSamples()));
   //update parameters
-  
 }// End processBlock
 
 AudioProcessorEditor* WaveGeneratorProcessor::createEditor()
@@ -195,7 +194,7 @@ bool WaveGeneratorProcessor::supportsDoublePrecisionProcessing() const
 
 const String WaveGeneratorProcessor::getName() const
 {
-  return "aWave";
+  return "WaveGeneratorProcessor";
 }
 
 bool WaveGeneratorProcessor::acceptsMidi() const

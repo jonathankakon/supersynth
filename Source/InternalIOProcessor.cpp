@@ -30,3 +30,8 @@ bool InternalIOProcessor::hasEditor() const
 {
   return true;
 }
+
+const String InternalIOProcessor::getName() const
+{
+  return "InternalIOProcessor";
+}

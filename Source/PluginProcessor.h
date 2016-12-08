@@ -17,7 +17,7 @@
 //==============================================================================
 /**
 */
-class SupersynthAudioProcessor : public AudioProcessor
+class SupersynthAudioProcessor : public AudioProcessor, public AsyncUpdater
 {
 public:
   //==============================================================================
@@ -28,14 +28,21 @@ public:
   bool hasEditor() const override;
 
   //==============================================================================
-  void prepareToPlay(double sampleRate, int samplesPerBlock) override {
-    setPlayConfigDetails(1, 1, sampleRate, samplesPerBlock);
-    graph->setPlayConfigDetails(1, 1, sampleRate, samplesPerBlock);
-    graph->prepareToPlay(sampleRate, samplesPerBlock);
+  void prepareToPlay(double sr, int samplesPerBlock) override {
+    setPlayConfigDetails(1, 1, sr, samplesPerBlock);
+
+    graph->setPlayConfigDetails(1, 1, sr, samplesPerBlock);
+    sampleRate = sr;
+    blockSize = samplesPerBlock;
+
+    this->triggerAsyncUpdate();
   };
+
   void releaseResources() override { return; };
 
   void processBlock(AudioSampleBuffer& audioBuffer, MidiBuffer& midiBuffer) override { graph->processBlock(audioBuffer, midiBuffer); };
+
+  void handleAsyncUpdate() override { graph->prepareToPlay(sampleRate, blockSize); };
 
   //==============================================================================
 
@@ -58,9 +65,11 @@ public:
   void setStateInformation(const void* data, int sizeInBytes) override;
 
   ScopedPointer<AudioProcessorGraph> graph;
-  ScopedPointer<XmlElement> stateInformation;
+  ValueTree stateInformation;
 private:
-  AudioProcessorEditor* editor;
+  int blockSize;
+  double sampleRate;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SupersynthAudioProcessor)
 };
 

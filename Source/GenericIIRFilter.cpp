@@ -501,13 +501,3 @@ float GenericIIRFilter::computeCurrentFrequency(float* /*pointer*/, AudioBuffer<
   else
     return outFrequency;
 }
-
-
-
-
-
-
-
-
-
-

@@ -20,285 +20,174 @@ EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOu
   addParameter(sustainParameter = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.9f));
   addParameter(releaseParameter = new AudioParameterFloat("Release", "Release", 0, 1, 0.001f));
   
-  resetEnvelopeState();
-  state.wasNoteOn = false;
-
-    
+  addListener(this);
+  
   }
 
 EnvelopeProcessor::~EnvelopeProcessor()
 {
-  }
+}
 
 void EnvelopeProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     ignoreUnused(sampleRate, samplesPerBlock);
     currentSampleRate = sampleRate;
-  }
+}
 
 void EnvelopeProcessor::processBlock(AudioSampleBuffer & audioBuffer, juce::MidiBuffer & midiBuffer)
 {
-    audioBuffer.clear();
-  DBG("last sample " << state.lastSample);
+  audioBuffer.clear();
+  float* const audioData = audioBuffer.getWritePointer(0);
   
-    float* const audioData = audioBuffer.getWritePointer(0);
-    
-    int firstIndex = midiBuffer.getFirstEventTime();
-    
-    MidiMessage& message1 = *new MidiMessage();
-    int samplePosition1 = 0;
-    MidiMessage& message2 = *new MidiMessage();
-    int samplePosition2 = 0;
-    
-    ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
-    
-  //OVERLAP FROM PREVIOUS BUFFER
   
-  //attack decay & sustain
-    if (state.wasNoteOn)
-      {
-        //calculateLenghtAndGradient();
-        
-        //there is another sample in the buffer -> first index > gsa0
-//        if(firstIndex > 0 )
-//        {
-//          //initialise first sample of the buffer
-//          initialiseFirstSample(audioData);
-//          
-//          //calculate the remaining samples
-//          computeAttackDecaySustain(audioData, firstIndex);
-//          
-//          //update state
-//          if (attackLength+ decayLength < state.attackDecayCounter) {
-//            state.attackDecayCounter = 0;
-//          }
-//          state.lastSample = audioData[firstIndex - 1];
-//          state.wasNoteOn = true;
-//        }
-//        //the buffer is empty
-//        else
-       // {
-          //initialise first sample of the buffer
-          initialiseFirstSample(audioData);
-          
-          //calculate remaining samples
-          computeAttackDecaySustain(audioData, audioBuffer.getNumSamples());
-          
-          //update state
-          if (attackLength+ decayLength < state.attackDecayCounter) {
-            state.attackDecayCounter = 0;
-          }
-        
-          if(firstIndex > 0)
-          {
-            state.lastSample = audioData[firstIndex - 1];
-          }
-          else{
-            state.lastSample = audioData[audioBuffer.getNumSamples() - 1];
-          }
-          state.wasNoteOn = true;
-       // }
-        
-
-      }
-  //release
-  else if(!state.wasNoteOn && state.releaseCounter > 0)
+  MidiMessage message = MidiMessage();
+  int position = audioBuffer.getNumSamples();
+  ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
+  iterator->getNextEvent(message, position);
+  
+  for(int i = 0; i < audioBuffer.getNumSamples(); i++)
   {
-    //calculateLenghtAndGradient();
-    audioData[0] = state.lastSample - releaseGradient;
-    
-//    if (firstIndex > 0 && releaseLength - state.releaseCounter > firstIndex)
-//    {
-//      for (int index = 1; index < firstIndex; index++) {
-//        audioData[index] = audioData[index - 1] - releaseGradient;
-//        state.releaseCounter++;
-//      }
-//      state.releaseCounter = 0;
-//      state.lastSample = audioData[audioBuffer.getNumSamples() -1];
-//    }
-    if(releaseLength - state.releaseCounter < audioBuffer.getNumSamples())
+    if(position == i)
     {
-      int index = 1;
-      while (state.releaseCounter < releaseLength) {
-        audioData[index] = audioData[index - 1] - releaseGradient;
-        state.releaseCounter++;
-        index++;
-      }
-      state.releaseCounter = 0;
-      state.lastSample = 0;
+      iterator->getNextEvent(message, position);
     }
-    else
-    {
-      for (int index = 1; index < audioBuffer.getNumSamples(); index++) {
-        audioData[index] = audioData[index - 1] - releaseGradient;
-        state.releaseCounter++;
-      }
-      state.lastSample = audioData[audioBuffer.getNumSamples() -1];
-    }
+    slope = getNextSlopeStateFromLastSample(message, position, i);
     
+    switch (slope)
+    {
+      case EnvelopeProcessor::EnvelopeSlopeState::attack:
+        audioData[i] = nextSample;
+        nextSample += attackStep;
+        break;
+      case EnvelopeProcessor::EnvelopeSlopeState::decay:
+        audioData[i] = nextSample;
+        nextSample -= decayStep;
+        break;
+      case EnvelopeProcessor::EnvelopeSlopeState::sustain:
+        audioData[i] = nextSample;
+        nextSample = *sustainParameter;
+        break;
+      case EnvelopeProcessor::EnvelopeSlopeState::release:
+        audioData[i] = nextSample;
+        nextSample -= releaseStep;
+        break;
+      default:
+      case EnvelopeProcessor::EnvelopeSlopeState::none:
+        audioData[i] = 0;
+        nextSample = 0;
+        break;
+    }
   }
   
-  
-  //check if there are midi events
-  if(midiBuffer.isEmpty()){
-    expandRangeMinusOneToPlusOne(audioBuffer);
-    return;
-  }
-  
-    //FILL CURRENT BUFFER
-    while (iterator->getNextEvent(message1, samplePosition1))
-      {
-        //NOTE ON as in ATTACK
-        if(message1.isNoteOn())
-          {
-            calculateLenghtAndGradient();
-          
-            state.releaseCounter = 0;
-            state.attackDecayCounter = 0;
-            state.lastNote = message1.getNoteNumber();
-            
-            //there is a next midi message after the current one
-            if(iterator->getNextEvent(message2, samplePosition2))
-              {
-                computeAttackDecaySustain(audioData, samplePosition2);
-                
-                //update state
-                if(attackLength + decayLength <= state.attackDecayCounter)
-                {
-                  state.attackDecayCounter =0;
-                }
-                
-                state.lastSample = audioData[samplePosition2 - 1];
-                state.wasNoteOn = true;
-              }
-            
-            // No next midi message in the buffer
-            else{
-                
-              computeAttackDecaySustain(audioData, audioBuffer.getNumSamples());
-              
-                //update state
-                if(attackLength + decayLength <= state.attackDecayCounter)
-                  {
-                    state.attackDecayCounter =0;
-                  }
-                state.lastSample = audioData[audioBuffer.getNumSamples() - 1];
-                state.wasNoteOn = true;
-              }
-            
-          }
-        //NOTE OFF as in RELEASE
-        else if(message1.isNoteOff() && state.lastNote == message1.getNoteNumber())
-          {
-            
-            state.initialReleaseValue = state.lastSample;
-            
-            calculateLenghtAndGradient();
-            
-            
-            state.releaseCounter = 0;
-            state.attackDecayCounter = 0;
-            
-            //there is a next midi message after the current one
-            if(iterator->getNextEvent(message2, samplePosition2))
-              {
-                for(int index = samplePosition1; index < samplePosition2; index++)
-                  {
-                    if(state.releaseCounter < releaseLength)
-                    {
-                      audioData[index] = audioData[index-1] - releaseGradient;
-                      state.releaseCounter++;
-                    }
-                  }
-                //update state
-                if(releaseLength <= state.releaseCounter)
-                {
-                  state.releaseCounter = 0;
-                }
-                state.lastSample = audioData[samplePosition2 - 1];
-                state.wasNoteOn = false;
-                
-              }
-            // No next midi message in the buffer
-            else{
-              
-                for(int index = samplePosition1; index < audioBuffer.getNumSamples(); index++)
-                  {
-                    if(state.releaseCounter < releaseLength)
-                    {
-                      audioData[index] = audioData[index-1] - releaseGradient;
-                      state.releaseCounter++;
-                    }
-                  }
-                //update state
-              if(releaseLength <= state.releaseCounter)
-              {
-                state.releaseCounter = 0;
-              }
-                state.lastSample = audioData[audioBuffer.getNumSamples() - 1];
-                state.wasNoteOn = false;
-              }
-          }
-      }
-  
+  setCurrentRMS(audioBuffer.getRMSLevel(0, 0, audioBuffer.getNumSamples()));
   expandRangeMinusOneToPlusOne(audioBuffer);
-  
 }
 
-void EnvelopeProcessor::initialiseFirstSample(float* audioData){
-  if(state.attackDecayCounter < attackLength)
+EnvelopeProcessor::EnvelopeSlopeState EnvelopeProcessor::getNextSlopeStateFromLastSample(MidiMessage message, int position, int i)
+{
+  bool isMidiPosition = (position == i);
+  bool isSameNote = (message.getNoteNumber() == lastPlayingNote);
+  
+  bool biggerOne = (nextSample >= 1);
+  nextSample = (nextSample >= 1) ? 1 : nextSample;
+  
+  bool smallerZero = (nextSample <= 0);
+  nextSample = (nextSample <= 0) ? 0 : nextSample;
+  
+  bool smallerSustain = (nextSample <= *sustainParameter);
+  bool hasDecay = (*sustainParameter < 1);
+  
+  
+  switch (slope)
   {
-    audioData[0] = state.lastSample + attackGradient;
+    case EnvelopeProcessor::EnvelopeSlopeState::attack:
+      if(message.isNoteOn() && isMidiPosition)
+      {
+        lastPlayingNote = message.getNoteNumber();
+        return EnvelopeSlopeState::attack;
+      }
+      else if (message.isNoteOff() && isMidiPosition && isSameNote)
+      {
+        return EnvelopeSlopeState::release;
+      }
+      else if (biggerOne)
+      {
+        return hasDecay ? EnvelopeSlopeState::decay : EnvelopeSlopeState::sustain;
+      }
+      else
+      {
+        return EnvelopeSlopeState::attack;
+      }
+      break;
+      
+    case EnvelopeProcessor::EnvelopeSlopeState::decay:
+      
+      if(message.isNoteOn() && isMidiPosition)
+      {
+        lastPlayingNote =  message.getNoteNumber();
+        return EnvelopeSlopeState::attack;
+      }
+      else if (message.isNoteOff() && isMidiPosition && isSameNote)
+      {
+        return EnvelopeSlopeState::release;
+      }
+      else if (smallerSustain)
+      {
+        nextSample = (nextSample <= *sustainParameter) ? *sustainParameter : nextSample;
+        return EnvelopeSlopeState::sustain;
+      }
+      else
+      {
+        return EnvelopeSlopeState::decay;
+      }
+      break;
+      
+    case EnvelopeProcessor::EnvelopeSlopeState::sustain:
+      
+      if(message.isNoteOn() && isMidiPosition)
+      {
+        lastPlayingNote = message.getNoteNumber();
+        return (hasDecay) ? EnvelopeSlopeState::attack : EnvelopeSlopeState::sustain;
+      }
+      else if (message.isNoteOff() && isMidiPosition && isSameNote)
+      {
+        return EnvelopeSlopeState::release;
+      }
+      else
+      {
+        return EnvelopeSlopeState::sustain;
+      }
+      break;
+      
+    case EnvelopeProcessor::EnvelopeSlopeState::release:
+      
+      if(message.isNoteOn() && isMidiPosition)
+      {
+        lastPlayingNote = message.getNoteNumber();
+        return EnvelopeSlopeState::attack;
+      }
+      else if (smallerZero)
+      {
+        return EnvelopeSlopeState::none;
+      }
+      else
+      {
+        return EnvelopeSlopeState::release;
+      }
+      break;
+      
+    case EnvelopeProcessor::EnvelopeSlopeState::none:
+      
+      if (message.isNoteOn() && isMidiPosition) {
+        lastPlayingNote = message.getNoteNumber();
+        return EnvelopeSlopeState::attack;
+      }
+      break;
   }
-  else if(state.attackDecayCounter < attackLength+decayLength){
-    audioData[0] = state.lastSample - decayGradient;
-  }
-  else{
-    audioData[0] = *sustainParameter;
-  }
+  return EnvelopeProcessor::EnvelopeSlopeState::none;
 }
 
-void EnvelopeProcessor::calculateLenghtAndGradient(){
-  //calculate attack parameters
-  if(attackGradient > 0){
-  attackLength = (int)(*attackParameter * currentSampleRate) - static_cast<int>(state.lastSample / attackGradient);
-  }
-  else{
-    attackLength = (int)(*attackParameter * currentSampleRate);
-  }
-  attackGradient = (1.0f-state.lastSample)/static_cast<float>(attackLength);
-  
-  //calculate decay parameters
-  decayLength = (int)(*decayParameter * currentSampleRate);
-  decayGradient = (1.0f - *sustainParameter)/static_cast<float>(decayLength);
-  
-  //calculate release parameters
-  releaseLength = (int)(*releaseParameter * currentSampleRate);
-  releaseGradient = state.initialReleaseValue/static_cast<float>(releaseLength); //maybe releaseLength - state.releaseCounter
-}
 
-void EnvelopeProcessor::computeAttackDecaySustain(float *audioData, int lastIndexForLoop){
-  for (int index = 1; index < lastIndexForLoop; index++)
-  {
-    if(state.attackDecayCounter < attackLength)
-    {
-      audioData[index] = audioData[index-1] + attackGradient;
-      state.attackDecayCounter++;
-      
-    }
-    else if ( state.attackDecayCounter < attackLength + decayLength)
-    {
-      audioData[index] = audioData[index-1] - decayGradient;
-      state.attackDecayCounter++;
-      
-    }
-    else
-    {
-      audioData[index] = *sustainParameter;
-    }
-  }
-  
-}
 
 void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBuffer)
 {
@@ -307,7 +196,7 @@ void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBu
   float * pointer = audioBuffer.getWritePointer(0);
   
   FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
-  //FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
+  FloatVectorOperations::multiply(pointer, pointer, pointer, audioBuffer.getNumSamples());
   
   //DBG("second sample" << pointer[1]);
   for (int i = 0; i < audioBuffer.getNumSamples(); i++)
@@ -321,47 +210,52 @@ void EnvelopeProcessor::expandRangeMinusOneToPlusOne(AudioBuffer<float> &audioBu
   }
 }
 
+
+
 void EnvelopeProcessor::releaseResources()
 {
-  }
+}
 
-void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int /*parameterIndex*/, float /*newValue*/)
+void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
-  }
+  attackStep = 1/(currentSampleRate * (*attackParameter));
+  decayStep = (1- *sustainParameter)/(currentSampleRate * (*decayParameter));
+  releaseStep = (*sustainParameter)/(currentSampleRate * (*releaseParameter));
+}
 
 AudioProcessorEditor* EnvelopeProcessor::createEditor(){
     return new ProcessorEditorWithConnectors<EnvelopeProcessor, EnvelopeProcessorEditor>(this);
-  }
+}
 
 bool EnvelopeProcessor::hasEditor() const
 {
     return true;
-  }
+}
 
 const String EnvelopeProcessor::getName() const
 {
-    return "anEnvelope";
-  }
+    return "EnvelopeProcessor";
+}
 
 bool EnvelopeProcessor::acceptsMidi() const
 {
     return true;
-  }
+}
 
 bool EnvelopeProcessor::producesMidi() const
 {
     return false;
-  }
+}
 
 double EnvelopeProcessor::getTailLengthSeconds() const
 {
     return 0.0;
-  }
+}
 
 int EnvelopeProcessor::getNumPrograms()
 {
     return 1;
-  }
+}
 
 int EnvelopeProcessor::getCurrentProgram()
 {

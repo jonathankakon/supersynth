@@ -37,7 +37,9 @@ public:
   
   void createDeleteButton(Rectangle<int> r);
   //==============================================================================
-  void setConnectors() override;
+  void setConnectors() override; 
+  void setConnector(AudioProcessor* oldInput, const int nodeId, const int connectedTo) override;
+  void setOutputConnectors() override;
   void registerNodeConnectionListener(Connection* connection, int input_node_id, int output_node_id) override; 
   bool hasInputWithId(int inputNodeId, int& x, int& y) override;
   bool hasOutputWithId(int outputNodeId, int& x, int& y) override;
@@ -46,7 +48,8 @@ public:
 
   void setNodeId(int id) override { nodeId = id; };
   int getNodeId() override { return nodeId; };
-  Array<int> getMixerNodeIds() override { return mixerNodeIds; };
+  Array<int> getMixerNodeIds() override { return mixerNodeIds; }; 
+  StringPairArray getMixerNodeConnectionIds() override { return mixerConnectionIds; };
 
   void resized() override;
   void paint(Graphics& g) override;
@@ -61,6 +64,7 @@ private:
 
   int nodeId;
   Array<int> mixerNodeIds;
+  StringPairArray mixerConnectionIds;
 
   OwnedArray<InputConnector> inputConnectors;
   ScopedPointer<OutputConnector> outputConnector;

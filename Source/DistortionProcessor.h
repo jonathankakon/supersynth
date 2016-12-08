@@ -14,8 +14,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #include "Distorter.h"
+#include "RMSRequestable.h"
 
-class DistortionProcessor: public AudioProcessor, AudioProcessorListener
+class DistortionProcessor: public AudioProcessor, public RMSRequestable, AudioProcessorListener
 {
 public:
   //==============================================================================
