@@ -22,6 +22,8 @@ EnvelopeProcessor::EnvelopeProcessor() : AudioProcessor(BusesProperties().withOu
   
   addListener(this);
   
+  computeSteps();
+  
   }
 
 EnvelopeProcessor::~EnvelopeProcessor()
@@ -218,9 +220,20 @@ void EnvelopeProcessor::releaseResources()
 
 void EnvelopeProcessor::audioProcessorParameterChanged(juce::AudioProcessor* /*processor*/, int parameterIndex, float newValue)
 {
+  
+  computeSteps();
+
+}
+
+void EnvelopeProcessor::computeSteps()
+{
   attackStep = 1/(currentSampleRate * (*attackParameter));
   decayStep = (1- *sustainParameter)/(currentSampleRate * (*decayParameter));
   releaseStep = (*sustainParameter)/(currentSampleRate * (*releaseParameter));
+  if(*sustainParameter == 0)
+  {
+    releaseStep = 1/(currentSampleRate * (*releaseParameter));
+  }
 }
 
 AudioProcessorEditor* EnvelopeProcessor::createEditor(){
