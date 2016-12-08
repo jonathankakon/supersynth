@@ -9,10 +9,12 @@
 */
 
 #include "Distorter.h"
+#include "Constants.h"
 
 Distorter::Distorter()
 {
-  filter = new IIRFilter();
+  preFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
+  postFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
 }
 
 Distorter::~Distorter()
@@ -32,50 +34,27 @@ void Distorter::processHardclip(AudioBuffer<float> &buffer)
   {
     upsampledData[sampleIndex * 8] = data[sampleIndex];
   }
-  //upsampledBuffer->applyGain(8); // compensate for the upsampling it might still be a little too much
   
-  //do it three times for higher order
-  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
+  preFilter->applyFIRFilter(*upsampledBuffer);
   
   upsampledBuffer->applyGain(8);
   
-//  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
-//  {
-//    if(std::abs(upsampledData[sampleIndex]) > 1)
-//    {
-//      if(upsampledData[sampleIndex] < 0)
-//      {
-//        upsampledData[sampleIndex] = -1;
-//      }
-//      else
-//      {
-//        upsampledData[sampleIndex] = 1;
-//      }
-//    }
-//  }
-//  
-//  //LowPass filter at old Nyquist
-//  //do it three times for higher order
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
-//  filter->processSamples(upsampledData, upsampledBuffer->getNumSamples());
+  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
+  {
+    if(std::abs(upsampledData[sampleIndex]) > 1)
+    {
+      if(upsampledData[sampleIndex] < 0)
+      {
+        upsampledData[sampleIndex] = -1;
+      }
+      else
+      {
+        upsampledData[sampleIndex] = 1;
+      }
+    }
+  }
+  
+  postFilter->applyFIRFilter(*upsampledBuffer);
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
@@ -101,5 +80,4 @@ void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 void Distorter::setSampleRate(double newSampleRate)
 {
   currentSampleRate = newSampleRate;
-  filter->setCoefficients(IIRCoefficients::makeLowPass(8 * currentSampleRate, currentSampleRate/64)); // cut a little before the nyquist
 }

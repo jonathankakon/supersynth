@@ -12,7 +12,7 @@
 #define DISTORTER_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GenericIIRFilter.h"
+#include "FIRFilter.h"
 
 class Distorter
 {
@@ -29,7 +29,8 @@ public:
   
 private:
   
-  ScopedPointer<IIRFilter> filter;
+  ScopedPointer<FIRFilter> preFilter;
+  ScopedPointer<FIRFilter> postFilter;
   
   double currentSampleRate;
   
