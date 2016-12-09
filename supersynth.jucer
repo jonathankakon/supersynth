@@ -145,6 +145,7 @@
       <FILE id="LjQaGy" name="Distorter.h" compile="0" resource="0" file="Source/Distorter.h"/>
       <FILE id="WJ4kvk" name="FIRFilter.cpp" compile="1" resource="0" file="Source/FIRFilter.cpp"/>
       <FILE id="H5VoMC" name="FIRFilter.h" compile="0" resource="0" file="Source/FIRFilter.h"/>
+      <FILE id="gM55me" name="FIRTaps.h" compile="0" resource="0" file="Source/FIRTaps.h"/>
       <FILE id="E22bAe" name="GenericIIRFilter.cpp" compile="1" resource="0"
             file="Source/GenericIIRFilter.cpp"/>
       <FILE id="ckzXg3" name="GenericIIRFilter.h" compile="0" resource="0"
