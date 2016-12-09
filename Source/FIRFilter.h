@@ -12,14 +12,13 @@
 #define FIRFILTER_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "math.h"
 #include "constants.h"
 
 
 class FIRFilter //: public FFT
 {
 public:
-  FIRFilter(const float* tapsArray, int size, int order, bool isInverse);
+  FIRFilter(const float* tapsArray, int size);
   ~FIRFilter();
   
   void applyFIRFilter(AudioBuffer<float> &buffer);
@@ -31,23 +30,11 @@ private:
   ScopedPointer<AudioBuffer<float>> filterBuffer;
   ScopedPointer<AudioBuffer<float>> taps;
   ScopedPointer<AudioBuffer<float>> result;
-  ScopedPointer<AudioBuffer<float>> fftBuffer;
-  ScopedPointer<AudioBuffer<float>> processedBuffer;
-  ScopedPointer<AudioBuffer<float>> tapsFFTBuffer;
-  ScopedPointer<AudioBuffer<float>> audioBackupBuffer;
   float* filterBufferPointer;
   float* resultPointer;
   float* tapsPointer;
-  float* fftBufferPointer;
-  float* processedBufferPointer;
-  float* tapsFFTBufferPointer;
-  float* audioBackupBufferPointer;
   
-  
-  int maxLength = 801;
-  
-  //FFT forwardTransform;
-  //FFT inverseTransform;
+  int maxLength = 4009;
   
   int index;
   int tapsLength;
@@ -57,8 +44,6 @@ private:
   
   void convolute(float* audioDataPointer, int audioDataIndex);
   void vectorConvolution(float* audioDataPointer, int audioDataIndex);
-  int getClosestPowerOfTwo(int number);
-  void fftConvolution();
 };
 
 

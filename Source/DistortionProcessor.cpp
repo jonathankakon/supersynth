@@ -100,7 +100,7 @@ bool DistortionProcessor::supportsDoublePrecisionProcessing() const
 
 const String DistortionProcessor::getName() const
 {
-  return "aDistortion";
+  return "DistortionProcessor";
 }
 
 bool DistortionProcessor::acceptsMidi() const

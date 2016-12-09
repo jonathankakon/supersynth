@@ -11,14 +11,14 @@
 #include "FIRFilterProcessor.h"
 #include "FIRFilterProcessorEditor.h"
 
-#include "Constants.h"
+#include "FIRTaps.h"
 
 FIRFilterProcessor::FIRFilterProcessor() : AudioProcessor(BusesProperties()
                                                           .withInput("Audio Input", AudioChannelSet::mono())
                                                           .withOutput("Audio Output", AudioChannelSet::mono()))
 {
   int size = sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
-  filterFIR = new FIRFilter(lowpass_200hz_strong, size, 0, 0);
+  filterFIR = new FIRFilter(lowpass_200hz_strong, size);
 }
 
 FIRFilterProcessor::~FIRFilterProcessor()

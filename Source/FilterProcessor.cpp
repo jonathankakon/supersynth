@@ -23,10 +23,7 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   addParameter(gainParameter = new AudioParameterFloat("gainParameter2", "Gain", -12, 12, 0));
   filterIIR = new GenericIIRFilter(*cutoffFreqency, *qParameter, *gainParameter);
   
-  
-  int size = sizeof(lowpass_2600hz)/sizeof(*lowpass_2600hz);
-  
-  filterFIR = new FIRFilter(lowpass_2600hz, size, 0, 0);
+
   
   
   
@@ -41,7 +38,6 @@ FilterProcessor::FilterProcessor() : AudioProcessor(BusesProperties()
   types->add("canonical bandstop");
   types->add("lowshelf");
   types->add("highshelf");
-  types->add("FIR");
   
   
   addParameter(filterType = new AudioParameterChoice("filterType", "Filter Type", *types, 0));
@@ -132,9 +128,6 @@ void FilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuffer 
     case 10:
       filterIIR->highShelf(outBuffer, modBuffer);
       break;
-      
-    case 11:
-      filterFIR->applyFIRFilter(outBuffer);
       
     default:
       break;
