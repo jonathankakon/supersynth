@@ -37,6 +37,9 @@ public:
   
   double getFrequency() const;
   void setFrequency(double newFrequency);
+  
+  double getPhase() {return currentPhase;}  const
+  void resetPhase() {currentPhase = 0;}
 
 private:
   

@@ -19,6 +19,7 @@
 #include "DistortionProcessor.h"
 #include "DelayProcessor.h"
 #include "FIRFilterProcessor.h"
+#include "PolyWavegeneratorProcessor.h"
 #include "PluginEditor.h"
 
 int ToolboxComponent::getNumRows()
@@ -67,6 +68,7 @@ ToolboxComponent::ToolboxComponent() :
   modules.add(new ModulesListElement("Distortion", "DistortionProcessor", &createInstance<DistortionProcessor>));
   modules.add(new ModulesListElement("Delay", "DelayProcessor", &createInstance<DelayProcessor>));
   modules.add(new ModulesListElement("FIR Filter", "FIRFilterProcessor", &createInstance<FIRFilterProcessor>));
+  modules.add(new ModulesListElement("Poly Wave Generator", "PolyWavegeneratorProcessor", &createInstance<PolyWavegeneratorProcessor>));
 
 
   Rectangle<int> r(getLocalBounds());

@@ -15,6 +15,7 @@
 #include "InputConnectorProcessor.h"
 #include "DelayProcessorEditor.h"
 #include "FIRFilterProcessor.h"
+#include "PolyWavegeneratorProcessor.h"
 
 template<class AudioProcessorType, class EditorType>
 ProcessorEditorWithConnectors<AudioProcessorType, EditorType>::ProcessorEditorWithConnectors(AudioProcessorType * p) : ProcessorEditorBase(p),
@@ -217,4 +218,5 @@ template class ProcessorEditorWithConnectors<NoiseGeneratorProcessor, NoiseGener
 template class ProcessorEditorWithConnectors<DistortionProcessor, DistortionProcessorEditor>;
 template class ProcessorEditorWithConnectors<DelayProcessor, DelayProcessorEditor>;
 template class ProcessorEditorWithConnectors<FIRFilterProcessor, FIRFilterProcessorEditor>;
+template class ProcessorEditorWithConnectors<PolyWavegeneratorProcessor, PolyWavegeneratorEditor>;
 

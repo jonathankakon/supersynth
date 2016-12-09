@@ -11,10 +11,21 @@
 #include "Distorter.h"
 #include "Constants.h"
 
-Distorter::Distorter()
+Distorter::Distorter(): oversamplingFactor(4)
 {
-  preFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
-  postFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
+  for(int i  = 0; i < 4; i++)
+  {
+    IIRFilter* filter = new IIRFilter();
+    filter->setCoefficients(IIRCoefficients::makeLowPass(48000, 48000.0f/16.0f));
+    preFilterArray.add(filter);
+  }
+  
+  for(int i  = 0; i < 4; i++)
+  {
+    IIRFilter* filter = new IIRFilter();
+    filter->setCoefficients(IIRCoefficients::makeLowPass(48000, 48000.0f/16.0f));
+    postFilterArray.add(filter);
+  }
 }
 
 Distorter::~Distorter()
@@ -24,22 +35,23 @@ Distorter::~Distorter()
 
 void Distorter::processHardclip(AudioBuffer<float> &buffer)
 {
-  ScopedPointer<AudioBuffer<float>> upsampledBuffer = new AudioBuffer<float>(1, buffer.getNumSamples() * 8);
-  
   float* const data = buffer.getWritePointer(0);
-  float* const upsampledData = upsampledBuffer->getWritePointer(0);
+  float* const upsampledData = upsampledBuffer.getWritePointer(0);
   
-  upsampledBuffer->clear();
+  upsampledBuffer.clear();
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    upsampledData[sampleIndex * 8] = data[sampleIndex];
+    upsampledData[sampleIndex * oversamplingFactor] = data[sampleIndex];
   }
   
-  preFilter->applyFIRFilter(*upsampledBuffer);
+  for(int i = 0; i < preFilterArray.size(); i++)
+  {
+    preFilterArray[i]->processSamples(upsampledData, upsampledBuffer.getNumSamples());
+  }
   
-  upsampledBuffer->applyGain(8);
+  upsampledBuffer.applyGain(2 * oversamplingFactor + 2); // * 2 because the filters dont seem to be normalized
   
-  for(int sampleIndex = 0; sampleIndex < upsampledBuffer->getNumSamples(); sampleIndex++)
+  for(int sampleIndex = 0; sampleIndex < upsampledBuffer.getNumSamples(); sampleIndex++)
   {
     if(std::abs(upsampledData[sampleIndex]) > 1)
     {
@@ -54,42 +66,53 @@ void Distorter::processHardclip(AudioBuffer<float> &buffer)
     }
   }
   
-  postFilter->applyFIRFilter(*upsampledBuffer);
-  
-  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  for(int i = 0; i < postFilterArray.size(); i++)
   {
-    data[sampleIndex] = upsampledData[sampleIndex * 8];
+    postFilterArray[i]->processSamples(upsampledData, upsampledBuffer.getNumSamples());
   }
   
   
+  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  {
+    data[sampleIndex] = upsampledData[sampleIndex * oversamplingFactor];
+  }
   
 }
 
 void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 {
-  ScopedPointer<AudioBuffer<float>> upsampledBuffer = new AudioBuffer<float>(1, buffer.getNumSamples() * 8);
   
   float* const data = buffer.getWritePointer(0);
-  float* const upsampledData = upsampledBuffer->getWritePointer(0);
+  float* const upsampledData = upsampledBuffer.getWritePointer(0);
   
-  upsampledBuffer->clear();
+  upsampledBuffer.clear();
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    upsampledData[sampleIndex * 8] = data[sampleIndex];
+    upsampledData[sampleIndex * oversamplingFactor] = data[sampleIndex];
   }
   
-  for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+  for(int i = 0; i < preFilterArray.size(); i++)
   {
-    float x = data[sampleIndex];
+    preFilterArray[i]->processSamples(upsampledData, upsampledBuffer.getNumSamples());
+  }
+  
+  upsampledBuffer.applyGain(2 * oversamplingFactor + 2); // * 2 because the filters dont seem to be normalized
+  
+  for(int sampleIndex = 0; sampleIndex < upsampledBuffer.getNumSamples(); sampleIndex++)
+  {
+    float x = upsampledData[sampleIndex];
     
-    data[sampleIndex] = x/powf(1 + powf(std::abs(x), 2.5), 0.4);
+    upsampledData[sampleIndex] = x/powf(1 + powf(std::abs(x), 2.5), 0.4);
   }
   
-  postFilter->applyFIRFilter(*upsampledBuffer);
+  for(int i = 0; i < postFilterArray.size(); i++)
+  {
+    postFilterArray[i]->processSamples(upsampledData, upsampledBuffer.getNumSamples());
+  }
   
   for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
   {
-    data[sampleIndex] = upsampledData[sampleIndex * 8];
+    data[sampleIndex] = upsampledData[sampleIndex * oversamplingFactor];
   }
   
 }
@@ -97,4 +120,9 @@ void Distorter::processTanhAprx(AudioBuffer<float>& buffer)
 void Distorter::setSampleRate(double newSampleRate)
 {
   currentSampleRate = newSampleRate;
+}
+
+void Distorter::setBufferSize(int newSize)
+{
+  upsampledBuffer.setSize(1, newSize * oversamplingFactor);
 }
