@@ -118,29 +118,26 @@ void Worksheet::componentMovedOrResized(Component& component, bool wasMoved, boo
 
 void Worksheet::timerCallback()
 {
-  if (animateConnections)
-  {
-    for (int i = editors.size() - 1; i >= 0; --i)
-    {
-      ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
-      if (editor != nullptr)
-      {
-        RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
-
-        if (&rmsProcessor != nullptr)
-        {
-          float rms = rmsProcessor.getCurrentRMS();
-
-          for (int k = connections.size() - 1; k >= 0; --k)
-          {
-            if (connections[k]->outputNodeId == editor->getNodeId())
-              connections[k]->setPathColourFromRms(rms);
-          }
-        }
-      }
-    }
-    repaint();
-  }
+//  for (int i = editors.size() - 1; i >= 0; --i)
+//  {
+//    ProcessorEditorBase* editor = reinterpret_cast<ProcessorEditorBase*>(editors[i]);
+//    if (editor != nullptr)
+//    {
+//      RMSRequestable& rmsProcessor = dynamic_cast<RMSRequestable&>(editor->getProcessor());
+//
+//      if (&rmsProcessor != nullptr)
+//      {
+//        float rms = rmsProcessor.getCurrentRMS();
+//
+//        for (int k = connections.size() - 1; k >= 0; --k)
+//        {
+//          if (connections[k]->outputNodeId == editor->getNodeId())
+//            connections[k]->setPathColourFromRms(rms);
+//        }
+//      }
+//    }
+//  }
+//  repaint();
 }
 
 void Worksheet::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
