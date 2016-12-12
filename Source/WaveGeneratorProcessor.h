@@ -83,6 +83,7 @@ private:
   AudioParameterFloat* volumeParam;
   AudioParameterFloat* frequencyRollParam;
   AudioParameterChoice* waveformParam;
+  AudioParameterFloat* phaseOffsetParam;
   
   AudioParameterInt* octaveParam;
   AudioParameterInt* semitonesParam;

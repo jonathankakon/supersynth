@@ -83,6 +83,16 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   parent.registerImmobileObject(*waveformSlider);
   addAndMakeVisible(waveformSlider);
   
+  const AudioParameterFloat* phaseOffsetParam = dynamic_cast<AudioParameterFloat*>(params[6]);
+  phaseOffsetSlider = new Slider(phaseOffsetParam->name);
+  phaseOffsetSlider->setRange(0, 1);
+  phaseOffsetSlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  phaseOffsetSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+  phaseOffsetSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(phaseOffsetParam)->getValue());
+  phaseOffsetSlider->addListener(this);
+  parent.registerImmobileObject(*phaseOffsetSlider);
+  addAndMakeVisible(phaseOffsetSlider);
+  
   volumeSlider->addListener(this);
    
   //labels
@@ -115,6 +125,11 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   centLabel.attachToComponent(centsSlider, false);
   centLabel.setJustificationType(juce::Justification::horizontallyCentred);
   addAndMakeVisible(centLabel);
+  
+  phaseOffsetLabel.setText("phase", juce::dontSendNotification);
+  phaseOffsetLabel.attachToComponent(phaseOffsetSlider, false);
+  phaseOffsetLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(phaseOffsetLabel);
   
   //Toggle Buttons
 
@@ -154,7 +169,9 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   centsSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
-  r.setY(r.getY() - 30);
+  phaseOffsetSlider->setBounds(r);
+  
+  r.setY(r.getY() - 55);
   r.setWidth(60);
   midiToggle->setBounds(r);
   
@@ -217,6 +234,14 @@ void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
   else if (slider == waveformSlider)
   {
     AudioProcessorParameter* param = params[5];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) slider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else if (slider == phaseOffsetSlider)
+  {
+    AudioProcessorParameter* param = params[6];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
     else

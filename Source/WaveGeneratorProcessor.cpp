@@ -55,7 +55,12 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                             "Waveform",
                             StringArray({"Sine","SawUp","SawDown","Square","Triangle"}),
                             1) );
-
+  
+  addParameter(phaseOffsetParam = new AudioParameterFloat("phaseOffset",
+                            "PhaseOffset",
+                            NormalisableRange<float>(0.0, 2 * double_Pi, 0.001, 1, false),
+                            double_Pi) );
+  
 
   AudioProcessor::addListener(this);
   
@@ -96,13 +101,17 @@ void WaveGeneratorProcessor::releaseResources()
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float /*newValue*/)
 {
   ignoreUnused(processor);
-  if(parameterIndex != 0 && parameterIndex != 5)
+  if(parameterIndex != 0 && parameterIndex != 5 && parameterIndex != 6)
   {
     targetFrequency = targetFreqParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()];
   }
   else if(parameterIndex == 5)
   {
     setWaveform(waveformParam->getIndex());
+  }
+  else if(parameterIndex == 6)
+  {
+    oscillator->setPhaseOffset(phaseOffsetParam->get());
   }
 }
 
@@ -119,16 +128,21 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
     FloatVectorOperations::fill(pitchModBuffer.getWritePointer(0), -1, pitchModBuffer.getNumSamples());
   }
 
+  
+  Array<int> midiOns; //i know no arrays for primitives :)
   if(takesMidi && !midiBuffer.isEmpty())
   {
     MidiMessage& message1 = *new MidiMessage();
     ScopedPointer<MidiBuffer::Iterator> iterator = new MidiBuffer::Iterator(midiBuffer);
     int i = 0;
-    iterator->getNextEvent(message1, i);
-    if(message1.isNoteOn()){
-      if(int pos = message1.getNoteNumber())
-      {
-        targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0f);
+    while(iterator->getNextEvent(message1, i))
+    {
+      if(message1.isNoteOn()){
+        if(int pos = message1.getNoteNumber())
+        {
+          targetFreqParam->setValueNotifyingHost(midiToFreq[pos]/15000.0f);
+          midiOns.add(i);
+        }
       }
     }
   }
@@ -137,7 +151,7 @@ void WaveGeneratorProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer
   
   if(currentWaveform == sine)
   {
-    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer);
+    oscillator->fillBufferSine(outBuffer, phaseModBuffer, volumeModBuffer, pitchModBuffer, midiOns);
   }
   else if(currentWaveform == sawUp)
   {

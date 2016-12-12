@@ -19,7 +19,7 @@ DistortionProcessor::DistortionProcessor() : AudioProcessor(BusesProperties()
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(preGainParam = new AudioParameterFloat("preGain",
                                                      "PreGain",
-                                                     NormalisableRange<float>(1.0f, 800.0f, 1.0f, 0.7f, false),
+                                                     NormalisableRange<float>(1.0f, 800.0f, 1.0f, 1.5f, false),
                                                      1.0f));
   addParameter(distortionTypeParam = new AudioParameterChoice("distType",
                                                       "DistortionType",
