@@ -66,12 +66,40 @@ public:
   
 private:
   
-  struct Voice
+  class Voice
   {
+  public:
+    Voice();
+    ~Voice();
+    
+    bool getIsOn() {return isOn;}
+    void setIsOn(bool shouldBeOn) {isOn = shouldBeOn;}
+    
+    int getMidiNote() {return midiNote;}
+    void setMidiNote(int newNote) {midiNote = newNote;}
+    
+    void addMidiEvent(const MidiMessage& message, int sampleNumber);
+    void clearMidiBuffer();
+    
+    void clearAudioBuffer();
+    
+    void fillBufferEnvelope();
+    void fillBufferAudio();
+    
+  private:
     VAOscillator oscillator;
     EnvelopeProcessor envelope;
+    bool isOn;
+    int midiNote;
+    
+    AudioBuffer<float> envelopeBuffer;
+    AudioBuffer<float> outBuffer;
+    MidiBuffer midiInBuffer;
   };
   
+  OwnedArray<Voice> voices;
+  
+  bool takesMidi = true;
   
   
   //==============================================================================

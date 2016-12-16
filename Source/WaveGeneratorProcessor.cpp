@@ -58,7 +58,7 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   
   addParameter(phaseOffsetParam = new AudioParameterFloat("phaseOffset",
                             "PhaseOffset",
-                            NormalisableRange<float>(0.0, 2 * double_Pi, 0.001, 1, false),
+                            NormalisableRange<float>(0.0, 2 * double_Pi, 0.001, 1.5, true),
                             double_Pi) );
   
 
