@@ -14,6 +14,10 @@
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
       <GROUP id="{D44506AB-31FD-2209-136D-1D00A1BC7922}" name="Components">
         <GROUP id="{CFEC92A0-FC8C-7996-EEB7-F48108F7A3A6}" name="ModuleEditors">
+          <FILE id="oNKmfz" name="PolyWavegeneratorEditor.cpp" compile="1" resource="0"
+                file="Source/PolyWavegeneratorEditor.cpp"/>
+          <FILE id="ckSa5m" name="PolyWavegeneratorEditor.h" compile="0" resource="0"
+                file="Source/PolyWavegeneratorEditor.h"/>
           <FILE id="ysgfT3" name="FIRFilterProcessorEditor.h" compile="0" resource="0"
                 file="Source/FIRFilterProcessorEditor.h"/>
           <FILE id="pIqBLH" name="FIRFilterProcessorEditor.cpp" compile="1" resource="0"
@@ -85,6 +89,10 @@
         <FILE id="UcPy9u" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
       <GROUP id="{8D8EB69D-7F8E-BB0E-0B80-6649EB5D43CF}" name="Processors">
+        <FILE id="DSi2zB" name="PolyWavegeneratorProcessor.cpp" compile="1"
+              resource="0" file="Source/PolyWavegeneratorProcessor.cpp"/>
+        <FILE id="qaXjzi" name="PolyWavegeneratorProcessor.h" compile="0" resource="0"
+              file="Source/PolyWavegeneratorProcessor.h"/>
         <FILE id="nd0dnm" name="FIRFilterProcessor.h" compile="0" resource="0"
               file="Source/FIRFilterProcessor.h"/>
         <FILE id="ggEa9E" name="FIRFilterProcessor.cpp" compile="1" resource="0"
@@ -138,7 +146,6 @@
       <FILE id="l9BsIB" name="FFTConvolver.cpp" compile="1" resource="0"
             file="Source/FFTConvolver.cpp"/>
       <FILE id="fdTjhg" name="FFTConvolver.h" compile="0" resource="0" file="Source/FFTConvolver.h"/>
-      <FILE id="Usz9Jr" name="FFTJob.h" compile="0" resource="0" file="Source/FFTJob.h"/>
       <FILE id="WJ4kvk" name="FIRFilter.cpp" compile="1" resource="0" file="Source/FIRFilter.cpp"/>
       <FILE id="H5VoMC" name="FIRFilter.h" compile="0" resource="0" file="Source/FIRFilter.h"/>
       <FILE id="gM55me" name="FIRTaps.h" compile="0" resource="0" file="Source/FIRTaps.h"/>

@@ -16,7 +16,7 @@ FIRFilterProcessorEditor::FIRFilterProcessorEditor(FIRFilterProcessor* p, Proces
 thumbnail(64, formatManager, thumbnailCache)
 {
   
-  setSize(320, 160);
+  setSize(320, 120);
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
 
   

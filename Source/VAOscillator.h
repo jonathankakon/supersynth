@@ -23,7 +23,7 @@ public:
   
   VAOscillator();
   
-  void fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
+  void fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer, Array<int>& midiOns);
   void fillBufferRisingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
   void fillBufferFallingSaw(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
   void fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
@@ -37,15 +37,25 @@ public:
   
   double getFrequency() const;
   void setFrequency(double newFrequency);
+  
+  double getPhase() {return currentPhase;}  const
+  void resetPhase() {currentPhase = 0;}
+  
+  double getPhaseOffset() {return currentPhaseOffset;} const
+  void setPhaseOffset(double newOffset){currentPhaseOffset = newOffset;}
+  
+  void setActive(bool shouldBeActive);
 
 private:
+  
+  bool isActive;
   
   double currentSampleRate;
   double fourFoldSampleRate;
   double currentFrequency;
   double currentPhase;
   double phaseInc;
-  double phaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
+  double currentPhaseOffset; // only for midi stuff. this determines the starting point of the wave when noteOn happens.
   
   double twoPiHalfPulseLength;
   double phaseToIncludeBlep;

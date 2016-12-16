@@ -9,7 +9,6 @@
 */
 
 #include "FFTConvolver.h"
-#include "FFTJob.h"
 
 FFTConvolver::FFTConvolver(const float* taps, int length, int bufferSize) :
   bufferSize(bufferSize),

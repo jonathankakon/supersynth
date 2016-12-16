@@ -44,6 +44,7 @@ private:
   ScopedPointer<Slider> semitonesSlider;
   ScopedPointer<Slider> centsSlider;
   ScopedPointer<Slider> waveformSlider;
+  ScopedPointer<Slider> phaseOffsetSlider;
 
   ScopedPointer<ToggleButton> midiToggle;
   
@@ -53,6 +54,7 @@ private:
   Label octaveLabel;
   Label semitoneLabel;
   Label centLabel;
+  Label phaseOffsetLabel;
   
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveGeneratorProcessorEditor)

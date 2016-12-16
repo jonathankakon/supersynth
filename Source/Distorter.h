@@ -12,7 +12,6 @@
 #define DISTORTER_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "FIRFilter.h"
 
 class Distorter
 {
@@ -27,11 +26,16 @@ public:
   inline double getSampleRate(){return currentSampleRate;}
   void setSampleRate(double newSampleRate);
   
+  void setBufferSize(int newSize);
+  
 private:
   
-  ScopedPointer<FIRFilter> preFilter;
-  ScopedPointer<FIRFilter> postFilter;
+  OwnedArray<IIRFilter> preFilterArray;
+  OwnedArray<IIRFilter> postFilterArray;
   
+  AudioBuffer<float> upsampledBuffer;
+  
+  int oversamplingFactor;
   double currentSampleRate;
   
   //==============================================================================
