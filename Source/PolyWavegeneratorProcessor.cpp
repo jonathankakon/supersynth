@@ -45,8 +45,7 @@ void PolyWavegeneratorProcessor::Voice::fillBufferEnvelope()
 
 void PolyWavegeneratorProcessor::Voice::fillBufferAudio()
 {
-  oscillator.fillBufferFallingSaw(outBuffer, null, envelopeBuffer, null);
-  
+  // oscillator.fillBufferFallingSaw(outBuffer, null, envelopeBuffer, null);
 }
 
 
