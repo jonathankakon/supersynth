@@ -12,16 +12,17 @@
 #include "FIRTaps.h"
 
 FIRFilterProcessorEditor::FIRFilterProcessorEditor(FIRFilterProcessor* p, ProcessorEditorBase* b)
-: AudioProcessorEditor(p) , processor (*p), parent(*b)
+: AudioProcessorEditor(p) , processor (*p), parent(*b), thumbnailCache(5),                           // [4]
+thumbnail(64, formatManager, thumbnailCache)
 {
   
-  setSize(250, 60);
+  setSize(320, 120);
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
 
   
   //COMBOBOX
   tapsSelectorComboBox = new ComboBox("tapsSelectorBox");
-  tapsSelectorComboBox->addItemList({"Strong Lowpass 200hz","Medium Lowpass 500hz", "Soft Lowpass 500hz","Cut 15k", "Cut 18k", "Bandpass 450hz", "Notch 250hz", "Cut below 40hz", "Cut below 50hz", "Highpass 600hz", "Lowpass 2600hz"}, 1);
+  tapsSelectorComboBox->addItemList({"Strong Lowpass 200hz","Medium Lowpass 500hz", "Soft Lowpass 500hz (church)","Cut 15k", "Cut 18k", "Bandpass 450hz", "Notch 250hz", "Cut below 40hz", "Cut below 50hz", "Highpass 600hz", "Lowpass 2600hz"}, 1);
   tapsSelectorComboBox->addListener(this);
   //auto value = dynamic_cast<const AudioParameterChoice*>(params[0]);
   //tapsSelectorComboBox->setSelectedId(value->getIndex() +1);
@@ -29,13 +30,19 @@ FIRFilterProcessorEditor::FIRFilterProcessorEditor(FIRFilterProcessor* p, Proces
   addAndMakeVisible(tapsSelectorComboBox);
   
   //BUTTON
-  bypassButton = new ToggleButton("Bypass");
+  bypassButton = new TextButton("Bypass");
   bypassButton->addListener(this);
   parent.registerImmobileObject(*bypassButton);
   addAndMakeVisible(bypassButton);
   bypassButton->setToggleState(true, juce::dontSendNotification);
   
-  
+  openButton = new TextButton("Open");
+  openButton->addListener(this);
+  parent.registerImmobileObject(*openButton);
+  addAndMakeVisible(openButton);
+
+  formatManager.registerBasicFormats();
+  thumbnail.addChangeListener(this);
 }
 
 FIRFilterProcessorEditor::~FIRFilterProcessorEditor()
@@ -50,13 +57,25 @@ void FIRFilterProcessorEditor::paint(juce::Graphics & g)
   g.setFont(15.0f);
   
   Rectangle<int> r(getLocalBounds());
-  r.reduce(20, 20);
+  r.reduce(10, 10);
   
-  bypassButton->setBounds(r.withWidth(80));
-  tapsSelectorComboBox->setBounds(r.withX(r.getX()+ 100).withWidth(r.getWidth() - 120));
-  
-  
-  
+  openButton->setBounds(r.withWidth(80).withHeight(18));
+  bypassButton->setBounds(r.withWidth(80).withY(r.getY() + 21).withHeight(18));
+  tapsSelectorComboBox->setBounds(r.withWidth(80).withHeight(18).withY(r.getY() + 42));
+
+  Rectangle<int> r1(getLocalBounds());
+  r1.reduce(10, 10);
+  r1.setWidth(r1.getWidth() - 90);
+  r1.setX(r1.getX() + 90);
+
+  g.setColour(Colours::lightgrey);
+  g.fillRect(r1);
+
+  g.setColour(Colours::blue);
+  if (hasFile)
+  {
+    thumbnail.drawChannel(g, r1, 0.0, thumbnail.getTotalLength(), 0, 1.0f);
+  }
 }
 
 void FIRFilterProcessorEditor::resized()
@@ -65,10 +84,40 @@ void FIRFilterProcessorEditor::resized()
 
 void FIRFilterProcessorEditor::buttonClicked(juce::Button *button)
 {
-  if(bypassButton->getToggleState())
-    processor.bypass(true);
+  if (button == bypassButton)
+  {
+    if (bypassButton->getToggleState())
+    {
+      bypassButton->setToggleState(false, dontSendNotification);
+      processor.bypass(false);
+    }
+    else
+    {
+      bypassButton->setToggleState(true, dontSendNotification);
+      processor.bypass(true);
+    }
+  }
   else
-    processor.bypass(false);
+  {
+    FileChooser fileChoose("load WAV Impulse Response",
+      File::getSpecialLocation(File::userHomeDirectory),
+      "*.wav");
+    if (fileChoose.browseForFileToOpen())
+    {
+      File impulse(fileChoose.getResult());
+      processor.loadImpulse(impulse);
+
+
+      AudioFormatReader* reader = formatManager.createReaderFor(impulse);
+      if (reader != nullptr)
+      {
+        ScopedPointer<AudioFormatReaderSource> newSource = new AudioFormatReaderSource(reader, true);
+        thumbnail.setSource(new FileInputSource(impulse));
+        readerSource = newSource.release();
+        hasFile = true;
+      }
+    }
+  }
 }
 
 void FIRFilterProcessorEditor::buttonStateChanged(juce::Button *button)
@@ -79,19 +128,19 @@ void FIRFilterProcessorEditor::buttonStateChanged(juce::Button *button)
 void FIRFilterProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasChanged)
 {
   int size = 0;
+  processor.bypass(true);
   switch (comboBoxThatHasChanged->getSelectedId()) {
     case 1:
       size =  sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
       processor.changeFilterTaps(lowpass_200hz_strong, size);
       break;
-      
     case 2:
       size =  sizeof(lowpass_500hz)/sizeof(*lowpass_500hz);
       processor.changeFilterTaps(lowpass_500hz, size);
       break;
     case 3:
-      size =  sizeof(lowpass_500to1000)/sizeof(*lowpass_500to1000);
-      processor.changeFilterTaps(lowpass_500to1000, size);
+      size =  sizeof(church)/sizeof(*church);
+      processor.changeFilterTaps(church, size);
       break;
     case 4:
       size =  sizeof(highCut_15000hz)/sizeof(*highCut_15000hz);
@@ -125,11 +174,16 @@ void FIRFilterProcessorEditor::comboBoxChanged(juce::ComboBox *comboBoxThatHasCh
       size =  sizeof(lowpass_2600hz)/sizeof(*lowpass_2600hz);
       processor.changeFilterTaps(lowpass_2600hz, size);
       break;
-
-      
     default:
       break;
   }
+  hasFile = false;
+  processor.bypass(false);
+  repaint();
 }
 
+void FIRFilterProcessorEditor::changeListenerCallback(ChangeBroadcaster* source)
+{
+  repaint();
+}
 

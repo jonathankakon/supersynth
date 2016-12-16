@@ -13,8 +13,7 @@
 
 DistortionProcessor::DistortionProcessor() : AudioProcessor(BusesProperties()
                                                             .withOutput("Audio Output", AudioChannelSet::mono())
-                                                            .withInput("Audio Input", AudioChannelSet::mono())),
-                                             distorter(new Distorter())
+                                                            .withInput("Audio Input", AudioChannelSet::mono()))
 {
   // dont change the order of the parameters here, because the Editor depends on it!
   addParameter(preGainParam = new AudioParameterFloat("preGain",
@@ -42,6 +41,7 @@ DistortionProcessor::~DistortionProcessor()
 
 void DistortionProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+  distorter = new Distorter(samplesPerBlock);
   distorter->setSampleRate(sampleRate);
   distorter->setBufferSize(samplesPerBlock);
 }

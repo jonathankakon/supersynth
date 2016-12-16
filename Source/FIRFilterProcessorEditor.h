@@ -15,7 +15,7 @@
 #include "FIRFilterProcessor.h"
 #include "ProcessorEditorWithConnectors.h"
 
-class FIRFilterProcessorEditor : public AudioProcessorEditor, ToggleButton::Listener, ComboBox::Listener
+class FIRFilterProcessorEditor : public AudioProcessorEditor, ToggleButton::Listener, ComboBox::Listener, ChangeListener
 {
 public:
   FIRFilterProcessorEditor(FIRFilterProcessor* p, ProcessorEditorBase* b);
@@ -26,15 +26,24 @@ public:
   
   void buttonClicked(Button* button) override;
   void buttonStateChanged(Button* button) override;
-  void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+  void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override; 
+  void changeListenerCallback(ChangeBroadcaster* source) override;
   
 private:
   FIRFilterProcessor& processor;
   ProcessorEditorBase& parent;
+
+  bool hasFile = false;
   
   ScopedPointer<ComboBox> tapsSelectorComboBox;
   
-  ScopedPointer<ToggleButton> bypassButton;
+  ScopedPointer<TextButton> bypassButton;
+  ScopedPointer<TextButton> openButton;
+
+  ScopedPointer<AudioFormatReaderSource> readerSource;
+  AudioFormatManager formatManager;
+  AudioThumbnailCache thumbnailCache;
+  AudioThumbnail thumbnail;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FIRFilterProcessorEditor)
 };

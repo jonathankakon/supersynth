@@ -57,20 +57,29 @@ public:
   
   void changeFilterTaps(const float taps[], int size)
   {
-    filterFIR->changeTaps(taps, size);
+    newTaps = taps;
+    newSize = size;
+    change = true;
   };
+
   void bypass(bool isBypassed)
   {
     bypassBool = isBypassed;
   }
   
+  void loadImpulse(File impulse);
   
 private:
   
   AudioParameterChoice* tapsSelector;
   bool bypassBool = true;
+
+  const float* newTaps;
+  int newSize;
+  bool change = false;
   
   ScopedPointer<FIRFilter> filterFIR;
+  AudioSampleBuffer ImpulseBuffer;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FIRFilterProcessor)
 

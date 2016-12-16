@@ -11,7 +11,7 @@
 #include "Distorter.h"
 #include "Constants.h"
 
-Distorter::Distorter(): oversamplingFactor(4)
+Distorter::Distorter(int bufferSize): oversamplingFactor(4)
 {
   for(int i  = 0; i < 4; i++)
   {

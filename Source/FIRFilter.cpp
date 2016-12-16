@@ -12,9 +12,9 @@
 #include "FIRFilter.h"
 
 
-FIRFilter::FIRFilter(const float* tapsArray, int size)
+FIRFilter::FIRFilter(const float* tapsArray, int size, int bufferSize)
 {
-  
+  /*
   tapsLength = size;
   
   filterBuffer = new AudioBuffer<float>(1, maxLength);
@@ -35,7 +35,8 @@ FIRFilter::FIRFilter(const float* tapsArray, int size)
   }
 
   index = 0;
-  
+*/
+  convolver = new FFTConvolver(tapsArray, size, bufferSize);
 }
 
 FIRFilter::~FIRFilter()
@@ -45,7 +46,8 @@ FIRFilter::~FIRFilter()
 
 void FIRFilter::applyFIRFilter(AudioBuffer<float> &buffer)
 {
-  
+  convolver->performConvolution(buffer);
+  /*
   float* audioDataPointer = buffer.getWritePointer(0);
   
   for (int i = 0; i < buffer.getNumSamples(); i++)
@@ -57,7 +59,7 @@ void FIRFilter::applyFIRFilter(AudioBuffer<float> &buffer)
     if(!(index % tapsLength))
       index = 0;
   }
-
+*/
   
 }
 
@@ -97,6 +99,8 @@ void FIRFilter::vectorConvolution(float *audioDataPointer, int audioDataIndex)
 
 void FIRFilter::changeTaps(const float *tapsArray, int size)
 {
+  convolver->setNewTapsArray(tapsArray, size);
+  /*
 //  taps->setSize(0, size);
   taps->clear();
   
@@ -110,7 +114,7 @@ void FIRFilter::changeTaps(const float *tapsArray, int size)
   {
     tapsPointer[i] = tapsArray[tapsLength -1 - i];
   }
-  
+  */
 }
 
 

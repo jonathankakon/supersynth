@@ -17,8 +17,6 @@ FIRFilterProcessor::FIRFilterProcessor() : AudioProcessor(BusesProperties()
                                                           .withInput("Audio Input", AudioChannelSet::mono())
                                                           .withOutput("Audio Output", AudioChannelSet::mono()))
 {
-  int size = sizeof(lowpass_200hz_strong)/sizeof(*lowpass_200hz_strong);
-  filterFIR = new FIRFilter(lowpass_200hz_strong, size);
 }
 
 FIRFilterProcessor::~FIRFilterProcessor()
@@ -31,10 +29,20 @@ void FIRFilterProcessor::processBlock(AudioSampleBuffer & buffer, juce::MidiBuff
 {
   if(bypassBool)
   {
+    if (change)
+    {
+      filterFIR->changeTaps(newTaps, newSize);
+      change = false;
+    }
     return;
   }
   else
   {
+    if(change)
+    {
+      filterFIR->changeTaps(newTaps, newSize);
+      change = false;
+    }
     filterFIR->applyFIRFilter(buffer);
   }
 }
@@ -49,7 +57,8 @@ void FIRFilterProcessor::audioProcessorParameterChanged(AudioProcessor* /*proces
 
 void FIRFilterProcessor::prepareToPlay(double sampleRate , int samplesPerBlock)
 {
-  ignoreUnused(sampleRate, samplesPerBlock);
+  int size = sizeof(church) / sizeof(*church);
+  filterFIR = new FIRFilter(church, size, samplesPerBlock);
 }
 
 void FIRFilterProcessor::releaseResources()
@@ -120,4 +129,21 @@ void FIRFilterProcessor::getStateInformation(juce::MemoryBlock &destData)
 void FIRFilterProcessor::setStateInformation(const void *data, int sizeInBytes)
 {
   ignoreUnused(data, sizeInBytes);
+}
+
+void FIRFilterProcessor::loadImpulse(File impulse)
+{
+  AudioFormatManager formatManager;
+  formatManager.registerBasicFormats();
+  ScopedPointer<AudioFormatReader> reader = formatManager.createReaderFor(impulse);
+
+  if (reader != nullptr)
+  {
+    const double duration = reader->lengthInSamples / reader->sampleRate; 
+    ImpulseBuffer.setSize(reader->numChannels, reader->lengthInSamples);
+    reader->read(&ImpulseBuffer, 0, reader->lengthInSamples, 0, true, true);
+    newSize = reader->lengthInSamples;
+    newTaps = ImpulseBuffer.getReadPointer(0);
+    change = true;
+  }
 }
