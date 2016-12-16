@@ -8,7 +8,7 @@
               pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="supersynthAU" pluginRTASCategory="" aaxIdentifier="com.pkj.supersynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.3.0"
               pluginVSTCategory="">
   <MAINGROUP id="vIa7b1" name="supersynth">
     <GROUP id="{128631BD-89BA-1F8E-7287-4DDFFE096FEC}" name="Source">
@@ -135,6 +135,10 @@
       <FILE id="cnLiw4" name="Constants.h" compile="0" resource="0" file="Source/Constants.h"/>
       <FILE id="t1xG10" name="Distorter.cpp" compile="1" resource="0" file="Source/Distorter.cpp"/>
       <FILE id="LjQaGy" name="Distorter.h" compile="0" resource="0" file="Source/Distorter.h"/>
+      <FILE id="l9BsIB" name="FFTConvolver.cpp" compile="1" resource="0"
+            file="Source/FFTConvolver.cpp"/>
+      <FILE id="fdTjhg" name="FFTConvolver.h" compile="0" resource="0" file="Source/FFTConvolver.h"/>
+      <FILE id="Usz9Jr" name="FFTJob.h" compile="0" resource="0" file="Source/FFTJob.h"/>
       <FILE id="WJ4kvk" name="FIRFilter.cpp" compile="1" resource="0" file="Source/FIRFilter.cpp"/>
       <FILE id="H5VoMC" name="FIRFilter.h" compile="0" resource="0" file="Source/FIRFilter.h"/>
       <FILE id="gM55me" name="FIRTaps.h" compile="0" resource="0" file="Source/FIRTaps.h"/>

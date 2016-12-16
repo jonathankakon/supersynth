@@ -13,12 +13,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "constants.h"
+#include "FFTConvolver.h"
 
 
 class FIRFilter //: public FFT
 {
 public:
-  FIRFilter(const float* tapsArray, int size);
+  FIRFilter(const float* tapsArray, int size, int bufferSize);
   ~FIRFilter();
   
   void applyFIRFilter(AudioBuffer<float> &buffer);
@@ -30,6 +31,9 @@ private:
   ScopedPointer<AudioBuffer<float>> filterBuffer;
   ScopedPointer<AudioBuffer<float>> taps;
   ScopedPointer<AudioBuffer<float>> result;
+
+  ScopedPointer<FFTConvolver> convolver;
+
   float* filterBufferPointer;
   float* resultPointer;
   float* tapsPointer;

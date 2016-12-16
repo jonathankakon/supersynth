@@ -10,11 +10,12 @@
 
 #include "Distorter.h"
 #include "Constants.h"
+#include "FIRTaps.h"
 
-Distorter::Distorter()
+Distorter::Distorter(int bufferSize)
 {
-  preFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
-  postFilter = new FIRFilter(lowpass_2600hz, 267, 0, 0);
+  preFilter = new FIRFilter(lowpass_2600hz, 267, bufferSize);
+  postFilter = new FIRFilter(lowpass_2600hz, 267, bufferSize);
 }
 
 Distorter::~Distorter()

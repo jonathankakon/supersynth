@@ -17,7 +17,7 @@
 class Distorter
 {
 public:
-  Distorter();
+  Distorter(int buffersize);
   ~Distorter();
   
   
