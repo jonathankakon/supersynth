@@ -69,7 +69,7 @@ private:
   class Voice
   {
   public:
-    Voice();
+    Voice(int bufferSize);
     ~Voice();
     
     bool getIsOn() {return isOn;}
@@ -77,6 +77,8 @@ private:
     
     int getMidiNote() {return midiNote;}
     void setMidiNote(int newNote) {midiNote = newNote;}
+    
+    AudioBuffer<float>& getOutBuffer();
     
     void addMidiEvent(const MidiMessage& message, int sampleNumber);
     void clearMidiBuffer();
@@ -86,14 +88,17 @@ private:
     void fillBufferEnvelope();
     void fillBufferAudio();
     
+    void prepareTheEnvelope(double sampleRate, int samplesPerBlock);
+    
+    
   private:
-    VAOscillator oscillator;
-    EnvelopeProcessor envelope;
+    ScopedPointer<VAOscillator> oscillator;
+    ScopedPointer<EnvelopeProcessor> envelope;
     bool isOn;
     int midiNote;
     
     AudioBuffer<float> envelopeBuffer;
-    AudioBuffer<float> outBuffer;
+    ScopedPointer<AudioBuffer<float>> outBuffer;
     MidiBuffer midiInBuffer;
   };
   

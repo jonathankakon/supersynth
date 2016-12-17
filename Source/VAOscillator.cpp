@@ -255,8 +255,56 @@ void VAOscillator::fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<fl
   }
 }// end triangle
 
+  // again all the waveforms with different modbuffers
 
-  //==============================================================================
+void VAOscillator::fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& volumeModBuffer, Array<int>& midiOns)
+{
+  if(isActive)
+  {
+    float* const data = buffer.getWritePointer(0);
+    float const *volMod = volumeModBuffer.getReadPointer(0);
+    
+    for(int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
+    {
+      //check if this is the best i can do
+      if(midiOns.size() != 0)
+      {
+        if(sampleIndex == midiOns[0])
+        {
+          resetPhase();
+          midiOns.remove(0);
+        }
+      }
+      
+      double phase = currentPhase + currentPhaseOffset;
+      
+      while (phase < 0)
+      {
+        phase += 2 * double_Pi;
+      }
+      while (phase > 2 * double_Pi)
+      {
+        phase -= 2 * double_Pi;
+      }
+      
+      data[sampleIndex] = static_cast<float>(sin(phase) * std::abs(0.5 * (volMod[sampleIndex] + 1)));
+      
+      currentPhase += 2 * double_Pi * (currentFrequency/currentSampleRate);
+      
+      if(currentPhase > 2 * double_Pi)
+      {
+        currentPhase -= 2 * double_Pi;
+      }
+    }
+  }
+  else
+  {
+    buffer.clear();
+  }
+}// end sine
+
+
+//==============================================================================
   // getters and setters
 
 double VAOscillator::getSampleRate() const

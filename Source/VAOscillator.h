@@ -29,6 +29,8 @@ public:
   void fillBufferSquarePulse(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
   void fillBufferTriangle(AudioBuffer<float>& buffer, AudioBuffer<float>& phaseModBuffer, AudioBuffer<float>& volumeModBuffer, AudioBuffer<float>& pitchModBuffer);
   
+  void fillBufferSine(AudioBuffer<float>& buffer, AudioBuffer<float>& volumeModBuffer, Array<int>& midiOns);
+  
   
   // getters and setters
   
