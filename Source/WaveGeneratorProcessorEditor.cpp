@@ -18,7 +18,7 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (200, 120);
+  setSize (230, 120);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -93,8 +93,17 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   parent.registerImmobileObject(*phaseOffsetSlider);
   addAndMakeVisible(phaseOffsetSlider);
   
-  volumeSlider->addListener(this);
-   
+  const AudioParameterFloat* glideParam = dynamic_cast<AudioParameterFloat*>(params[7]);
+  glideSlider = new Slider(glideParam->name);
+  glideSlider->setRange(0, 1);
+  glideSlider->setSliderStyle(Slider::RotaryVerticalDrag);
+  glideSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+  glideSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(glideParam)->getValue());
+  glideSlider->addListener(this);
+  parent.registerImmobileObject(*glideSlider);
+  addAndMakeVisible(glideSlider);
+  
+  
   //labels
   volumeLabel.setText("Vol", juce::dontSendNotification);
   volumeLabel.attachToComponent(volumeSlider, false);
@@ -131,9 +140,15 @@ WaveGeneratorProcessorEditor::WaveGeneratorProcessorEditor (WaveGeneratorProcess
   phaseOffsetLabel.setJustificationType(juce::Justification::horizontallyCentred);
   addAndMakeVisible(phaseOffsetLabel);
   
+  glideLabel.setText("glide", juce::dontSendNotification);
+  glideLabel.attachToComponent(glideSlider, false);
+  glideLabel.setJustificationType(juce::Justification::horizontallyCentred);
+  addAndMakeVisible(glideLabel);
+  
   //Toggle Buttons
 
   midiToggle = new ToggleButton("MIDI");
+  midiToggle->setToggleState(true, juce::dontSendNotification);
   midiToggle->addListener(this);
   parent.registerImmobileObject(*midiToggle);
   addAndMakeVisible(midiToggle);
@@ -158,8 +173,13 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   r.setX(r.getX() + 40);
   frequencySlider->setBounds(r);
   
-  r.setX(r.getX() - 80);
-  r.setY(r.getY() + 55);
+  r.setX(r.getX() + 40);
+  r.setWidth(50);
+  glideSlider->setBounds(r);
+  r.setWidth(30);
+  
+  r.setX(10);
+  r.setY(75);
   octavesSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
@@ -169,8 +189,11 @@ void WaveGeneratorProcessorEditor::paint (Graphics& g)
   centsSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
+  r.setWidth(50);
   phaseOffsetSlider->setBounds(r);
+  r.setWidth(30);
   
+  r.setX(r.getX() + 40);
   r.setY(r.getY() - 55);
   r.setWidth(60);
   midiToggle->setBounds(r);
@@ -242,6 +265,14 @@ void WaveGeneratorProcessorEditor::sliderValueChanged(Slider* slider)
   else if (slider == phaseOffsetSlider)
   {
     AudioProcessorParameter* param = params[6];
+    if (slider->isMouseButtonDown())
+      param->setValueNotifyingHost ((float) slider->getValue());
+    else
+      param->setValue ((float) slider->getValue());
+  }
+  else if (slider == glideSlider)
+  {
+    AudioProcessorParameter* param = params[7];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
     else

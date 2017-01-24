@@ -17,7 +17,7 @@ DistortionProcessorEditor::DistortionProcessorEditor (DistortionProcessor* p, Pr
 {
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
-  setSize (140, 60);
+  setSize (100, 120);
   
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
   
@@ -32,14 +32,13 @@ DistortionProcessorEditor::DistortionProcessorEditor (DistortionProcessor* p, Pr
   addAndMakeVisible(preGainSlider);
   
   const AudioParameterChoice* distortionTypeParam = dynamic_cast<AudioParameterChoice*>(params[1]);
-  distortionTypeSlider = new Slider(distortionTypeParam->name);
-  distortionTypeSlider->setRange(0, 1, 1);
-  distortionTypeSlider->setSliderStyle(Slider::RotaryVerticalDrag);
-  distortionTypeSlider->setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
-  distortionTypeSlider->setValue(dynamic_cast<const AudioProcessorParameter*>(distortionTypeParam)->getValue());
-  distortionTypeSlider->addListener(this);
-  parent.registerImmobileObject(*distortionTypeSlider);
-  addAndMakeVisible(distortionTypeSlider);
+  typeBox = new ComboBox(distortionTypeParam->name);
+  typeBox->addItemList({"hardclip", "tanh"}, 1);
+  typeBox->addListener(this);
+  auto value = dynamic_cast<const AudioParameterChoice*>(params[1]);
+  typeBox->setSelectedId(value->getIndex() + 1);
+  parent.registerImmobileObject(*typeBox);
+  addAndMakeVisible(typeBox);
   
   const AudioParameterFloat* postGainParam = dynamic_cast<AudioParameterFloat*>(params[2]);
   postGainSlider = new Slider(postGainParam->name);
@@ -58,7 +57,7 @@ DistortionProcessorEditor::DistortionProcessorEditor (DistortionProcessor* p, Pr
   addAndMakeVisible(preGainLabel);
   
   typeLabel.setText("Type", juce::dontSendNotification);
-  typeLabel.attachToComponent(distortionTypeSlider, false);
+  typeLabel.attachToComponent(typeBox, false);
   typeLabel.setJustificationType(juce::Justification::horizontallyCentred);
   addAndMakeVisible(typeLabel);
   
@@ -83,10 +82,12 @@ void DistortionProcessorEditor::paint (Graphics& g)
   preGainSlider->setBounds(r);
   
   r.setX(r.getX() + 40);
-  distortionTypeSlider->setBounds(r);
-  
-  r.setX(r.getX() + 40);
   postGainSlider->setBounds(r);
+  
+  r.setX(10);
+  r.setY(80);
+  r.setWidth(70);
+  typeBox->setBounds(r);
   
 }
 
@@ -99,21 +100,11 @@ void DistortionProcessorEditor::resized()
 // copied from juce demo project GenericEditor.h
 void DistortionProcessorEditor::sliderValueChanged(Slider* slider)
 {
-  
   const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
-  
   
   if (slider == preGainSlider)
   {
     AudioProcessorParameter* param = params[0];
-    if (slider->isMouseButtonDown())
-      param->setValueNotifyingHost ((float) slider->getValue());
-    else
-      param->setValue ((float) slider->getValue());
-  }
-  else if(slider == distortionTypeSlider)
-  {
-    AudioProcessorParameter* param = params[1];
     if (slider->isMouseButtonDown())
       param->setValueNotifyingHost ((float) slider->getValue());
     else
@@ -128,4 +119,16 @@ void DistortionProcessorEditor::sliderValueChanged(Slider* slider)
       param->setValue ((float) slider->getValue());
   }
 
+}
+
+void DistortionProcessorEditor::comboBoxChanged(juce::ComboBox *comboBox)
+{
+  const OwnedArray<AudioProcessorParameter>& params = processor.getParameters();
+  
+  if(comboBox == typeBox)
+  {
+    AudioProcessorParameter* param = params[1];
+    
+    param->setValueNotifyingHost (comboBox->getSelectedItemIndex());
+  }
 }

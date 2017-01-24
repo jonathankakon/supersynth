@@ -15,7 +15,7 @@
 #include "DistortionProcessor.h"
 #include "ProcessorEditorWithConnectors.h"
 
-class DistortionProcessorEditor  : public AudioProcessorEditor, Slider::Listener
+class DistortionProcessorEditor  : public AudioProcessorEditor, Slider::Listener, ComboBox::Listener
 {
 public:
   DistortionProcessorEditor (DistortionProcessor* p, ProcessorEditorBase* b);
@@ -26,6 +26,7 @@ public:
   void resized() override;
   
   void sliderValueChanged(Slider* slider) override;
+  void comboBoxChanged(ComboBox* comboBox) override;
   
 private:
   // This reference is provided as a quick way for your editor to
@@ -34,7 +35,7 @@ private:
   ProcessorEditorBase& parent;
   
   ScopedPointer<Slider> preGainSlider;
-  ScopedPointer<Slider> distortionTypeSlider;
+  ScopedPointer<ComboBox> typeBox;
   ScopedPointer<Slider> postGainSlider;
   
   Label preGainLabel;

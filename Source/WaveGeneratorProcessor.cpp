@@ -61,6 +61,11 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
                             NormalisableRange<float>(0.0, 2 * double_Pi, 0.001, 1.5, true),
                             double_Pi) );
   
+  addParameter(glideParam = new AudioParameterFloat("glide",
+                            "Glide",
+                            NormalisableRange<float>(2, 0.05, 0.001, 1, false),
+                            2) );
+  
 
   AudioProcessor::addListener(this);
   
@@ -71,6 +76,8 @@ WaveGeneratorProcessor::WaveGeneratorProcessor() : AudioProcessor(BusesPropertie
   targetWaveform = sawUp;
   
   waveformChanged = true;//just so that there is a ramp when putting the wavegenerator in
+  
+  takesMidi = true;
   
 }
 
@@ -101,7 +108,7 @@ void WaveGeneratorProcessor::releaseResources()
 void WaveGeneratorProcessor::audioProcessorParameterChanged(AudioProcessor * processor, int parameterIndex, float /*newValue*/)
 {
   ignoreUnused(processor);
-  if(parameterIndex != 0 && parameterIndex != 5 && parameterIndex != 6)
+  if(parameterIndex == 1 || parameterIndex == 2 || parameterIndex == 3 || parameterIndex == 4)
   {
     targetFrequency = targetFreqParam->get() * octaves[octaveParam->get()] * semitones[semitonesParam->get()] * cents[centsParam->get()];
   }
@@ -301,13 +308,13 @@ void WaveGeneratorProcessor::setWaveform(int index)
 void WaveGeneratorProcessor::updateFrequency()
 {
   //max step size == 1/500 * currentfrequency
-  if(takesMidi || std::abs(currentFrequency - targetFrequency) < 0.05 * targetFrequency) 
+  if(std::abs(currentFrequency - targetFrequency) < glideParam->get() * currentFrequency)
   {
     currentFrequency = targetFrequency;
   }
   else
   {
-    currentFrequency += 0.05*targetFrequency * ((currentFrequency - targetFrequency) > 0 ? -1 : 1);
+    currentFrequency += glideParam->get() * currentFrequency * ((currentFrequency - targetFrequency) > 0 ? -1 : 1);
   }
   
   oscillator->setFrequency(currentFrequency);

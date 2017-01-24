@@ -84,6 +84,7 @@ private:
   AudioParameterFloat* frequencyRollParam;
   AudioParameterChoice* waveformParam;
   AudioParameterFloat* phaseOffsetParam;
+  AudioParameterFloat* glideParam;
   
   AudioParameterInt* octaveParam;
   AudioParameterInt* semitonesParam;
@@ -95,7 +96,7 @@ private:
   double currentFrequency;
   double targetFrequency;
 
-  bool takesMidi = true;
+  bool takesMidi;
   
   waveform currentWaveform;
   waveform targetWaveform;
